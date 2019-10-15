@@ -9,11 +9,11 @@
     <version>1.0</version>
     <modules>
         <module>persistence</module>
-        <module>client.javafx</module>
         <module>core</module>
         <module>util</module>
         <module>client.web</module>
         <module>client.apis</module>
+        <module>client.javafx</module>
     </modules>
     <packaging>pom</packaging>
 
