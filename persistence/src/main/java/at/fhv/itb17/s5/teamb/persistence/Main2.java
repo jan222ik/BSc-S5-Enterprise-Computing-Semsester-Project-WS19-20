@@ -1,4 +1,4 @@
-package at.fhv.itb17.s5.teamb.persistance;
+package at.fhv.itb17.s5.teamb.persistence;
 
 import java.util.LinkedList;
 import java.util.List;
