@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
+import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
 import at.fhv.itb17.s5.teamb.persistence.Main;
 import javafx.application.Application;
@@ -26,5 +27,9 @@ public class ApplicationMain extends Application {
         primaryStage.setScene(main);
         primaryStage.show();
         primaryStage.toFront();
+        NotificationsHelper.inform("Info", "A happy little text", NotificationsHelper.DisplayDuration.INDEFINITE);
+        NotificationsHelper.error("Error", "A happy little text");
+        NotificationsHelper.warn("Warning", "A happy little text", NotificationsHelper.DisplayDuration.LONG);
+        NotificationsHelper.confirm("Confirm", "A happy little text");
     }
 }
