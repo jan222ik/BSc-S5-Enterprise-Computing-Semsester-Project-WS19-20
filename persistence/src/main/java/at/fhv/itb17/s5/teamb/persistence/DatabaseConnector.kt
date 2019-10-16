@@ -17,9 +17,10 @@ object DatabaseConnector {
      * @return Session
      * @throws HibernateException if Session cannot be opened.
      */
-    val session: Session
-        @Throws(HibernateException::class)
-        get() = ourSessionFactory.openSession()
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun createSession(): Session {
+        return ourSessionFactory.openSession()
+    }
 
     init {
         try {
@@ -31,7 +32,7 @@ object DatabaseConnector {
     }
 
     fun hasConnection(): Boolean {
-        val session = session
+        val session = createSession()
         val sessionConnected = session.isConnected
         session.close()
         return sessionConnected
@@ -39,10 +40,6 @@ object DatabaseConnector {
 
     fun shutdown() {
         ourSessionFactory.close()
-    }
-
-    fun init() {
-
     }
 }
 
