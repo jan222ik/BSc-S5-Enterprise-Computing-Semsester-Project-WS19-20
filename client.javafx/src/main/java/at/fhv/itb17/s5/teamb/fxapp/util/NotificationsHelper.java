@@ -13,7 +13,7 @@ public final class NotificationsHelper {
 
     private NotificationsHelper() {/*Util Class*/}
 
-    public enum NotificationType {
+    public enum DisplayType {
         INFO, WARNING, ERROR, CONFIRMATION;
 
         protected void show(Notifications notification) {
@@ -51,38 +51,38 @@ public final class NotificationsHelper {
     }
 
     public static void error(String title, String text) {
-        showNotification(title, text, NotificationType.ERROR, SHORT, null);
+        showNotification(title, text, DisplayType.ERROR, SHORT, null);
     }
 
     public static void error(String title, String text, DisplayDuration durationType) {
-        showNotification(title, text, NotificationType.ERROR, durationType, null);
+        showNotification(title, text, DisplayType.ERROR, durationType, null);
     }
 
     public static void warn(String title, String text) {
-        showNotification(title, text, NotificationType.WARNING, SHORT, null);
+        showNotification(title, text, DisplayType.WARNING, SHORT, null);
     }
 
     public static void warn(String title, String text, DisplayDuration durationType) {
-        showNotification(title, text, NotificationType.WARNING, durationType, null);
+        showNotification(title, text, DisplayType.WARNING, durationType, null);
     }
 
     public static void confirm(String title, String text) {
-        showNotification(title, text, NotificationType.CONFIRMATION, SHORT, null);
+        showNotification(title, text, DisplayType.CONFIRMATION, SHORT, null);
     }
 
     public static void confirm(String title, String text, DisplayDuration durationType) {
-        showNotification(title, text, NotificationType.CONFIRMATION, durationType, null);
+        showNotification(title, text, DisplayType.CONFIRMATION, durationType, null);
     }
 
     public static void inform(String title, String text) {
-        showNotification(title, text, NotificationType.INFO, SHORT, null);
+        showNotification(title, text, DisplayType.INFO, SHORT, null);
     }
 
     public static void inform(String title, String text, DisplayDuration durationType) {
-        showNotification(title, text, NotificationType.INFO, durationType, null);
+        showNotification(title, text, DisplayType.INFO, durationType, null);
     }
 
-    public static void showNotification(String title, String text, NotificationType type, DisplayDuration durationType, Node graphic) {
+    public static void showNotification(String title, String text, DisplayType type, DisplayDuration durationType, Node graphic) {
         Notifications notification = Notifications.create();
         notification
                 .title(title)
