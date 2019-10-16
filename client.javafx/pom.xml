@@ -19,12 +19,6 @@
             <version>1.7.0</version>
         </dependency>
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-media</artifactId>
-            <version>12-ea+8</version>
-        </dependency>
-
-        <dependency>
             <groupId>advanceticketsale.persistence</groupId>
             <artifactId>persistence</artifactId>
             <version>1.0</version>
