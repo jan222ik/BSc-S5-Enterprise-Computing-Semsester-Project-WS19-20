@@ -2,19 +2,18 @@ package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
 import at.fhv.itb17.s5.teamb.fxapp.views.MenuContentfulView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -22,7 +21,8 @@ public class MenuPresenter implements Initializable {
 
     private static final Logger logger = LogManager.getLogger(MenuPresenter.class);
 
-    @FXML private
+    @FXML
+    private
     AnchorPane contentPlane;
     @FXML
     private VBox menuVBox;
@@ -32,6 +32,7 @@ public class MenuPresenter implements Initializable {
         logger.debug("Init {}", MenuPresenter.class.getName());
         LinkedList<MenuContentfulView> menuContentfulViews = getMenuViews();
         setMenuItems(menuContentfulViews);
+        Platform.runLater(() -> switchMenuContentfulView(menuContentfulViews.getFirst()));
     }
 
     private void setContentView(Parent viewRootElement) {
@@ -45,6 +46,9 @@ public class MenuPresenter implements Initializable {
 
     private void switchMenuContentfulView(MenuContentfulView view) {
         logger.debug("Switching to {}", view);
+        Stage stage = (Stage) contentPlane.getScene().getWindow();
+        stage.setTitle(view.getTitle());
+        setContentView(view.getCurrentContentView().getView()); //TODO Get actual view form MenuContentFulViews NavigationStack
     }
 
     private LinkedList<MenuContentfulView> getMenuViews() {

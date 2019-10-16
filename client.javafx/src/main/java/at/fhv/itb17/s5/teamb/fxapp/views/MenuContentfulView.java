@@ -26,4 +26,11 @@ public class MenuContentfulView {
         return menuItemView;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public ContentView getCurrentContentView() {
+        return navigationStack.peek();
+    }
 }
