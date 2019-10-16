@@ -27,9 +27,10 @@ public class ApplicationMain extends Application {
         primaryStage.setScene(main);
         primaryStage.show();
         primaryStage.toFront();
-        NotificationsHelper.inform("Info", "A happy little text", NotificationsHelper.DisplayDuration.INDEFINITE);
-        NotificationsHelper.error("Error", "A happy little text");
-        NotificationsHelper.warn("Warning", "A happy little text", NotificationsHelper.DisplayDuration.LONG);
-        NotificationsHelper.confirm("Confirm", "A happy little text");
+        final String text = "A happy little text";
+        NotificationsHelper.inform("Info", text, NotificationsHelper.DisplayDuration.INDEFINITE);
+        NotificationsHelper.error("Error",  text);
+        NotificationsHelper.warn("Warning",  text, NotificationsHelper.DisplayDuration.LONG);
+        NotificationsHelper.confirm("Confirm", text);
     }
 }

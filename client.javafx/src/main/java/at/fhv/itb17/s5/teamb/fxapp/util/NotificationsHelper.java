@@ -4,6 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper.DisplayDuration.SHORT;
 
@@ -54,7 +56,7 @@ public final class NotificationsHelper {
         showNotification(title, text, DisplayType.ERROR, SHORT, null);
     }
 
-    public static void error(String title, String text, DisplayDuration durationType) {
+    public static void error(String title, String text, @NotNull DisplayDuration durationType) {
         showNotification(title, text, DisplayType.ERROR, durationType, null);
     }
 
@@ -62,7 +64,7 @@ public final class NotificationsHelper {
         showNotification(title, text, DisplayType.WARNING, SHORT, null);
     }
 
-    public static void warn(String title, String text, DisplayDuration durationType) {
+    public static void warn(String title, String text, @NotNull DisplayDuration durationType) {
         showNotification(title, text, DisplayType.WARNING, durationType, null);
     }
 
@@ -70,7 +72,7 @@ public final class NotificationsHelper {
         showNotification(title, text, DisplayType.CONFIRMATION, SHORT, null);
     }
 
-    public static void confirm(String title, String text, DisplayDuration durationType) {
+    public static void confirm(String title, String text, @NotNull DisplayDuration durationType) {
         showNotification(title, text, DisplayType.CONFIRMATION, durationType, null);
     }
 
@@ -78,11 +80,12 @@ public final class NotificationsHelper {
         showNotification(title, text, DisplayType.INFO, SHORT, null);
     }
 
-    public static void inform(String title, String text, DisplayDuration durationType) {
+    public static void inform(String title, String text, @NotNull DisplayDuration durationType) {
         showNotification(title, text, DisplayType.INFO, durationType, null);
     }
 
-    public static void showNotification(String title, String text, DisplayType type, DisplayDuration durationType, Node graphic) {
+    public static void showNotification(String title, String text, @NotNull DisplayType type,
+                                        @NotNull DisplayDuration durationType, @Nullable Node graphic) {
         Notifications notification = Notifications.create();
         notification
                 .title(title)
