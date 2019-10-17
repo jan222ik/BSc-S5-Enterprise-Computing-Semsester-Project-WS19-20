@@ -1,8 +1,7 @@
-package at.fhv.itb17.s5.teamb.fxapp.views.menu;
+package at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem;
 
 import com.airhacks.afterburner.views.FXMLView;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class MenuView extends FXMLView {
-
+public class MenuItemView extends FXMLView {
 }

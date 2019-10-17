@@ -1,8 +1,10 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
+import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuView;
 import at.fhv.itb17.s5.teamb.persistence.Main;
+import com.airhacks.afterburner.injection.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -18,6 +20,8 @@ public class ApplicationMain extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         Thread.currentThread().setName("FX Main");
+        Style style = new Style();
+        Injector.setModelOrService(Style.class, style);
         new Main().main(new LinkedList<>());
         logger.info("Application Started");
         MenuView view = new MenuView();
