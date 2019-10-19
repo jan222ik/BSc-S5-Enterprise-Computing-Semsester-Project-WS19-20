@@ -29,7 +29,7 @@ public class ApplicationMain extends Application {
         primaryStage.show();
         primaryStage.toFront();
         final String text = "A happy little text";
-        NotificationsHelper.inform("Info", text, NotificationsHelper.DisplayDuration.INDEFINITE);
+        NotificationsHelper.inform("Info", text, NotificationsHelper.DisplayDuration.SHORT);
         NotificationsHelper.error("Error", text);
         NotificationsHelper.warn("Warning", text, NotificationsHelper.DisplayDuration.LONG);
         NotificationsHelper.confirm("Confirm", text);

@@ -4,10 +4,12 @@ import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModel;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemView;
+import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 public class MenuContentfulViewWrapper<T extends ViewModel> implements NavigationStackActions<T> {
@@ -54,15 +56,19 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
 
     @Override
     public void popLast() {
-        ContentView<T> pop = navigationStack.pop();
-        pop.preDestroy(viewModel);
+        if (navigationStack.size() > 1) {
+            ContentView<T> pop = navigationStack.pop();
+            pop.preDestroy(viewModel);
+        } else {
+            logger.warn(LogMarkers.UI_NAV, "Tried to pop root element of stack");
+        }
     }
 
     @Override
     public void push(ContentView<T> view) {
         navigationStack.push(view);
         if (viewModel == null) {
-            logger.error("Model not present: MEHTOD PUSH");
+            logger.error(LogMarkers.UI_NAV, "Model not present: METHOD PUSH");
         }
         view.onCreate(viewModel, this);
     }
@@ -72,6 +78,18 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
         ContentView<T> contentView = navigationStack.peek();
         menuPresenter.setContentView(contentView.getView());
         contentView.onReturned(viewModel);
+    }
+
+    @Override
+    public void changeToMenuItem(int number, Runnable... onError) {
+        try {
+            menuPresenter.switchMenuContentfulView(number);
+        } catch (IndexOutOfBoundsException e) {
+            logger.error(LogMarkers.UI_NAV, "Cannot change to menuitem {}", number);
+            if (onError != null) {
+                Arrays.asList(onError).forEach(Runnable::run);
+            }
+        }
     }
 
     public void beforeMenuSwitch() {

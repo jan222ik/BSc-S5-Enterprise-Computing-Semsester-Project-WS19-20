@@ -19,6 +19,9 @@
                 <TableColumn prefWidth="75.0" text="C2" />
               </columns>
             </TableView>
+             <Button fx:id="openItemViewIndex0" mnemonicParsing="false" text="to Menu Item 0" />
+             <Button fx:id="openItemViewIndex2" mnemonicParsing="false" text="to Menu Item 2" />
+             <Button fx:id="openItemViewIndexOutBound" mnemonicParsing="false" text="to Menu Item Out Of Bounds" />
          </children>
       </VBox>
    </children>

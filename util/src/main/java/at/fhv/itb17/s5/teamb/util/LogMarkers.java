@@ -6,6 +6,7 @@ public abstract class LogMarkers {
     public static final MarkerManager.Log4jMarker UI = new MarkerManager.Log4jMarker("UI");
     public static final MarkerManager.Log4jMarker UI_EVENT = new MarkerManager.Log4jMarker("UI-EVENT");
     public static final MarkerManager.Log4jMarker UI_LIFECYCLE = new MarkerManager.Log4jMarker("UI-LC");
+    public static final MarkerManager.Log4jMarker UI_NAV = new MarkerManager.Log4jMarker("UI-NAV");
 
     private LogMarkers() {
     }

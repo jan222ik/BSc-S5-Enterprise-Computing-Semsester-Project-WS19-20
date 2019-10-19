@@ -5,6 +5,7 @@ import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemPresenter;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -77,7 +78,11 @@ public class MenuPresenter implements Initializable {
         });
     }
 
-    private void switchMenuContentfulView(MenuContentfulViewWrapper view) {
+    public void switchMenuContentfulView(int itemNumber) {
+        switchMenuContentfulView(this.getMenuViews().get(itemNumber));
+    }
+
+    public void switchMenuContentfulView(MenuContentfulViewWrapper view) {
         if (current != null) {
             current.beforeMenuSwitch();
             current.isCurrentMenuItem(false);
@@ -90,13 +95,17 @@ public class MenuPresenter implements Initializable {
         view.showTOS();
     }
 
+    private LinkedList<MenuContentfulViewWrapper> _applicationViews;
     private LinkedList<MenuContentfulViewWrapper> getMenuViews() {
-        MenuContentfulViewWrapper<ViewModelImpl> item1 =
-                new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(),"Demo Item 1", "Demo Content Title 1", this);
-        MenuContentfulViewWrapper<ViewModelImpl> item2 =
-                new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(),"Event Browser", "Event Browser", this);
-        MenuContentfulViewWrapper<ViewModelImpl> item3 =
-                new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(),"Demo Item 3", "Demo Content Title 3", this);
-        return new LinkedList<>(Arrays.asList(item1, item2, item3));
+        if (_applicationViews == null) {
+            MenuContentfulViewWrapper<ViewModelImpl> item1 =
+                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(),"Demo Item 1", "Demo Content Title 1", this);
+            MenuContentfulViewWrapper<ViewModelImpl> item2 =
+                    new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(),"Event Browser", "Event Browser", this);
+            MenuContentfulViewWrapper<ViewModelImpl> item3 =
+                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(),"Demo Item 3", "Demo Content Title 3", this);
+            _applicationViews = new LinkedList<>(Arrays.asList(item1, item2, item3));
+        }
+        return _applicationViews;
     }
 }
