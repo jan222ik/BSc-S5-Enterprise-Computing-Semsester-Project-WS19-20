@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
@@ -49,8 +50,12 @@ public class MenuPresenter implements Initializable {
     AnchorPane contentPlane;
     @FXML
     private VBox menuVBox;
+    @FXML
+    private HBox menubarHBox;
 
     private MenuContentfulViewWrapper current;
+    private double xOffset;
+    private double yOffset;
 
     @Override
     @SuppressWarnings("squid:S2696")
@@ -139,13 +144,23 @@ public class MenuPresenter implements Initializable {
         });
         maximizeBtn.setOnAction(e -> {
             logger.debug(LogMarkers.WINDOW, "MAXIMIZE pressed");
-            Stage stage = (Stage)((Button)e.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Button) e.getSource()).getScene().getWindow();
             stage.setMaximized(!stage.isMaximized());
         });
         minimizeBtn.setOnAction(e -> {
             logger.debug(LogMarkers.WINDOW, "MINIMIZE pressed");
-            Stage stage = (Stage)((Button)e.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Button) e.getSource()).getScene().getWindow();
             stage.setIconified(true);
+        });
+        menubarHBox.setOnMousePressed(e -> {
+            Stage stage = (Stage) ((HBox) e.getSource()).getScene().getWindow();
+            xOffset = stage.getX() - e.getScreenX();
+            yOffset = stage.getY() - e.getScreenY();
+        });
+        menubarHBox.setOnMouseDragged(e -> {
+            Stage stage = (Stage) ((HBox) e.getSource()).getScene().getWindow();
+            stage.setX(e.getScreenX() + xOffset);
+            stage.setY(e.getScreenY() + yOffset);
         });
     }
 
