@@ -63,17 +63,17 @@ public class Style {
         hoverBtn(btn, defaultB, onDefaultB, hoverB, onHoverB, null);
     }
 
-    public void hoverBtn(Button btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB, SimpleBooleanProperty immutableOnToggle) {
+    public void hoverBtn(Button btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB, SimpleBooleanProperty temporalImmutable) {
         btn.setBackground(defaultB);
         btn.setTextFill(onDefaultB);
         btn.setOnMouseEntered(e -> {
-            if (immutableOnToggle == null || !immutableOnToggle.get()) {
+            if (temporalImmutable == null || !temporalImmutable.get()) {
                 btn.setBackground(hoverB);
                 btn.setTextFill(onHoverB);
             }
         });
         btn.setOnMouseExited(e -> {
-            if (immutableOnToggle == null ||!immutableOnToggle.get()) {
+            if (temporalImmutable == null ||!temporalImmutable.get()) {
                 btn.setBackground(defaultB);
                 btn.setTextFill(onDefaultB);
             }
@@ -84,7 +84,7 @@ public class Style {
         return new StyleBuilder();
     }
 
-    static class StyleBuilder {
+    public static class StyleBuilder {
         private Style style;
 
         StyleBuilder() {
@@ -141,6 +141,9 @@ public class Style {
             return this;
         }
 
+        public Style getStyle() {
+            return style;
+        }
     }
 
 }
