@@ -35,6 +35,7 @@ public class MenuPresenter implements Initializable {
 
     private static Background background;
     private static Background backgroundError;
+    private static Background backgroundSurf;
 
     @FXML
     private Button closeBtn;
@@ -60,6 +61,9 @@ public class MenuPresenter implements Initializable {
         if (backgroundError == null) {
             backgroundError = new Background(new BackgroundFill(style.ERROR_PAINT(), null, null));
         }
+        if (backgroundSurf == null) {
+            backgroundSurf = new Background(new BackgroundFill(style.SURFACE_PAINT(), null, null));
+        }
         logger.debug(LogMarkers.UI_LIFECYCLE, "Init {}", MenuPresenter.class.getName());
         applyStyle();
         setupWindowListener();
@@ -71,8 +75,8 @@ public class MenuPresenter implements Initializable {
 
     private void applyStyle() {
         styleButton(closeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
-        styleButton(maximizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
-        styleButton(minimizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
+        styleButton(maximizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
+        styleButton(minimizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
         menuVBox.setBackground(background);
         menuVBox.setStyle("-fx-border-color: " + style.PRIMARY_RGB + ";\n" +
                 "-fx-border-style: hidden solid hidden hidden;\n" +
@@ -130,16 +134,16 @@ public class MenuPresenter implements Initializable {
 
     private void setupWindowListener() {
         closeBtn.setOnAction(e -> {
-            logger.debug(LogMarkers.UI_EVENT, "EXIT pressed");
+            logger.debug(LogMarkers.WINDOW, "EXIT pressed");
             Platform.exit();
         });
         maximizeBtn.setOnAction(e -> {
-            logger.debug(LogMarkers.UI_EVENT, "MAXIMIZE pressed");
+            logger.debug(LogMarkers.WINDOW, "MAXIMIZE pressed");
             Stage stage = (Stage)((Button)e.getSource()).getScene().getWindow();
             stage.setMaximized(!stage.isMaximized());
         });
         minimizeBtn.setOnAction(e -> {
-            logger.debug(LogMarkers.UI_EVENT, "MINIMIZE pressed");
+            logger.debug(LogMarkers.WINDOW, "MINIMIZE pressed");
             Stage stage = (Stage)((Button)e.getSource()).getScene().getWindow();
             stage.setIconified(true);
         });
