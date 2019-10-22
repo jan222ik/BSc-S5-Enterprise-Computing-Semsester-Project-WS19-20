@@ -6,20 +6,25 @@ import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -38,6 +43,9 @@ public class MenuPresenter implements Initializable {
     private static Background backgroundError;
     private static Background backgroundSurf;
 
+    private double xOffset;
+    private double yOffset;
+
     @FXML
     private Button closeBtn;
     @FXML
@@ -46,16 +54,24 @@ public class MenuPresenter implements Initializable {
     private Button minimizeBtn;
 
     @FXML
+    private HBox separatorH;
+    @FXML
+    private VBox separatorV;
+    @FXML
     private
     AnchorPane contentPlane;
     @FXML
     private VBox menuVBox;
     @FXML
     private HBox menubarHBox;
+    @FXML
+    private Label menubarTitle;
+    @FXML
+    private Button glyphHostBtn;
+    @FXML
+    private FontAwesomeIconView hamburgerIcon;
 
     private MenuContentfulViewWrapper current;
-    private double xOffset;
-    private double yOffset;
 
     @Override
     @SuppressWarnings("squid:S2696")
@@ -72,21 +88,30 @@ public class MenuPresenter implements Initializable {
         logger.debug(LogMarkers.UI_LIFECYCLE, "Init {}", MenuPresenter.class.getName());
         applyStyle();
         setupWindowListener();
-
+        glyphHostBtn.setOnAction(this::toggleMenuList);
         LinkedList<MenuContentfulViewWrapper> menuContentfulViewWrappers = getMenuViews();
         setMenuItems(menuContentfulViewWrappers);
         Platform.runLater(() -> switchMenuContentfulView(menuContentfulViewWrappers.getFirst()));
     }
 
+    @SuppressWarnings("squid:CommentedOutCodeLine")
     private void applyStyle() {
-        styleButton(closeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
-        styleButton(maximizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
-        styleButton(minimizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
+        style.hoverBtn(closeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
+        style.hoverBtn(maximizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
+        style.hoverBtn(minimizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
+        style.hoverBtn(glyphHostBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
+        hamburgerIcon.setFill(style.ON_BACKGROUND_PAINT());
+        menubarTitle.setTextFill(style.ON_BACKGROUND_PAINT());
+        menubarHBox.setBackground(background);
         menuVBox.setBackground(background);
+        separatorH.setBackground(backgroundSurf);
+        separatorV.setBackground(backgroundSurf);
+        /*
         menuVBox.setStyle("-fx-border-color: " + style.PRIMARY_RGB + ";\n" +
                 "-fx-border-style: hidden solid hidden hidden;\n" +
                 "-fx-border-insets: 0;\n" +
                 "-fx-border-width: 0 2 0 0;");
+         */
         contentPlane.setBackground(background);
     }
 
@@ -109,7 +134,7 @@ public class MenuPresenter implements Initializable {
         switchMenuContentfulView(this.getMenuViews().get(itemNumber));
     }
 
-    public void switchMenuContentfulView(MenuContentfulViewWrapper view) {
+    private void switchMenuContentfulView(MenuContentfulViewWrapper view) {
         if (current != null) {
             current.beforeMenuSwitch();
             current.isCurrentMenuItem(false);
@@ -117,9 +142,14 @@ public class MenuPresenter implements Initializable {
         current = view;
         view.isCurrentMenuItem(true);
         logger.debug(LogMarkers.UI, "Switching to {}", view);
-        Stage stage = (Stage) contentPlane.getScene().getWindow();
-        stage.setTitle(view.getTitle());
+        updateTitle(view.getTitle());
         view.showTOS();
+    }
+
+    private void updateTitle(String title) {
+        Stage stage = (Stage) contentPlane.getScene().getWindow();
+        stage.setTitle(title);
+        menubarTitle.setText(title);
     }
 
     private LinkedList<MenuContentfulViewWrapper> _applicationViews;
@@ -135,6 +165,22 @@ public class MenuPresenter implements Initializable {
             _applicationViews = new LinkedList<>(Arrays.asList(item1, item2, item3));
         }
         return _applicationViews;
+    }
+
+    private boolean menuOpen = true;
+
+    private void toggleMenuList(@Nullable ActionEvent e) {
+        logger.debug(LogMarkers.UI_EVENT, "Toggle Menu to {}", !menuOpen);
+        if (menuOpen) {
+            menuVBox.setMinWidth(30D);
+            menuVBox.setPrefWidth(30D);
+            menuVBox.setMaxWidth(30D);
+        } else {
+            menuVBox.setMinWidth(150D);
+            menuVBox.setPrefWidth(150D);
+            menuVBox.setMaxWidth(150D);
+        }
+        menuOpen = !menuOpen;
     }
 
     private void setupWindowListener() {
@@ -154,6 +200,12 @@ public class MenuPresenter implements Initializable {
         });
         menubarHBox.setOnMousePressed(e -> {
             Stage stage = (Stage) ((HBox) e.getSource()).getScene().getWindow();
+            if (stage.isMaximized()) {
+                double widthPercent = e.getSceneX() / stage.getWidth();
+                stage.setMaximized(false);
+                stage.setX(e.getScreenX() - stage.getWidth() * widthPercent);
+                stage.setY(e.getY());
+            }
             xOffset = stage.getX() - e.getScreenX();
             yOffset = stage.getY() - e.getScreenY();
         });
@@ -162,19 +214,5 @@ public class MenuPresenter implements Initializable {
             stage.setX(e.getScreenX() + xOffset);
             stage.setY(e.getScreenY() + yOffset);
         });
-    }
-
-    private void styleButton(Button btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB) {
-        btn.setBackground(defaultB);
-        btn.setTextFill(onDefaultB);
-        btn.setOnMouseEntered(e -> {
-            btn.setBackground(hoverB);
-            btn.setTextFill(onHoverB);
-        });
-        btn.setOnMouseExited(e -> {
-            btn.setBackground(defaultB);
-            btn.setTextFill(onDefaultB);
-        });
-
     }
 }

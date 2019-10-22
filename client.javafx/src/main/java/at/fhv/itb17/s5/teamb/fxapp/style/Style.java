@@ -1,5 +1,8 @@
 package at.fhv.itb17.s5.teamb.fxapp.style;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Paint;
 
 @SuppressWarnings({"squid:S1192", "squid:ClassVariableVisibilityCheck", "squid:S00116", "squid:S00100", "WeakerAccess"})
@@ -54,6 +57,27 @@ public class Style {
 
     public Paint ON_ERROR_PAINT() {
         return Paint.valueOf(ON_ERROR_RGB);
+    }
+
+    public void hoverBtn(Button btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB) {
+        hoverBtn(btn, defaultB, onDefaultB, hoverB, onHoverB, null);
+    }
+
+    public void hoverBtn(Button btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB, SimpleBooleanProperty immutableOnToggle) {
+        btn.setBackground(defaultB);
+        btn.setTextFill(onDefaultB);
+        btn.setOnMouseEntered(e -> {
+            if (immutableOnToggle == null || !immutableOnToggle.get()) {
+                btn.setBackground(hoverB);
+                btn.setTextFill(onHoverB);
+            }
+        });
+        btn.setOnMouseExited(e -> {
+            if (immutableOnToggle == null ||!immutableOnToggle.get()) {
+                btn.setBackground(defaultB);
+                btn.setTextFill(onDefaultB);
+            }
+        });
     }
 
     public static StyleBuilder builder() {

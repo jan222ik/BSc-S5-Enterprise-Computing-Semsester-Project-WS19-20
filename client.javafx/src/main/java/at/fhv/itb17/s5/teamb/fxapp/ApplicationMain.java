@@ -22,9 +22,9 @@ public class ApplicationMain extends Application {
         Injector.setModelOrService(Style.class, style);
         logger.info(LogMarkers.APPLICATION,"Application Started");
         MenuView view = new MenuView();
-        Scene main = new Scene(view.getView());
+        Scene main = new Scene(view.getView(), 600, 400);
         primaryStage.setTitle("#PLACEHOLDER");
-        primaryStage.initStyle(StageStyle.DECORATED);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setScene(main);
         primaryStage.show();
         primaryStage.toFront();
