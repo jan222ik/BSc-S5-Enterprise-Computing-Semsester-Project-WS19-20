@@ -1,20 +1,21 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
-import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
-import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemPresenter;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +34,14 @@ public class MenuPresenter implements Initializable {
     private static Style style;
 
     private static Background background;
+    private static Background backgroundError;
+
+    @FXML
+    private Button closeBtn;
+    @FXML
+    private Button maximizeBtn;
+    @FXML
+    private Button minimizeBtn;
 
     @FXML
     private
@@ -42,21 +51,30 @@ public class MenuPresenter implements Initializable {
 
     private MenuContentfulViewWrapper current;
 
-    @Override @SuppressWarnings("squid:S2696")
+    @Override
+    @SuppressWarnings("squid:S2696")
     public void initialize(URL location, ResourceBundle resources) {
         if (background == null) {
             background = new Background(new BackgroundFill(style.BACKGROUND_PAINT(), null, null));
         }
+        if (backgroundError == null) {
+            backgroundError = new Background(new BackgroundFill(style.ERROR_PAINT(), null, null));
+        }
         logger.debug(LogMarkers.UI_LIFECYCLE, "Init {}", MenuPresenter.class.getName());
         applyStyle();
+        setupWindowListener();
+
         LinkedList<MenuContentfulViewWrapper> menuContentfulViewWrappers = getMenuViews();
         setMenuItems(menuContentfulViewWrappers);
         Platform.runLater(() -> switchMenuContentfulView(menuContentfulViewWrappers.getFirst()));
     }
 
     private void applyStyle() {
+        styleButton(closeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
+        styleButton(maximizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
+        styleButton(minimizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
         menuVBox.setBackground(background);
-        menuVBox.setStyle("-fx-border-color: " + style.PRIMARY_RGB +";\n" +
+        menuVBox.setStyle("-fx-border-color: " + style.PRIMARY_RGB + ";\n" +
                 "-fx-border-style: hidden solid hidden hidden;\n" +
                 "-fx-border-insets: 0;\n" +
                 "-fx-border-width: 0 2 0 0;");
@@ -96,16 +114,48 @@ public class MenuPresenter implements Initializable {
     }
 
     private LinkedList<MenuContentfulViewWrapper> _applicationViews;
+
     private LinkedList<MenuContentfulViewWrapper> getMenuViews() {
         if (_applicationViews == null) {
             MenuContentfulViewWrapper<ViewModelImpl> item1 =
-                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(),"Demo Item 1", "Demo Content Title 1", this);
+                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(), "Demo Item 1", "Demo Content Title 1", this);
             MenuContentfulViewWrapper<ViewModelImpl> item2 =
-                    new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(),"Event Browser", "Event Browser", this);
+                    new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(), "Event Browser", "Event Browser", this);
             MenuContentfulViewWrapper<ViewModelImpl> item3 =
-                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(),"Demo Item 3", "Demo Content Title 3", this);
+                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(), "Demo Item 3", "Demo Content Title 3", this);
             _applicationViews = new LinkedList<>(Arrays.asList(item1, item2, item3));
         }
         return _applicationViews;
+    }
+
+    private void setupWindowListener() {
+        closeBtn.setOnAction(e -> {
+            logger.debug(LogMarkers.UI_EVENT, "EXIT pressed");
+            Platform.exit();
+        });
+        maximizeBtn.setOnAction(e -> {
+            logger.debug(LogMarkers.UI_EVENT, "MAXIMIZE pressed");
+            Stage stage = (Stage)((Button)e.getSource()).getScene().getWindow();
+            stage.setMaximized(!stage.isMaximized());
+        });
+        minimizeBtn.setOnAction(e -> {
+            logger.debug(LogMarkers.UI_EVENT, "MINIMIZE pressed");
+            Stage stage = (Stage)((Button)e.getSource()).getScene().getWindow();
+            stage.setIconified(true);
+        });
+    }
+
+    private void styleButton(Button btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB) {
+        btn.setBackground(defaultB);
+        btn.setTextFill(onDefaultB);
+        btn.setOnMouseEntered(e -> {
+            btn.setBackground(hoverB);
+            btn.setTextFill(onHoverB);
+        });
+        btn.setOnMouseExited(e -> {
+            btn.setBackground(defaultB);
+            btn.setTextFill(onDefaultB);
+        });
+
     }
 }

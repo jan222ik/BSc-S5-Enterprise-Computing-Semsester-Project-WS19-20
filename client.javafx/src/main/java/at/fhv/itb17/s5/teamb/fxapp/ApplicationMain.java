@@ -34,4 +34,10 @@ public class ApplicationMain extends Application {
         NotificationsHelper.warn("Warning", text, NotificationsHelper.DisplayDuration.LONG);
         NotificationsHelper.confirm("Confirm", text);
     }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        logger.debug("Application Stopped Gracefully");
+    }
 }
