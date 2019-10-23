@@ -24,16 +24,20 @@ public class ClassesProposal {
     }
 
     public class EventOccurrence {
+        @Id private long occurrenceId;
         private LocalDate date;
         private LocalTime time;
         private List<EventCategory> priceCategories;
     }
 
     public class EventCategory {
+        @Id private long eventCategoryId;
         private boolean isFreeSeating;
         private String categoryName;
         private int priceInCent;
         private List<LocationRow> seatingRows;
+        private int totalSpace;
+        private int usedSpace;
     }
 
 
@@ -46,7 +50,7 @@ public class ClassesProposal {
 
     public class LocationSeat {
         @Id
-        private long id;
+        private long seatId;
         private String seatIdentifier;
     }
 
@@ -91,17 +95,15 @@ public class ClassesProposal {
     }
 
     public class Client {
-        String name;
-        String username;
-        String password;
-        String salt;
-        ClientRoles role;
+        @Id
+        private String username;
+        private String name;
+        private String password;
+        private String salt;
+        private ClientRoles role;
     }
 
     public enum ClientRoles {
         ADMIN, SALES_AGENT, EXTERNAL
     }
-
-
-
 }
