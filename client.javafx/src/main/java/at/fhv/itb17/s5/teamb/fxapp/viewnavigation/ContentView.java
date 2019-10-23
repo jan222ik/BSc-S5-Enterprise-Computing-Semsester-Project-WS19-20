@@ -35,7 +35,7 @@ public abstract class ContentView<T extends ViewModel> extends FXMLView {
     private ContentfulViewLifeCycle getCastedPresenter() {
         Object presenter = super.getPresenter();
         if (!(presenter instanceof ContentfulViewLifeCycle)) {
-            throw new RuntimeException("<? extends ContentView> must have a presenter implementing ContentLifeCyclePresenter");
+            throw new RuntimeException("<? extends ContentView> must have a presenter implementing ContentfulViewLifeCycle");
         } else {
             return (ContentfulViewLifeCycle) presenter;
         }

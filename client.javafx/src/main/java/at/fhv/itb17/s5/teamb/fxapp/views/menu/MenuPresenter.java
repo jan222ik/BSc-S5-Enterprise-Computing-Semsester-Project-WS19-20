@@ -1,9 +1,11 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -156,8 +158,8 @@ public class MenuPresenter implements Initializable {
 
     private LinkedList<MenuContentfulViewWrapper> getMenuViews() {
         if (_applicationViews == null) {
-            MenuContentfulViewWrapper<ViewModelImpl> item1 =
-                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(), "Demo Item 1", "Demo Content Title 1", this);
+            MenuContentfulViewWrapper<SearchVM> item1 =
+                    new MenuContentfulViewWrapper<>(new SearchView(), new SearchVM(), "Search", "Search", this);
             MenuContentfulViewWrapper<ViewModelImpl> item2 =
                     new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(), "Event Browser", "Event Browser", this);
             MenuContentfulViewWrapper<ViewModelImpl> item3 =
