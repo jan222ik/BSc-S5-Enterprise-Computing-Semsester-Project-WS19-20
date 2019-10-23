@@ -3,7 +3,6 @@ package at.fhv.itb17.s5.teamb.core
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.fail
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -43,10 +42,10 @@ internal class SearchParserTest {
 
     @Test
     fun `Parsing Search Invalid String`() {
-        val missingDash = "name='value'"
+        val invalid = "name='value'"
         var executed = true;
         try {
-            SearchParser.parseString(missingDash)
+            SearchParser.parseString(invalid)
             fail("Call should have thrown error");
         } catch (e: SearchParser.SearchException) {
             executed = false;
