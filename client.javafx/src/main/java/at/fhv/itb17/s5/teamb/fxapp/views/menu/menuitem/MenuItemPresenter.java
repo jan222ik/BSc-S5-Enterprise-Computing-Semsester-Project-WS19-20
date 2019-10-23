@@ -1,7 +1,9 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,13 +25,19 @@ public class MenuItemPresenter implements Initializable {
     private Paint selectedPaint;
     private Background unselected;
     private Paint unselectedPaint;
-
+    private Background hover;
+    private Paint hoverPaint;
 
 
     @FXML
     private Button menuItem;
+    @FXML
+    private Button menuIconGlyphHolder;
+    @FXML
+    private FontAwesomeIconView menuIconGlyph;
 
     private Runnable onAction;
+    private SimpleBooleanProperty isSelected = new SimpleBooleanProperty(false);
 
     public void setOnClickedAction(Runnable onClickAction) {
         this.onAction = onClickAction;
@@ -47,24 +55,35 @@ public class MenuItemPresenter implements Initializable {
     }
 
     public void setSelected(boolean isSelected) {
+        this.isSelected.set(isSelected);
         if (isSelected) {
             menuItem.setBackground(selected);
             menuItem.setTextFill(selectedPaint);
+            menuIconGlyphHolder.setBackground(selected);
+            menuIconGlyph.setFill(selectedPaint);
         } else {
             menuItem.setBackground(unselected);
             menuItem.setTextFill(unselectedPaint);
+            menuIconGlyphHolder.setBackground(unselected);
+            menuIconGlyph.setFill(unselectedPaint);
         }
     }
 
     public void setParentWidthProperty(ReadOnlyDoubleProperty parentWidthProperty) {
-        parentWidthProperty.addListener((observable, oldValue, newValue) -> menuItem.setPrefWidth((Double) newValue - 2.0));
+        parentWidthProperty.addListener((observable, oldValue, newValue) -> {
+            menuItem.setPrefWidth((Double) newValue - 2.0);
+        });
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         selected = new Background(new BackgroundFill(style.PRIMARY_PAINT(), null, null));
         selectedPaint = style.ON_PRIMARY_PAINT();
-        unselected = new Background(new BackgroundFill(style.SURFACE_PAINT(), null, null));
-        unselectedPaint = style.ON_SURFACE_PAINT();
+        unselected = new Background(new BackgroundFill(style.BACKGROUND_PAINT(), null, null));
+        unselectedPaint = style.ON_BACKGROUND_PAINT();
+        hover = new Background(new BackgroundFill(style.SURFACE_PAINT(), null, null));
+        hoverPaint = style.ON_SURFACE_PAINT();
+        style.hoverBtn(menuIconGlyphHolder, unselected, unselectedPaint, hover, hoverPaint, isSelected);
+        style.hoverBtn(menuItem, unselected, unselectedPaint, hover, hoverPaint, isSelected);
     }
 }
