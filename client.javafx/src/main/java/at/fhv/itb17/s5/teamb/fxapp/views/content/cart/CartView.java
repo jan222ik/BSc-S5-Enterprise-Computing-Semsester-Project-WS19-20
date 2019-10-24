@@ -1,9 +1,8 @@
-package at.fhv.itb17.s5.teamb.fxapp.views.demo;
+package at.fhv.itb17.s5.teamb.fxapp.views.content.cart;
 
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentView;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class DemoView extends ContentView<ViewModelImpl> {
-
+public class CartView extends ContentView<ViewModelImpl> {
 }
