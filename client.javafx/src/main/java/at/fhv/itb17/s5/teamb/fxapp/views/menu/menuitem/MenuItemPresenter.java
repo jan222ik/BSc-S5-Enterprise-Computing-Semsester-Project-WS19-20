@@ -77,12 +77,12 @@ public class MenuItemPresenter implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        selected = new Background(new BackgroundFill(style.PRIMARY_PAINT(), null, null));
-        selectedPaint = style.ON_PRIMARY_PAINT();
-        unselected = new Background(new BackgroundFill(style.BACKGROUND_PAINT(), null, null));
-        unselectedPaint = style.ON_BACKGROUND_PAINT();
-        hover = new Background(new BackgroundFill(style.SURFACE_PAINT(), null, null));
-        hoverPaint = style.ON_SURFACE_PAINT();
+        selected = style.PRIMARY().asBackground();
+        selectedPaint = style.ON_PRIMARY().asPaint();
+        unselected = style.BACKGROUND().asBackground();
+        unselectedPaint = style.ON_BACKGROUND().asPaint();
+        hover = style.SURFACE().asBackground();
+        hoverPaint = style.ON_SURFACE().asPaint();
         style.hoverBtn(menuIconGlyphHolder, unselected, unselectedPaint, hover, hoverPaint, isSelected);
         style.hoverBtn(menuItem, unselected, unselectedPaint, hover, hoverPaint, isSelected);
     }

@@ -30,7 +30,7 @@ public class DemoPresenter implements ContentfulViewLifeCycle {
     @Override
     public void onCreate(ViewModel viewModel, NavigationStackActions navActions) {
         helloWorld.setText("Hello World #" + numberOfInstance);
-        helloWorld.setTextFill(style.ON_SURFACE_PAINT());
+        helloWorld.setTextFill(style.ON_SURFACE().asPaint());
         logger.debug(LogMarkers.UI_LIFECYCLE, "ON_CREATE\t{}", this);
     }
 }

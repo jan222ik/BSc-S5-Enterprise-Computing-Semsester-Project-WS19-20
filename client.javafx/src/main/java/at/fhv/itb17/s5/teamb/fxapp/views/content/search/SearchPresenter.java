@@ -1,6 +1,46 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.search;
 
+import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Paint;
 
-public class SearchPresenter implements ContentfulViewLifeCycle {
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class SearchPresenter implements ContentfulViewLifeCycle, Initializable {
+
+    @Inject
+    Style style;
+
+    @FXML
+    private AnchorPane searchRootPlane;
+    @FXML
+    private GridPane filterGridPane;
+    @FXML
+    private HBox actionEmitter;
+    @FXML
+    private Button resetBtn;
+    @FXML
+    private Button searchBtn;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Background defaultBack = style.SURFACE().asBackground();
+        Paint onDefaultPaint = style.ON_SURFACE().asPaint();
+        //searchRootPlane.setBackground(defaultBack);
+
+        filterGridPane.setBackground(defaultBack);
+
+        actionEmitter.setBackground(defaultBack);
+        style.hoverBtn(searchBtn, defaultBack, onDefaultPaint, defaultBack, style.PRIMARY().asPaint());
+        style.hoverBtn(resetBtn, defaultBack, onDefaultPaint, defaultBack, style.ERROR().asPaint());
+    }
 }

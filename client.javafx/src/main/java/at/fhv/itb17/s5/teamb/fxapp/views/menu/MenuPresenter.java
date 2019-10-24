@@ -16,12 +16,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +43,7 @@ public class MenuPresenter implements Initializable {
     private static Background backgroundError;
     private static Background backgroundSurf;
 
+    private MouseEvent originEvent;
     private double xOffset;
     private double yOffset;
 
@@ -79,13 +78,13 @@ public class MenuPresenter implements Initializable {
     @SuppressWarnings("squid:S2696")
     public void initialize(URL location, ResourceBundle resources) {
         if (background == null) {
-            background = new Background(new BackgroundFill(style.BACKGROUND_PAINT(), null, null));
+            background = style.BACKGROUND().asBackground();
         }
         if (backgroundError == null) {
-            backgroundError = new Background(new BackgroundFill(style.ERROR_PAINT(), null, null));
+            backgroundError = style.ERROR().asBackground();
         }
         if (backgroundSurf == null) {
-            backgroundSurf = new Background(new BackgroundFill(style.SURFACE_PAINT(), null, null));
+            backgroundSurf = style.SURFACE().asBackground();
         }
         logger.debug(LogMarkers.UI_LIFECYCLE, "Init {}", MenuPresenter.class.getName());
         applyStyle();
@@ -98,18 +97,18 @@ public class MenuPresenter implements Initializable {
 
     @SuppressWarnings("squid:CommentedOutCodeLine")
     private void applyStyle() {
-        style.hoverBtn(closeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundError, style.ON_ERROR_PAINT());
-        style.hoverBtn(maximizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
-        style.hoverBtn(minimizeBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
-        style.hoverBtn(glyphHostBtn, background, style.ON_BACKGROUND_PAINT(), backgroundSurf, style.ON_SURFACE_PAINT());
-        hamburgerIcon.setFill(style.ON_BACKGROUND_PAINT());
-        menubarTitle.setTextFill(style.ON_BACKGROUND_PAINT());
+        style.hoverBtn(closeBtn, background, style.ON_BACKGROUND().asPaint(), backgroundError, style.ON_ERROR().asPaint());
+        style.hoverBtn(maximizeBtn, background, style.ON_BACKGROUND().asPaint(), backgroundSurf, style.ON_SURFACE().asPaint());
+        style.hoverBtn(minimizeBtn, background, style.ON_BACKGROUND().asPaint(), backgroundSurf, style.ON_SURFACE().asPaint());
+        style.hoverBtn(glyphHostBtn, background, style.ON_BACKGROUND().asPaint(), backgroundSurf, style.ON_SURFACE().asPaint());
+        hamburgerIcon.setFill(style.ON_BACKGROUND().asPaint());
+        menubarTitle.setTextFill(style.ON_BACKGROUND().asPaint());
         menubarHBox.setBackground(background);
         menuVBox.setBackground(background);
         separatorH.setBackground(backgroundSurf);
         separatorV.setBackground(backgroundSurf);
         /*
-        menuVBox.setStyle("-fx-border-color: " + style.PRIMARY_RGB + ";\n" +
+        menuVBox.setStyle("-fx-border-color: " + style.PRIMARY().asRGB() + ";\n" +
                 "-fx-border-style: hidden solid hidden hidden;\n" +
                 "-fx-border-insets: 0;\n" +
                 "-fx-border-width: 0 2 0 0;");
@@ -201,15 +200,23 @@ public class MenuPresenter implements Initializable {
             stage.setIconified(true);
         });
         menubarHBox.setOnMousePressed(e -> {
-            Stage stage = (Stage) ((HBox) e.getSource()).getScene().getWindow();
-            if (stage.isMaximized()) {
-                double widthPercent = e.getSceneX() / stage.getWidth();
-                stage.setMaximized(false);
-                stage.setX(e.getScreenX() - stage.getWidth() * widthPercent);
-                stage.setY(e.getY());
+            originEvent = e;
+            Stage stage = (Stage) ((HBox) originEvent.getSource()).getScene().getWindow();
+            if (!stage.isMaximized()) {
+                xOffset = stage.getX() - originEvent.getScreenX();
+                yOffset = stage.getY() - originEvent.getScreenY();
             }
-            xOffset = stage.getX() - e.getScreenX();
-            yOffset = stage.getY() - e.getScreenY();
+        });
+        menubarHBox.setOnDragDetected(e -> {
+            Stage stage = (Stage) ((HBox) originEvent.getSource()).getScene().getWindow();
+            if (stage.isMaximized()) {
+                double widthPercent = originEvent.getSceneX() / stage.getWidth();
+                stage.setMaximized(false);
+                stage.setX(originEvent.getScreenX() - stage.getWidth() * widthPercent);
+                stage.setY(originEvent.getY());
+                xOffset = stage.getX() - originEvent.getScreenX();
+                yOffset = stage.getY() - originEvent.getScreenY();
+            }
         });
         menubarHBox.setOnMouseDragged(e -> {
             Stage stage = (Stage) ((HBox) e.getSource()).getScene().getWindow();
