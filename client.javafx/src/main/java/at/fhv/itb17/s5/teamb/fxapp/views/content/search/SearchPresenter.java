@@ -53,7 +53,7 @@ public class SearchPresenter implements ContentfulViewLifeCycle, Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Background defaultBack = style.SURFACE().asBackground();
         Paint onDefaultPaint = style.ON_SURFACE().asPaint();
-        //searchRootPlane.setBackground(defaultBack);
+        searchRootPlane.setBackground(defaultBack);
 
         filterGridPane.setBackground(defaultBack);
 
