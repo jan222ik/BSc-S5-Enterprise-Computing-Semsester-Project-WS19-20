@@ -59,8 +59,7 @@ public class MenuPresenter implements Initializable {
     @FXML
     private VBox separatorV;
     @FXML
-    private
-    AnchorPane contentPlane;
+    private AnchorPane contentPlane;
     @FXML
     private VBox menuVBox;
     @FXML
@@ -95,7 +94,6 @@ public class MenuPresenter implements Initializable {
         Platform.runLater(() -> switchMenuContentfulView(menuContentfulViewWrappers.getFirst()));
     }
 
-    @SuppressWarnings("squid:CommentedOutCodeLine")
     private void applyStyle() {
         style.hoverBtn(closeBtn, background, style.ON_BACKGROUND().asPaint(), backgroundError, style.ON_ERROR().asPaint());
         style.hoverBtn(maximizeBtn, background, style.ON_BACKGROUND().asPaint(), backgroundSurf, style.ON_SURFACE().asPaint());
@@ -107,12 +105,6 @@ public class MenuPresenter implements Initializable {
         menuVBox.setBackground(background);
         separatorH.setBackground(backgroundSurf);
         separatorV.setBackground(backgroundSurf);
-        /*
-        menuVBox.setStyle("-fx-border-color: " + style.PRIMARY().asRGB() + ";\n" +
-                "-fx-border-style: hidden solid hidden hidden;\n" +
-                "-fx-border-insets: 0;\n" +
-                "-fx-border-width: 0 2 0 0;");
-         */
         contentPlane.setBackground(background);
     }
 
