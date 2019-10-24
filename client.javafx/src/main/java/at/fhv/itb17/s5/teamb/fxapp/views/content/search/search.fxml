@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="searchRootPlane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" maxHeight="250.0" maxWidth="500.0" minHeight="250.0" minWidth="500.0" prefHeight="250.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchPresenter">
+<AnchorPane fx:id="searchRootPlane" maxHeight="250.0" maxWidth="600.0" minHeight="250.0" minWidth="600.0" prefHeight="250.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchPresenter">
     <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
@@ -37,31 +37,31 @@
                             <children>
                                 <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" textFill="white" text="from:">
+                                        <CheckBox fx:id="fromCB" mnemonicParsing="false" text="from:" textFill="white">
                                             <padding>
                                                 <Insets right="5.0" />
                                             </padding>
                                         </CheckBox>
-                                        <DatePicker />
+                                        <DatePicker fx:id="fromDateDP" />
                                     </children>
                                 </HBox>
                                 <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" textFill="white" text="until:">
+                                        <CheckBox fx:id="tillCB" mnemonicParsing="false" text="until:" textFill="white">
                                             <HBox.margin>
                                                 <Insets right="3.0" />
                                             </HBox.margin>
                                         </CheckBox>
-                                        <DatePicker />
+                                        <DatePicker fx:id="tillDateDP" />
                                     </children>
                                 </HBox>
                                 <Label text="Date:" textFill="white" GridPane.rowIndex="1" />
                                 <Label text="Name of event:" textFill="white" />
-                                <Label text="Genre:" GridPane.rowIndex="3" textFill="white" />
-                                <TextField GridPane.columnIndex="1" />
-                                <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                <Label text="Genre:" textFill="white" GridPane.rowIndex="3" />
+                                <TextField fx:id="eventTE" GridPane.columnIndex="1" />
+                                <TextField fx:id="artistTE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                 <Label layoutX="10.0" layoutY="271.0" text="Artist:" textFill="white" GridPane.rowIndex="4" />
-                                <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <ChoiceBox fx:id="genreChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                             </children>
                         </GridPane>
                         <HBox fx:id="actionEmitter">
