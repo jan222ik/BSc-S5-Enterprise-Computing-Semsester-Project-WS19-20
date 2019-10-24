@@ -22,7 +22,7 @@ public class ApplicationMain extends Application {
     public void init() throws Exception {
         super.init();
         args = new ArgumentParser();
-        args.parseArgs(getParameters().getRaw());
+        args.parseArgs(getParameters().getRaw(), '=');
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -41,7 +41,10 @@ public class ApplicationMain extends Application {
         Injector.setModelOrService(Style.class, style[0]);
         logger.info(LogMarkers.APPLICATION,"Application Started");
         MenuView view = new MenuView();
-        Scene main = new Scene(view.getView(), 600, 400);
+        Scene main = new Scene(
+                view.getView(),
+                Double.parseDouble(args.getArgValue("-width", "700")),
+                Double.parseDouble(args.getArgValue("-height", "400")));
         primaryStage.setTitle("#PLACEHOLDER");
         primaryStage.initStyle(
                 args.containsKeyword("-decorated") ? StageStyle.DECORATED: StageStyle.UNDECORATED

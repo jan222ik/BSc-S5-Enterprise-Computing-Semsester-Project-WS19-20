@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -33,7 +32,7 @@ public class ArgumentParserTest {
     @DisplayName("Contains - Arg exists")
     public void testContainsArgumentExisting() {
         ArgumentParser argumentParser = new ArgumentParser();
-        argumentParser.parseArgs(TEST_ARGS);
+        argumentParser.parseArgs(TEST_ARGS, '=');
         assertThat(argumentParser.containsKeyword(TEST_ARGS.get(0)), is(true));
     }
 
@@ -41,7 +40,7 @@ public class ArgumentParserTest {
     @DisplayName("Contains - Arg missing")
     public void testContainsArgumentMissing() {
         ArgumentParser argumentParser = new ArgumentParser();
-        argumentParser.parseArgs(TEST_ARGS);
+        argumentParser.parseArgs(TEST_ARGS, '=');
         assertThat(argumentParser.containsKeyword(NOT_IN_LIST_ARG), is(false));
     }
 
@@ -49,7 +48,7 @@ public class ArgumentParserTest {
     @DisplayName("CheckFor - Arg exists")
     public void testCheckArgumentExisting() {
         ArgumentParser argumentParser = new ArgumentParser();
-        argumentParser.parseArgs(TEST_ARGS);
+        argumentParser.parseArgs(TEST_ARGS, '=');
         AtomicBoolean executed = new AtomicBoolean(false);
         argumentParser.checkForKeyword(TEST_ARGS.get(1), s -> executed.set(true));
         assertThat(executed.get(), is(true));
@@ -63,7 +62,7 @@ public class ArgumentParserTest {
     @DisplayName("CheckFor - Arg missing")
     public void testCheckArgumentMissing() {
         ArgumentParser argumentParser = new ArgumentParser();
-        argumentParser.parseArgs(TEST_ARGS);
+        argumentParser.parseArgs(TEST_ARGS, '=');
         AtomicBoolean noExecOrorElseExecuted = new AtomicBoolean(true);
         argumentParser.checkForKeyword(NOT_IN_LIST_ARG, s -> noExecOrorElseExecuted.set(false));
         assertThat(noExecOrorElseExecuted.get(), is(true));
