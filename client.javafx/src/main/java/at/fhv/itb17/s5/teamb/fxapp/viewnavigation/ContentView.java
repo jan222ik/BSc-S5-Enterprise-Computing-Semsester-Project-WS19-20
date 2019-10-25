@@ -7,7 +7,7 @@ import com.airhacks.afterburner.views.FXMLView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@SuppressWarnings("squid:MaximumInheritanceDepth")
+@SuppressWarnings({"squid:MaximumInheritanceDepth", "WeakerAccess"})
 public abstract class ContentView<T extends ViewModel> extends FXMLView {
 
     private static final Logger logger = LogManager.getLogger(ContentView.class);
@@ -32,12 +32,14 @@ public abstract class ContentView<T extends ViewModel> extends FXMLView {
         getCastedPresenter().beforeMenuSwitch(viewModel);
     }
 
-    private ContentfulViewLifeCycle getCastedPresenter() {
+    private ContentfulViewLifeCycle<T> getCastedPresenter() {
         Object presenter = super.getPresenter();
         if (!(presenter instanceof ContentfulViewLifeCycle)) {
-            throw new RuntimeException("<? extends ContentView> must have a presenter implementing ContentfulViewLifeCycle");
+            throw new RuntimeException("<T extends ContentView> must have a presenter " +
+                    "implementing ContentfulViewLifeCycle<T extends ContentView>");
         } else {
-            return (ContentfulViewLifeCycle) presenter;
+            //noinspection unchecked
+            return (ContentfulViewLifeCycle<T>) presenter;
         }
     }
 }
