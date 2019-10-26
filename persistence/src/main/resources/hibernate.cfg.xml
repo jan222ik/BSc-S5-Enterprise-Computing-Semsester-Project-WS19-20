@@ -9,12 +9,28 @@
         <property name="dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
         <property name="connection.username">postgres</property>
         <property name="connection.password">postgres</property>
-        <property name="hbm2ddl.auto">create-drop</property>
+        <property name="hbm2ddl.auto">validate</property>
+
+        <!--
+            validate:    validate the schema, makes no changes to the database.
+            update:      update the schema.
+            create:      creates the schema, destroying previous data.
+            create-drop: drop the schema when the SessionFactory is closed explicitly,
+                         typically when the application is stopped.
+         -->
 
         <property name="hibernate.current_session_context_class">thread</property>
 
 
-        <mapping class="at.fhv.itb17.s5.teamb.persistence.test.entities.HibernatePerson" />
-        <mapping class="at.fhv.itb17.s5.teamb.persistence.test.entities.Hobby" />
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.LocationRow"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.EventCategory"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Event"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Client"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Organizer"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Ticket"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Address"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.TicketStates"/>
     </session-factory>
 </hibernate-configuration>
