@@ -10,6 +10,6 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoPresenter"
             prefHeight="400.0" prefWidth="600.0">
-    <Label text="Hello World!"/>
+    <Label text="Hello World!" fx:id="helloWorld"/>
 </AnchorPane>
 
