@@ -17,7 +17,7 @@ public abstract class ContentView<T extends ViewModel> extends FXMLView {
         getCastedPresenter().preDestroy(viewModel);
     }
 
-    public void onCreate(T viewModel, NavigationStackActions navActions) {
+    public void onCreate(T viewModel, NavigationStackActions<T> navActions) {
         logger.debug(LogMarkers.UI_LIFECYCLE, "ON_CREATE:\t{}\t{}", this, viewModel);
         getCastedPresenter().onCreate(viewModel, navActions);
     }
