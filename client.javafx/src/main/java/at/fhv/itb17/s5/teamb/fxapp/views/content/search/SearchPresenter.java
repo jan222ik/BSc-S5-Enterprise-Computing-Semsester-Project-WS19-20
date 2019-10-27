@@ -1,7 +1,10 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.search;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -14,13 +17,18 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-public class SearchPresenter implements ContentfulViewLifeCycle, Initializable {
+public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initializable {
+
+    private static final Logger logger = LogManager.getLogger(SearchPresenter.class);
 
     @Inject
     Style style;
@@ -38,16 +46,18 @@ public class SearchPresenter implements ContentfulViewLifeCycle, Initializable {
 
     @FXML
     private CheckBox fromCB;
-    public DatePicker fromDateDP;
+    @FXML
+    private DatePicker fromDateDP;
     @FXML
     private CheckBox tillCB;
-    public DatePicker tillDateDP;
+    @FXML
+    private DatePicker tillDateDP;
     @FXML
     private TextField eventTE;
     @FXML
     private TextField artistTE;
     @FXML
-    private ChoiceBox genreChoiceBox;
+    private ChoiceBox<String> genreChoiceBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,7 +71,51 @@ public class SearchPresenter implements ContentfulViewLifeCycle, Initializable {
         style.hoverBtn(searchBtn, defaultBack, onDefaultPaint, defaultBack, style.PRIMARY().asPaint());
         style.hoverBtn(resetBtn, defaultBack, onDefaultPaint, defaultBack, style.ERROR().asPaint());
         resetBtn.setOnAction(e -> resetFilter());
-        resetFilter();
+    }
+
+    @Override
+    public void onCreate(SearchVM viewModel, NavigationStackActions<SearchVM> navActions) {
+        searchBtn.setOnAction(e -> navActions.changeToMenuItem(1,
+                () -> NotificationsHelper.error("Error", "Could not switch to menuitem!")));
+    }
+
+    @Override
+    public void onReturned(@NotNull SearchVM viewModel) {
+        restore(viewModel.getLatestSearchViewState());
+    }
+
+    @Override
+    public void beforeMenuSwitch(@NotNull SearchVM viewModel) {
+        viewModel.setLatestSearchViewState(saveState(viewModel.getLatestSearchViewState()));
+    }
+
+    private void restore(SearchVM.SearchViewState state) {
+        if (state != null) {
+            eventTE.setText(state.event);
+            fromCB.setSelected(state.includeFrom);
+            fromDateDP.setValue(state.fromDate);
+            tillCB.setSelected(state.includeTill);
+            tillDateDP.setValue(state.tillDate);
+            genreChoiceBox.getSelectionModel().select(state.genre);
+            artistTE.setText(state.artist);
+        } else {
+            resetFilter();
+        }
+    }
+
+    @NotNull
+    private SearchVM.SearchViewState saveState(SearchVM.SearchViewState state) {
+        if (state == null) {
+            state = new SearchVM.SearchViewState();
+        }
+        state.event = eventTE.getText();
+        state.includeFrom = fromCB.isSelected();
+        state.fromDate = fromDateDP.getValue();
+        state.includeTill = tillCB.isSelected();
+        state.tillDate = tillDateDP.getValue();
+        state.genre = genreChoiceBox.getSelectionModel().getSelectedIndex();
+        state.artist = artistTE.getText();
+        return state;
     }
 
     private void resetFilter() {
