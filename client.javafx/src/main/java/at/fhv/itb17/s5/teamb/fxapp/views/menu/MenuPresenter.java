@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -89,7 +89,7 @@ public class MenuPresenter implements Initializable {
         applyStyle();
         setupWindowListener();
         glyphHostBtn.setOnAction(this::toggleMenuList);
-        LinkedList<MenuContentfulViewWrapper> menuContentfulViewWrappers = getMenuViews();
+        LinkedList<MenuContentfulViewWrapper> menuContentfulViewWrappers = new LinkedList<>(getMenuViews().values());
         setMenuItems(menuContentfulViewWrappers);
         Platform.runLater(() -> switchMenuContentfulView(menuContentfulViewWrappers.getFirst()));
     }
@@ -123,8 +123,8 @@ public class MenuPresenter implements Initializable {
         });
     }
 
-    public void switchMenuContentfulView(int itemNumber) {
-        switchMenuContentfulView(this.getMenuViews().get(itemNumber));
+    public void switchMenuContentfulView(ApplicationMenuViews viewIdf) {
+        switchMenuContentfulView(this.getMenuViews().get(viewIdf));
     }
 
     private void switchMenuContentfulView(MenuContentfulViewWrapper view) {
@@ -145,17 +145,14 @@ public class MenuPresenter implements Initializable {
         menubarTitle.setText(title);
     }
 
-    private LinkedList<MenuContentfulViewWrapper> _applicationViews;
+    private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> _applicationViews;
 
-    private LinkedList<MenuContentfulViewWrapper> getMenuViews() {
+    private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> getMenuViews() {
         if (_applicationViews == null) {
-            MenuContentfulViewWrapper<SearchVM> item1 =
-                    new MenuContentfulViewWrapper<>(new SearchView(), new SearchVM(), "Search", "Search", this);
-            MenuContentfulViewWrapper<ViewModelImpl> item2 =
-                    new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(), "Event Browser", "Event Browser", this);
-            MenuContentfulViewWrapper<ViewModelImpl> item3 =
-                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(), "Demo Item 3", "Demo Content Title 3", this);
-            _applicationViews = new LinkedList<>(Arrays.asList(item1, item2, item3));
+            _applicationViews = new EnumMap<>(ApplicationMenuViews.class);
+            _applicationViews.put(ApplicationMenuViews.SEARCH_VIEW, new MenuContentfulViewWrapper<>(new SearchView(), new SearchVM(), "Search", "Search", this));
+            _applicationViews.put(ApplicationMenuViews.BROWSER_VIEW, new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(), "Event Browser", "Event Browser", this));
+            _applicationViews.put(ApplicationMenuViews.DEMO_VIEW, new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(), "Demo Item 3", "Demo Content Title 3", this));
         }
         return _applicationViews;
     }

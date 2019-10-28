@@ -5,6 +5,7 @@ import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -75,7 +76,7 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
 
     @Override
     public void onCreate(SearchVM viewModel, NavigationStackActions<SearchVM> navActions) {
-        searchBtn.setOnAction(e -> navActions.changeToMenuItem(1,
+        searchBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW,
                 () -> NotificationsHelper.error("Error", "Could not switch to menuitem!")));
     }
 

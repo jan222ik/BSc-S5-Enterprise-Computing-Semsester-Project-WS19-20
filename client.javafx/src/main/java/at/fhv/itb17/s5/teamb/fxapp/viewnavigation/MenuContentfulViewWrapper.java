@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewnavigation;
 
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModel;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemView;
@@ -81,11 +82,11 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     }
 
     @Override
-    public void changeToMenuItem(int number, Runnable... onError) {
+    public void changeToMenuItem(ApplicationMenuViews viewIdf, Runnable... onError) {
         try {
-            menuPresenter.switchMenuContentfulView(number);
+            menuPresenter.switchMenuContentfulView(viewIdf);
         } catch (IndexOutOfBoundsException e) {
-            logger.error(LogMarkers.UI_NAV, "Cannot change to menuitem {}", number);
+            logger.error(LogMarkers.UI_NAV, "Cannot change to menuitem {}", viewIdf);
             if (onError != null) {
                 Arrays.asList(onError).forEach(Runnable::run);
             }
