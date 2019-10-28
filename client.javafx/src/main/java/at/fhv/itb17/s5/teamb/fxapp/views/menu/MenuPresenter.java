@@ -21,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
@@ -74,6 +75,8 @@ public class MenuPresenter implements Initializable {
 
     private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> applicationViews;
     private MenuContentfulViewWrapper current;
+    private boolean isMenuDrawerOpen = true;
+
 
 
     @Override
@@ -91,7 +94,11 @@ public class MenuPresenter implements Initializable {
         logger.debug(LogMarkers.UI_LIFECYCLE, "Init {}", MenuPresenter.class.getName());
         this.applyStyle();
         this.setupWindowListener();
-        glyphHostBtn.setOnAction(this::toggleMenuList);
+        glyphHostBtn.setOnAction(this::toggleMenuDrawer);
+        menubarHBox.setOnKeyReleased(e -> {
+            if (e.getCode() == KeyCode.ESCAPE) {
+                this.toggleMenuDrawer(null);
+            }});
         this.setMenuItems(new LinkedList<>(getMenuViews().values()));
         Platform.runLater(() -> switchMenuContentfulView(ApplicationMenuViews.SEARCH_VIEW));
     }
@@ -172,11 +179,9 @@ public class MenuPresenter implements Initializable {
         return applicationViews;
     }
 
-    private boolean menuOpen = true;
-
-    private void toggleMenuList(@Nullable ActionEvent e) {
-        logger.debug(LogMarkers.UI_EVENT, "Toggle Menu to {}", !menuOpen);
-        if (menuOpen) {
+    private void toggleMenuDrawer(@Nullable ActionEvent e) {
+        logger.debug(LogMarkers.UI_EVENT, "Toggle Menu to {}", !isMenuDrawerOpen);
+        if (isMenuDrawerOpen) {
             menuVBox.setMinWidth(30D);
             menuVBox.setPrefWidth(30D);
             menuVBox.setMaxWidth(30D);
@@ -185,7 +190,7 @@ public class MenuPresenter implements Initializable {
             menuVBox.setPrefWidth(150D);
             menuVBox.setMaxWidth(150D);
         }
-        menuOpen = !menuOpen;
+        isMenuDrawerOpen = !isMenuDrawerOpen;
     }
 
     private void setupWindowListener() {
