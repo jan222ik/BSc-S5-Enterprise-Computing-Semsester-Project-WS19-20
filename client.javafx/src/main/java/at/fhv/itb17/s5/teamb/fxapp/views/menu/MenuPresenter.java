@@ -4,6 +4,7 @@ import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.BookingView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
@@ -154,7 +155,7 @@ public class MenuPresenter implements Initializable {
             MenuContentfulViewWrapper<ViewModelImpl> item2 =
                     new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(), "Event Browser", "Event Browser", this);
             MenuContentfulViewWrapper<ViewModelImpl> item3 =
-                    new MenuContentfulViewWrapper<>(new DemoView(), new ViewModelImpl(), "Demo Item 3", "Demo Content Title 3", this);
+                    new MenuContentfulViewWrapper<>(new BookingView(), new ViewModelImpl(), "Booking", "Booking", this);
             _applicationViews = new LinkedList<>(Arrays.asList(item1, item2, item3));
         }
         return _applicationViews;
