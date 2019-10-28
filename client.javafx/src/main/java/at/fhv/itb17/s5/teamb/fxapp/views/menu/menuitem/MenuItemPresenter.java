@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -9,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Paint;
 
 import javax.inject.Inject;
@@ -75,14 +75,18 @@ public class MenuItemPresenter implements Initializable {
         });
     }
 
+    public void setIcon(FontAwesomeIcon icon) {
+        menuIconGlyph.setIcon(icon);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        selected = new Background(new BackgroundFill(style.PRIMARY_PAINT(), null, null));
-        selectedPaint = style.ON_PRIMARY_PAINT();
-        unselected = new Background(new BackgroundFill(style.BACKGROUND_PAINT(), null, null));
-        unselectedPaint = style.ON_BACKGROUND_PAINT();
-        hover = new Background(new BackgroundFill(style.SURFACE_PAINT(), null, null));
-        hoverPaint = style.ON_SURFACE_PAINT();
+        selected = style.PRIMARY().asBackground();
+        selectedPaint = style.ON_PRIMARY().asPaint();
+        unselected = style.BACKGROUND().asBackground();
+        unselectedPaint = style.ON_BACKGROUND().asPaint();
+        hover = style.SURFACE().asBackground();
+        hoverPaint = style.ON_SURFACE().asPaint();
         style.hoverBtn(menuIconGlyphHolder, unselected, unselectedPaint, hover, hoverPaint, isSelected);
         style.hoverBtn(menuItem, unselected, unselectedPaint, hover, hoverPaint, isSelected);
     }

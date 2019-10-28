@@ -1,10 +1,12 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewnavigation;
 
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModel;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,9 +24,11 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     private String title;
     private MenuPresenter menuPresenter;
     private MenuItemPresenter menuItemPresenter;
+    private FontAwesomeIcon icon;
 
-    public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, MenuPresenter menuPresenter) {
+    public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, FontAwesomeIcon icon, MenuPresenter menuPresenter) {
         this.viewModel = viewModel;
+        this.icon = icon;
         if (viewModel == null) {
             logger.error("Model not present");
         }
@@ -40,6 +44,7 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
         menuItemPresenter.setOnClickedAction(onClickAction);
         menuItemPresenter.setDisplayName(menuName);
         menuItemPresenter.setParentWidthProperty(parentWidthProperty);
+        menuItemPresenter.setIcon(icon);
         return menuItemView;
     }
 
@@ -81,11 +86,11 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     }
 
     @Override
-    public void changeToMenuItem(int number, Runnable... onError) {
+    public void changeToMenuItem(ApplicationMenuViews viewIdf, Runnable... onError) {
         try {
-            menuPresenter.switchMenuContentfulView(number);
+            menuPresenter.switchMenuContentfulView(viewIdf);
         } catch (IndexOutOfBoundsException e) {
-            logger.error(LogMarkers.UI_NAV, "Cannot change to menuitem {}", number);
+            logger.error(LogMarkers.UI_NAV, "Cannot change to menuitem {}", viewIdf);
             if (onError != null) {
                 Arrays.asList(onError).forEach(Runnable::run);
             }

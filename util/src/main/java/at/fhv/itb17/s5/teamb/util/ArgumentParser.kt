@@ -2,11 +2,13 @@ package at.fhv.itb17.s5.teamb.util
 
 import java.util.*
 import java.util.function.Consumer
+import kotlin.collections.HashMap
 
 
 class ArgumentParser {
 
     private var parsedArgs = HashSet<String>()
+    private var argsWithValue = HashMap<String, String>()
 
     /**
      * Accept consumer when argument is known.
@@ -45,13 +47,27 @@ class ArgumentParser {
         return parsedArgs.contains(argKeyword)
     }
 
+    fun getArgValue(keyword: String, default: String): String {
+        return if (argsWithValue.containsKey(keyword)) {
+            argsWithValue[keyword] as String
+        } else {
+            default
+        }
+    }
+
     /**
      * Pareses all arguments and stores them.
      *
      * @param args to parse.
      */
-    fun parseArgs(args: List<String>) {
-        parsedArgs.addAll(args)
+    fun parseArgs(args: List<String>, valueDelimiter: Char) {
+        for (arg in args) {
+            if (arg.contains(valueDelimiter)) {
+                argsWithValue[arg.substringBefore(valueDelimiter)] = arg.substringAfter(valueDelimiter)
+            } else {
+                parsedArgs.add(arg)
+            }
+        }
     }
 
 }
