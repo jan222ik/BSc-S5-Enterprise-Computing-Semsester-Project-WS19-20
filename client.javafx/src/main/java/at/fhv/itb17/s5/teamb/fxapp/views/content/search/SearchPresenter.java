@@ -2,7 +2,7 @@ package at.fhv.itb17.s5.teamb.fxapp.views.content.search;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
@@ -90,7 +90,7 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         viewModel.setLatestSearchViewState(saveState(viewModel.getLatestSearchViewState()));
     }
 
-    private void restore(SearchVM.SearchViewState state) {
+    private void restore(SearchVM.SearchViewData state) {
         if (state != null) {
             eventTE.setText(state.event);
             fromCB.setSelected(state.includeFrom);
@@ -105,9 +105,9 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
     }
 
     @NotNull
-    private SearchVM.SearchViewState saveState(SearchVM.SearchViewState state) {
+    private SearchVM.SearchViewData saveState(SearchVM.SearchViewData state) {
         if (state == null) {
-            state = new SearchVM.SearchViewState();
+            state = new SearchVM.SearchViewData();
         }
         state.event = eventTE.getText();
         state.includeFrom = fromCB.isSelected();
@@ -115,6 +115,7 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         state.includeTill = tillCB.isSelected();
         state.tillDate = tillDateDP.getValue();
         state.genre = genreChoiceBox.getSelectionModel().getSelectedIndex();
+        state.genreValue = genreChoiceBox.getSelectionModel().getSelectedItem();
         state.artist = artistTE.getText();
         return state;
     }

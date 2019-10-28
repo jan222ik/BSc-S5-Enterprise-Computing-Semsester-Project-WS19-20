@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -9,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Paint;
 
 import javax.inject.Inject;
@@ -73,6 +73,10 @@ public class MenuItemPresenter implements Initializable {
         parentWidthProperty.addListener((observable, oldValue, newValue) -> {
             menuItem.setPrefWidth((Double) newValue - 2.0);
         });
+    }
+
+    public void setIcon(FontAwesomeIcon icon) {
+        menuIconGlyph.setIcon(icon);
     }
 
     @Override

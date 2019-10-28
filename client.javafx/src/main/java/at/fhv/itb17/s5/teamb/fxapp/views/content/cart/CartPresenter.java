@@ -1,7 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.cart;
 
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;

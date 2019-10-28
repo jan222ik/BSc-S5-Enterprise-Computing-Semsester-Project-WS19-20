@@ -1,7 +1,10 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
+import at.fhv.itb17.s5.teamb.fxapp.data.SearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ResultVM;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.RootVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
@@ -9,6 +12,7 @@ import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -85,10 +89,10 @@ public class MenuPresenter implements Initializable {
             backgroundSurf = style.SURFACE().asBackground();
         }
         logger.debug(LogMarkers.UI_LIFECYCLE, "Init {}", MenuPresenter.class.getName());
-        applyStyle();
-        setupWindowListener();
+        this.applyStyle();
+        this.setupWindowListener();
         glyphHostBtn.setOnAction(this::toggleMenuList);
-        setMenuItems(new LinkedList<>(getMenuViews().values()));
+        this.setMenuItems(new LinkedList<>(getMenuViews().values()));
         Platform.runLater(() -> switchMenuContentfulView(ApplicationMenuViews.SEARCH_VIEW));
     }
 
@@ -115,14 +119,14 @@ public class MenuPresenter implements Initializable {
         views.forEach(view -> {
             menuVBox.getChildren().add(view.createMenuItemView(() -> {
                 logger.debug(LogMarkers.UI_EVENT, "MenuItem clicked");
-                switchMenuContentfulView(view);
+                this.switchMenuContentfulView(view);
             }, menuVBox.widthProperty()).getView());
             view.isCurrentMenuItem(false);
         });
     }
 
     public void switchMenuContentfulView(ApplicationMenuViews viewIdf) {
-        switchMenuContentfulView(this.getMenuViews().get(viewIdf));
+        this.switchMenuContentfulView(this.getMenuViews().get(viewIdf));
     }
 
     private void switchMenuContentfulView(MenuContentfulViewWrapper view) {
@@ -133,7 +137,7 @@ public class MenuPresenter implements Initializable {
         current = view;
         view.isCurrentMenuItem(true);
         logger.debug(LogMarkers.UI, "Switching to {}", view);
-        updateTitle(view.getTitle());
+        this.updateTitle(view.getTitle());
         view.showTOS();
     }
 
@@ -146,20 +150,23 @@ public class MenuPresenter implements Initializable {
     private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> getMenuViews() {
         if (applicationViews == null) {
             applicationViews = new EnumMap<>(ApplicationMenuViews.class);
+            RootVM rootVM = new RootVM();
+            rootVM.setSearchVM(new SearchVM());
+            rootVM.setResultVM(new ResultVM(new SearchServiceImpl(), rootVM));
             applicationViews.put(ApplicationMenuViews.SEARCH_VIEW,
                     new MenuContentfulViewWrapper<>(
-                            new SearchView(), new SearchVM(),
-                            "Search", "Search", this)
+                            new SearchView(), rootVM.getSearchVM(),
+                            "Search", "Search", FontAwesomeIcon.SEARCH, this)
             );
             applicationViews.put(ApplicationMenuViews.BROWSER_VIEW,
                     new MenuContentfulViewWrapper<>(
-                            new BrowserView(), new ViewModelImpl(),
-                            "Event Browser", "Event Browser", this)
+                            new BrowserView(), new ViewModelImpl(), "Event Browser",
+                            "Event Browser", FontAwesomeIcon.LIST_UL, this)
             );
             applicationViews.put(ApplicationMenuViews.DEMO_VIEW,
                     new MenuContentfulViewWrapper<>(
-                            new DemoView(), new ViewModelImpl(),
-                            "Demo Item 3", "Demo Content Title 3", this)
+                            new DemoView(), new ViewModelImpl(), "Demo Item 3",
+                            "Demo Content Title 3", FontAwesomeIcon.ANCHOR, this)
             );
         }
         return applicationViews;

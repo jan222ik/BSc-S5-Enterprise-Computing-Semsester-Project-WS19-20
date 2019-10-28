@@ -6,6 +6,7 @@ import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.menuitem.MenuItemView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,9 +24,11 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     private String title;
     private MenuPresenter menuPresenter;
     private MenuItemPresenter menuItemPresenter;
+    private FontAwesomeIcon icon;
 
-    public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, MenuPresenter menuPresenter) {
+    public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, FontAwesomeIcon icon, MenuPresenter menuPresenter) {
         this.viewModel = viewModel;
+        this.icon = icon;
         if (viewModel == null) {
             logger.error("Model not present");
         }
@@ -41,6 +44,7 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
         menuItemPresenter.setOnClickedAction(onClickAction);
         menuItemPresenter.setDisplayName(menuName);
         menuItemPresenter.setParentWidthProperty(parentWidthProperty);
+        menuItemPresenter.setIcon(icon);
         return menuItemView;
     }
 
