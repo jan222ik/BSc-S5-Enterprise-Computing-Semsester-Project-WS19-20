@@ -1,10 +1,6 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class Organizer {
@@ -14,7 +10,7 @@ public class Organizer {
 
     private String name;
     private String email;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
 
     public Organizer(String name, String email, Address address) {

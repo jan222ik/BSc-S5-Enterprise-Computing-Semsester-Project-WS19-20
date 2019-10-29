@@ -1,12 +1,6 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -18,11 +12,11 @@ public class Event {
     private String description;
     private String genre;
     private String ageRuling;
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<EventOccurrence> occurrences;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Organizer organizer;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
 
     public Long getEventId() {

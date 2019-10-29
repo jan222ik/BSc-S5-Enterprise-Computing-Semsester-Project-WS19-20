@@ -1,10 +1,6 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -15,7 +11,7 @@ public class EventCategory {
     private boolean isFreeSeating;
     private String categoryName;
     private int priceInCent;
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<LocationRow> seatingRows;
     private Integer totalSpace;
     private Integer usedSpace;

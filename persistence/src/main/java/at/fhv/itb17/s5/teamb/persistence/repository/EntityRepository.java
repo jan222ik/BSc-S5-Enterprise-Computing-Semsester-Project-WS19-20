@@ -1,18 +1,25 @@
 package at.fhv.itb17.s5.teamb.persistence.repository;
 
 
+import at.fhv.itb17.s5.teamb.persistence.util.WhereClause;
+import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.function.Function;
 
@@ -62,6 +69,20 @@ public class EntityRepository {
         CriteriaQuery<T> criteria = builder.createQuery(type);
         criteria.from(type);
         criteria.where(whereClauses);
+        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
+    }
+
+    public <T> List<T> getAll(@NotNull final Class<T> type, WhereClauseBuilder whereClauses) {
+        logger.trace(LogMarkers.DB, "Get all instances of class: {}", type.getCanonicalName());
+        Transaction transaction = sessionFactory.getCurrentSession().getTransaction();
+        if (!transaction.isActive()) {
+            transaction.begin();
+        }
+        CriteriaBuilder builder = sessionFactory.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(type);
+
+        Root<T> root = criteria.from(type);
+        criteria.select(root).where(whereClauses.createPredicate(root));
         return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 
