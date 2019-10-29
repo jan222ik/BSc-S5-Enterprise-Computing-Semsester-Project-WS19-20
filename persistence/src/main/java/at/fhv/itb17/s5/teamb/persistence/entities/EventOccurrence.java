@@ -1,10 +1,6 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -16,7 +12,7 @@ public class EventOccurrence {
     private Long occurrenceId;
     private LocalDate date;
     private LocalTime time;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     private List<EventCategory> priceCategories;
 
     public EventOccurrence(LocalDate date, LocalTime time, List<EventCategory> priceCategories) {

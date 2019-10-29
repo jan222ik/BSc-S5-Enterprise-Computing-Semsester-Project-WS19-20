@@ -1,30 +1,27 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import org.hibernate.annotations.Cascade;
+
+import javax.persistence.*;
 
 @Entity
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long ticketId;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Client client;
     @Enumerated
     private TicketStates state;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Event bookedEvent;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private EventOccurrence bookedOccurrence;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private EventCategory bookedCategory;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private LocationRow bookedRow;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private LocationSeat bookedSeat;
 
     public Ticket(Client client, TicketStates state, Event bookedEvent, EventOccurrence bookedOccurrence, EventCategory bookedCategory, LocationRow bookedRow, LocationSeat bookedSeat) {
