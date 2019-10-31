@@ -33,9 +33,9 @@ public class DatabaseMain {
         Client client = new Client("test_client", "Hugo Hugo", "pw", "salt", ClientRoles.EXTERNAL, address);
         EventCategory g21 = new EventCategory("G21", 9001, 500, 69);
         EventCategory g16 = new EventCategory("G16", 12312312, 19, 3);
-        EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)));
+        EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)), address);
         Organizer organizer = new Organizer("Std. Do", "e@mail.com", address);
-        Event event = new Event("Weihnachtsmarkt", "Weihnachtsmarkt vom 22.11 bis 23.11.2019", "Death Metal", "45+", new LinkedList<>(Arrays.asList(occurrence0)), organizer, address);
+        Event event = new Event("Weihnachtsmarkt", "Weihnachtsmarkt vom 22.11 bis 23.11.2019", "Death Metal", new LinkedList<>(Arrays.asList(occurrence0)), organizer);
         Ticket ticket = new Ticket(client, TicketStates.PAID, event, occurrence0, g21, null, null);
 
 //        repository.save(address);

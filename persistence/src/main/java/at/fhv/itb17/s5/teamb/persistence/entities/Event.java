@@ -11,29 +11,24 @@ public class Event {
     private String title;
     private String description;
     private String genre;
-    private String ageRuling;
     @OneToMany(cascade = {CascadeType.ALL})
     private List<EventOccurrence> occurrences;
     @ManyToOne(cascade = {CascadeType.ALL})
     private Organizer organizer;
-    @OneToOne(cascade = {CascadeType.ALL})
-    private Address address;
 
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public Event(String title, String description, String genre, String ageRuling, List<EventOccurrence> occurrences, Organizer organizer, Address address) {
+    public Event(String title, String description, String genre, List<EventOccurrence> occurrences, Organizer organizer) {
         this.title = title;
         this.description = description;
         this.genre = genre;
-        this.ageRuling = ageRuling;
         this.occurrences = occurrences;
         this.organizer = organizer;
-        this.address = address;
     }
 
     public Event() {
+    }
+
+    public Long getEventId() {
+        return eventId;
     }
 
     public void setEventId(Long eventId) {
@@ -64,14 +59,6 @@ public class Event {
         this.genre = genre;
     }
 
-    public String getAgeRuling() {
-        return ageRuling;
-    }
-
-    public void setAgeRuling(String ageRuling) {
-        this.ageRuling = ageRuling;
-    }
-
     public List<EventOccurrence> getOccurrences() {
         return occurrences;
     }
@@ -86,13 +73,5 @@ public class Event {
 
     public void setOrganizer(Organizer organizer) {
         this.organizer = organizer;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 }
