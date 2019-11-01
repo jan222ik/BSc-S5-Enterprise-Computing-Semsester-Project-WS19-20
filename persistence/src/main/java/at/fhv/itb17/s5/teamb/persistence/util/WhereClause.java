@@ -1,7 +1,5 @@
 package at.fhv.itb17.s5.teamb.persistence.util;
 
-import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
-
 public class WhereClause {
 
     public enum WhereOperator{
@@ -10,9 +8,9 @@ public class WhereClause {
 
     private String attributeName;
     private WhereOperator operator;
-    private Object value;
+    private Comparable value;
 
-    public WhereClause(String attributeName, WhereOperator operator, Object value) {
+    public WhereClause(String attributeName, WhereOperator operator, Comparable value) {
         this.attributeName = attributeName;
         this.operator = operator;
         this.value = value;
@@ -34,11 +32,11 @@ public class WhereClause {
         this.operator = operator;
     }
 
-    public Object getValue() {
+    public Comparable getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(Comparable value) {
         this.value = value;
     }
 }

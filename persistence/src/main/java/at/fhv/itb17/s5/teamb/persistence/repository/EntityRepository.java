@@ -3,6 +3,7 @@ package at.fhv.itb17.s5.teamb.persistence.repository;
 
 import at.fhv.itb17.s5.teamb.persistence.util.WhereClause;
 import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
+import at.fhv.itb17.s5.teamb.persistence.util.WhereCondition;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -72,7 +73,7 @@ public class EntityRepository {
         return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 
-    public <T> List<T> getAll(@NotNull final Class<T> type, WhereClauseBuilder whereClauses) {
+    public <T> List<T> getAll(@NotNull final Class<T> type, WhereCondition whereCondition) {
         logger.trace(LogMarkers.DB, "Get all instances of class: {}", type.getCanonicalName());
         Transaction transaction = sessionFactory.getCurrentSession().getTransaction();
         if (!transaction.isActive()) {
@@ -82,7 +83,7 @@ public class EntityRepository {
         CriteriaQuery<T> criteria = builder.createQuery(type);
 
         Root<T> root = criteria.from(type);
-        criteria.select(root).where(whereClauses.createPredicate(root));
+        criteria.select(root).where(whereCondition.createPredicate(root));
         return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 
