@@ -13,6 +13,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.TicketStates;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.util.WhereClause;
 import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
+import at.fhv.itb17.s5.teamb.persistence.util.WhereCondition;
 import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
 import org.hibernate.resource.jdbc.LogicalConnection;
 
@@ -55,9 +56,8 @@ public class DatabaseMain {
 
 
         WhereClauseBuilder builder = new WhereClauseBuilder();
-        builder.equals("country", "austria").equals("city", "dornbirn").notEquals("house", "60");
-
-        List<Address> all = repository.getAll(Address.class, builder);
+        builder.equals("country", "austria").equals("city", "dornbirn").equals("house", "60");
+        List<Address> all = repository.getAll(Address.class, builder.build());
         all.forEach(System.out::println);
     }
 
