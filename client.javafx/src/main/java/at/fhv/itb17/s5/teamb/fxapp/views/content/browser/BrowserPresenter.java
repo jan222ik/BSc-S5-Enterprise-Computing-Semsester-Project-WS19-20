@@ -49,7 +49,7 @@ public class BrowserPresenter implements ContentfulViewLifeCycle<ResultVM> {
         refreshResults(viewModel);
     }
 
-    private void refreshResults(ResultVM viewModel) {
+    private void refreshResults(@NotNull ResultVM viewModel) {
         List<EventDTO> results = viewModel.getSearchResults();
         updateNumberOfResults(String.valueOf(results.size()));
         resultLV.getItems().clear();

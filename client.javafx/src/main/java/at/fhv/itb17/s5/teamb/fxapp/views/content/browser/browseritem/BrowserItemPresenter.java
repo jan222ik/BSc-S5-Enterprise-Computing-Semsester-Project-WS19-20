@@ -5,6 +5,7 @@ import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
 import at.fhv.itb17.s5.teamb.dtos.EvCategorySeatsDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -16,7 +17,6 @@ import javafx.scene.control.TableView;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -72,7 +72,7 @@ public class BrowserItemPresenter implements Initializable {
             min = Integer.min(min, cur);
             max = Integer.max(max, cur);
         }
-        return min + " / " + max;
+        return min/100.0 + "€ / " + max/100.0 + "€";
     }
 
     @NotNull
@@ -108,7 +108,7 @@ public class BrowserItemPresenter implements Initializable {
         return value.getCountry() + " " + value.getCity();
     }
 
-    public void setEventData(EventDTO evt) {
+    public void setEventData(@NotNull EventDTO evt) {
         List<EvOccurrenceDTO> occurrences = evt.getOccurrences();
         occurrenceTable.setItems(FXCollections.observableList(occurrences));
         evtTitleL.setText(evt.getTitle());
