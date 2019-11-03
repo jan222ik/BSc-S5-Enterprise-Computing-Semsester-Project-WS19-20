@@ -1,12 +1,13 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import java.util.List;
 
 @Entity
@@ -17,29 +18,27 @@ public class Event {
     private String title;
     private String description;
     private String genre;
-    private String ageRuling;
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<EventOccurrence> occurrences;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Organizer organizer;
-    @OneToOne
-    private Address address;
+    @ManyToMany(cascade = {CascadeType.ALL})
+    private List<Artist> artists;
 
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public Event(String title, String description, String genre, String ageRuling, List<EventOccurrence> occurrences, Organizer organizer, Address address) {
+    public Event(String title, String description, String genre, List<EventOccurrence> occurrences, Organizer organizer, List<Artist> artists) {
         this.title = title;
         this.description = description;
         this.genre = genre;
-        this.ageRuling = ageRuling;
         this.occurrences = occurrences;
         this.organizer = organizer;
-        this.address = address;
+        this.artists = artists;
     }
 
     public Event() {
+    }
+
+    public Long getEventId() {
+        return eventId;
     }
 
     public void setEventId(Long eventId) {
@@ -70,14 +69,6 @@ public class Event {
         this.genre = genre;
     }
 
-    public String getAgeRuling() {
-        return ageRuling;
-    }
-
-    public void setAgeRuling(String ageRuling) {
-        this.ageRuling = ageRuling;
-    }
-
     public List<EventOccurrence> getOccurrences() {
         return occurrences;
     }
@@ -94,11 +85,11 @@ public class Event {
         this.organizer = organizer;
     }
 
-    public Address getAddress() {
-        return address;
+    public List<Artist> getArtists() {
+        return artists;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setArtists(List<Artist> artists) {
+        this.artists = artists;
     }
 }

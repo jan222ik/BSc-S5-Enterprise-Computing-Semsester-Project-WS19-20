@@ -1,7 +1,9 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
+import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
+import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
-import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuView;
 import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
@@ -13,10 +15,12 @@ import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.inject.Inject;
+
 public class ApplicationMain extends Application {
 
     private static final Logger logger = LogManager.getLogger(ApplicationMain.class);
-    private  ArgumentParser args;
+    private ArgumentParser args;
 
     @Override
     public void init() throws Exception {
@@ -39,15 +43,17 @@ public class ApplicationMain extends Application {
                     .error("#B00020").onError(white).getStyle();
         });
         Injector.setModelOrService(Style.class, style[0]);
-        logger.info(LogMarkers.APPLICATION,"Application Started");
+        SearchService service = (args.containsKeyword("-mock")) ? new MockSearchServiceImpl() : new RMISearchServiceImpl("localhost", 2345);
+        Injector.setModelOrService(SearchService.class, service);
+        logger.info(LogMarkers.APPLICATION, "Application Started");
         MenuView view = new MenuView();
         Scene main = new Scene(
                 view.getView(),
-                Double.parseDouble(args.getArgValue("-width", "700")),
+                Double.parseDouble(args.getArgValue("-width", "800")),
                 Double.parseDouble(args.getArgValue("-height", "400")));
         primaryStage.setTitle("#PLACEHOLDER");
         primaryStage.initStyle(
-                args.containsKeyword("-decorated") ? StageStyle.DECORATED: StageStyle.UNDECORATED
+                args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
         );
         primaryStage.setScene(main);
         primaryStage.show();
@@ -57,6 +63,6 @@ public class ApplicationMain extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        logger.info(LogMarkers.APPLICATION,"Application Stopped Gracefully");
+        logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 }
