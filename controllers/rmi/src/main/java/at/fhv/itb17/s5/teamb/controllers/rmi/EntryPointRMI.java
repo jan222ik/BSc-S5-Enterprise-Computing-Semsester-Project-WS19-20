@@ -10,15 +10,17 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class EntryPointRMI extends EntryPoint {
 
+    public static final String FACTORY_BIND_NAME = "factory";
+
     private ConnectionFactoryRMI factoryRMI;
 
-    public EntryPointRMI(int port, Object coreImpl) {
+    public EntryPointRMI(int port, Object coreImpl) throws RemoteException {
         super(coreImpl);
         factoryRMI = new ConnectionFactoryRMI(SearchServiceRMI::new);
     }
 
     @Override
-    public void start() {
+    public void start() throws RemoteException {
         System.setProperty("java.rmi.server.codebaseOnly", String.valueOf(false));
         System.setProperty("java.security.policy", "./client.policy");
 
@@ -27,8 +29,8 @@ public class EntryPointRMI extends EntryPoint {
         Registry registry;
         try {
             registry = LocateRegistry.createRegistry(2345);
-            ConnectionFactoryRMI stub = (ConnectionFactoryRMI) UnicastRemoteObject.exportObject(factoryRMI, 2345);
-            registry.bind("factory", stub);
+            IConnectionFactoryRMI stub = (IConnectionFactoryRMI) UnicastRemoteObject.exportObject(factoryRMI, 2345);
+            registry.bind(FACTORY_BIND_NAME, stub);
         } catch (RemoteException | AlreadyBoundException e1) {
             e1.printStackTrace();
         }
@@ -37,6 +39,13 @@ public class EntryPointRMI extends EntryPoint {
 
     @Override
     public void destroy() {
+
+    }
+
+    public static void main(String[] args) throws RemoteException {
+        EntryPointRMI entryPointRMI = new EntryPointRMI(2345, new Object());
+        entryPointRMI.start();
+        System.out.println("Server started");
 
     }
 }

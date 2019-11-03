@@ -5,7 +5,6 @@ import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
 import at.fhv.itb17.s5.teamb.dtos.EvCategorySeatsDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -63,7 +62,8 @@ public class BrowserItemPresenter implements Initializable {
         actionCol.setCellValueFactory(dto -> new SimpleStringProperty("TODO ADD Button for Details"));
     }
 
-    private String getPriceRange(EvOccurrenceDTO value) {
+    @NotNull
+    private String getPriceRange(@NotNull EvOccurrenceDTO value) {
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
         int cur = 0;
@@ -72,7 +72,7 @@ public class BrowserItemPresenter implements Initializable {
             min = Integer.min(min, cur);
             max = Integer.max(max, cur);
         }
-        return min/100.0 + "€ / " + max/100.0 + "€";
+        return min / 100.0 + "€ / " + max / 100.0 + "€";
     }
 
     @NotNull

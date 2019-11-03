@@ -1,6 +1,8 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
-public class LocationSeatDTO {
+import java.io.Serializable;
+
+public class LocationSeatDTO implements Serializable {
     private Long seatId;
     private String seatIdentifier;
 

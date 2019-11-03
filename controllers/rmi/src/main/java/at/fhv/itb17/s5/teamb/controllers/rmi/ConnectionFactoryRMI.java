@@ -2,13 +2,15 @@ package at.fhv.itb17.s5.teamb.controllers.rmi;
 
 import at.fhv.itb17.s5.teamb.controllers.SearchService;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.function.Supplier;
 
 public class ConnectionFactoryRMI implements IConnectionFactoryRMI {
 
     private Supplier<SearchService> serviceInstanceSupplier;
 
-    public ConnectionFactoryRMI(Supplier<SearchService> serviceInstanceSupplier) {
+    public ConnectionFactoryRMI(Supplier<SearchService> serviceInstanceSupplier) throws RemoteException {
         this.serviceInstanceSupplier = serviceInstanceSupplier;
     }
 
@@ -17,8 +19,4 @@ public class ConnectionFactoryRMI implements IConnectionFactoryRMI {
         return serviceInstanceSupplier.get();
     }
 
-    @Override
-    public Object createBookingService() {
-        return null;
-    }
 }

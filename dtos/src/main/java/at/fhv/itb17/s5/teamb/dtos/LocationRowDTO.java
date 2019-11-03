@@ -1,8 +1,9 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class LocationRowDTO {
+public class LocationRowDTO implements Serializable {
     private Long rowId;
     private String rowIdentifier;
     private List<LocationSeatDTO> seats;

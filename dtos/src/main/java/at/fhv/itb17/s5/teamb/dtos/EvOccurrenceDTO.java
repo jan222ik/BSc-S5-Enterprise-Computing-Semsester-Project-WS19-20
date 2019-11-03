@@ -1,10 +1,11 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public class EvOccurrenceDTO {
+public class EvOccurrenceDTO implements Serializable {
     private Long occurrenceId;
     private LocalDate date;
     private LocalTime time;

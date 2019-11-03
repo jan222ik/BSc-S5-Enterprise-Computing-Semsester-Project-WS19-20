@@ -1,8 +1,9 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class EventDTO {
+public class EventDTO implements Serializable {
     private long eventId;
     private String title;
     private String description;

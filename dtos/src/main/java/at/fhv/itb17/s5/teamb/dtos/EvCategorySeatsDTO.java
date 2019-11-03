@@ -1,8 +1,9 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class EvCategorySeatsDTO implements EvCategoryInterface {
+public class EvCategorySeatsDTO implements EvCategoryInterface, Serializable {
     private Long eventCategoryId;
     private String categoryName;
     private int priceInCent;
