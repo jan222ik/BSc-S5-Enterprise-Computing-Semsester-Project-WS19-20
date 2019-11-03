@@ -1,9 +1,6 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class Client {
@@ -14,7 +11,7 @@ public class Client {
     private String salt;
     @Enumerated
     private ClientRoles role;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
 
     public Client(String username, String name, String password, String salt, ClientRoles role, Address address) {

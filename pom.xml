@@ -14,6 +14,8 @@
         <module>client.web</module>
         <module>client.apis</module>
         <module>client.javafx</module>
+        <module>controllers</module>
+        <module>dtos</module>
     </modules>
     <packaging>pom</packaging>
 

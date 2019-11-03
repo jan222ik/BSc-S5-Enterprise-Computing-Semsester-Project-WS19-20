@@ -1,44 +1,69 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.browser;
 
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
+import at.fhv.itb17.s5.teamb.dtos.EventDTO;
+import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ResultVM;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
-import at.fhv.itb17.s5.teamb.fxapp.views.content.cart.CartView;
-import at.fhv.itb17.s5.teamb.util.LogMarkers;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.browseritem.BrowserItemPresenter;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.browseritem.BrowserItemView;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
+import com.jfoenix.controls.JFXListView;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
-public class BrowserPresenter implements ContentfulViewLifeCycle<ViewModelImpl> {
+import javax.inject.Inject;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class BrowserPresenter implements ContentfulViewLifeCycle<ResultVM> {
 
     private static final Logger logger = LogManager.getLogger(BrowserPresenter.class);
-    @FXML
-    private TextField syncText;
-    @FXML
-    private Button nextBTN;
 
+    @FXML
+    private VBox resultBox;
+    @FXML
+    private Label numberOfResults;
+    @FXML
+    private JFXListView<AnchorPane> resultLV;
+    @FXML
+    private Button back2FilterBtn;
+    @FXML private Button refreshBtn;
 
     @Override
-    public void onCreate(ViewModelImpl viewModel, NavigationStackActions<ViewModelImpl> navActions) {
-        nextBTN.setOnAction(e -> {
-            logger.debug(LogMarkers.UI_EVENT, "NextBTN clicked");
-            viewModel.saveTextDemo(syncText.getText());
-            navActions.push(new CartView());
-            navActions.showTOS();
-        });
+    public void onCreate(ResultVM viewModel, NavigationStackActions<ResultVM> navActions) {
+        back2FilterBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.SEARCH_VIEW));
+        refreshBtn.setOnAction(e -> this.refreshResults(viewModel));
     }
 
     @Override
-    public void onReturned(ViewModelImpl viewModel) {
-        if (viewModel == null) {
-            logger.error("Model not present");
-        } else {
-            String textDemoString = viewModel.getTextDemoString();
-            if (textDemoString != null) {
-                syncText.setText(textDemoString);
-            }
-        }
+    public void onReturned(ResultVM viewModel) {
+        refreshResults(viewModel);
+    }
+
+    private void refreshResults(@NotNull ResultVM viewModel) {
+        List<EventDTO> results = viewModel.getSearchResults();
+        updateNumberOfResults(String.valueOf(results.size()));
+        resultLV.getItems().clear();
+        results.stream().map(this::createBrowserItemView).forEach(v -> resultLV.getItems().add((AnchorPane) v.getView()));
+    }
+
+    @NotNull
+    private BrowserItemView createBrowserItemView(EventDTO evt) {
+        BrowserItemView browserItemView = new BrowserItemView();
+        ((BrowserItemPresenter) browserItemView.getPresenter()).setEventData(evt);
+        return browserItemView;
+    }
+
+    private void updateNumberOfResults(String text) {
+        numberOfResults.setText(text);
     }
 }

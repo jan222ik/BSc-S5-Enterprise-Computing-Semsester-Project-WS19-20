@@ -1,5 +1,6 @@
-package at.fhv.itb17.s5.teamb.fxapp.viewmodel;
+package at.fhv.itb17.s5.teamb.fxapp.viewnavigation;
 
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModel;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
 
 public interface ContentfulViewLifeCycle<T extends ViewModel> {

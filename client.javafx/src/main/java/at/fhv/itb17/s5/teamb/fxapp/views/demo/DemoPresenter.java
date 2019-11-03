@@ -1,6 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.demo;
 
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModel;
@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 
 @SuppressWarnings("ClassInitializerMayBeStatic")
+@Deprecated
 public class DemoPresenter implements ContentfulViewLifeCycle {
     @Inject
     private static Style style;
@@ -30,7 +31,7 @@ public class DemoPresenter implements ContentfulViewLifeCycle {
     @Override
     public void onCreate(ViewModel viewModel, NavigationStackActions navActions) {
         helloWorld.setText("Hello World #" + numberOfInstance);
-        helloWorld.setTextFill(style.ON_SURFACE_PAINT());
+        helloWorld.setTextFill(style.ON_SURFACE().asPaint());
         logger.debug(LogMarkers.UI_LIFECYCLE, "ON_CREATE\t{}", this);
     }
 }
