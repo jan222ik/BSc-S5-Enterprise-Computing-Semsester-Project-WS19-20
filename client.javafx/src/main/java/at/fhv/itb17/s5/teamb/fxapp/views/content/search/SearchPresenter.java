@@ -82,7 +82,7 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
 
     @Override
     public void onReturned(@NotNull SearchVM viewModel) {
-        restore(viewModel.getLatestSearchViewState());
+        restore(viewModel);
     }
 
     @Override
@@ -90,7 +90,8 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         viewModel.setLatestSearchViewState(saveState(viewModel.getLatestSearchViewState()));
     }
 
-    private void restore(SearchVM.SearchViewData state) {
+    private void restore(SearchVM viewModel) {
+        SearchVM.SearchViewData state = viewModel.getLatestSearchViewState();
         if (state != null) {
             eventTE.setText(state.event);
             fromCB.setSelected(state.includeFrom);
@@ -101,6 +102,7 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
             artistTE.setText(state.artist);
         } else {
             resetFilter();
+            viewModel.setLatestSearchViewState(saveState(null));
         }
     }
 

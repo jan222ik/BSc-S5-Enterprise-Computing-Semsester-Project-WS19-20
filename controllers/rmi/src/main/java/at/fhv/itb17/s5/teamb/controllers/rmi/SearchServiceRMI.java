@@ -21,7 +21,7 @@ public class SearchServiceRMI implements SearchService, Serializable {
 
     @Override
     public LinkedList<EventDTO> searchFor(String queryString) {
-        logger.debug(LogMarkers.RMI_CONTROLLER, "Invoked");
+        logger.debug(LogMarkers.RMI_CONTROLLER, "Invoked SearchString: {}", queryString);
         EvCategoryFreeDTO evCat0 = new EvCategoryFreeDTO(1123649L, "cat_name_ev0", 99 * 100, 5000, 4711);
         EvCategoryFreeDTO evCat1 = new EvCategoryFreeDTO(111233649L, "cat_name_ev1", 20 * 100, 800, 11);
         LinkedList<EvCategoryInterface> cats = new LinkedList<>(Arrays.asList(evCat0, evCat1));

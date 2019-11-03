@@ -48,6 +48,10 @@ enum class SearchCategories(private val catIdf: String) {
             return map[s] ?: throw SearchException("Invalid type identifier: $s");
         }
     }
+
+    fun getIdf(): String {
+        return catIdf
+    };
 }
 
 class SearchException(msg: String) : Exception(msg)
