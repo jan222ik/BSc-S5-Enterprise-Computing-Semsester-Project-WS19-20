@@ -32,5 +32,6 @@
         <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Ticket"/>
         <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Address"/>
         <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.TicketStates"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Artist"/>
     </session-factory>
 </hibernate-configuration>

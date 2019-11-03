@@ -2,6 +2,7 @@ package at.fhv.itb17.s5.teamb.persistence;
 
 
 import at.fhv.itb17.s5.teamb.persistence.entities.Address;
+import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.ClientRoles;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
@@ -11,13 +12,8 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
 import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import at.fhv.itb17.s5.teamb.persistence.entities.TicketStates;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
-import at.fhv.itb17.s5.teamb.persistence.util.WhereClause;
 import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
-import at.fhv.itb17.s5.teamb.persistence.util.WhereCondition;
-import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
-import org.hibernate.resource.jdbc.LogicalConnection;
 
-import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -36,7 +32,9 @@ public class DatabaseMain {
         EventCategory g16 = new EventCategory("G16", 12312312, 19, 3);
         EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)), address);
         Organizer organizer = new Organizer("Std. Do", "e@mail.com", address);
-        Event event = new Event("Weihnachtsmarkt", "Weihnachtsmarkt vom 22.11 bis 23.11.2019", "Death Metal", new LinkedList<>(Arrays.asList(occurrence0)), organizer);
+        Artist hugo_hugo = new Artist("Hugo Hugo");
+        LinkedList<Artist> artists = new LinkedList<>(Arrays.asList(hugo_hugo));
+        Event event = new Event("Weihnachtsmarkt", "Weihnachtsmarkt vom 22.11 bis 23.11.2019", "Death Metal", new LinkedList<>(Arrays.asList(occurrence0)), organizer, artists);
         Ticket ticket = new Ticket(client, TicketStates.PAID, event, occurrence0, g21, null, null);
 
 //        repository.save(address);

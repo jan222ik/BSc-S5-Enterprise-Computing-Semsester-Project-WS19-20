@@ -22,6 +22,7 @@ public class EntryPointRMI extends EntryPoint {
     @Override
     public void start() throws RemoteException {
         System.setProperty("java.rmi.server.codebaseOnly", String.valueOf(false));
+        System.setProperty("javax.management.MBeanTrustPermission", "register");
         System.setProperty("java.security.policy", "./client.policy");
 
         SecurityManager sm = new SecManagerRMI();

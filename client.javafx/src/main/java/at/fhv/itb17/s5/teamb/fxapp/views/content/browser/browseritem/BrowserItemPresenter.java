@@ -112,7 +112,7 @@ public class BrowserItemPresenter implements Initializable {
         List<EvOccurrenceDTO> occurrences = evt.getOccurrences();
         occurrenceTable.setItems(FXCollections.observableList(occurrences));
         evtTitleL.setText(evt.getTitle());
-        //TODO SET ARTIST FIELD
+        artistNameL.setText(String.join(", ", evt.getArtistNames()));
         occurrences.sort(Comparator.comparing(EvOccurrenceDTO::getDate));
         DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         dateFromL.setText(occurrences.get(0).getDate().format(f));

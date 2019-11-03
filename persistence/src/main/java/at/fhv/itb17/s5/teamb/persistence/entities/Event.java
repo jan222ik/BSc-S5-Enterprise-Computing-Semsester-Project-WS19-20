@@ -1,6 +1,13 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
@@ -15,13 +22,16 @@ public class Event {
     private List<EventOccurrence> occurrences;
     @ManyToOne(cascade = {CascadeType.ALL})
     private Organizer organizer;
+    @ManyToMany(cascade = {CascadeType.ALL})
+    private List<Artist> artists;
 
-    public Event(String title, String description, String genre, List<EventOccurrence> occurrences, Organizer organizer) {
+    public Event(String title, String description, String genre, List<EventOccurrence> occurrences, Organizer organizer, List<Artist> artists) {
         this.title = title;
         this.description = description;
         this.genre = genre;
         this.occurrences = occurrences;
         this.organizer = organizer;
+        this.artists = artists;
     }
 
     public Event() {
@@ -73,5 +83,13 @@ public class Event {
 
     public void setOrganizer(Organizer organizer) {
         this.organizer = organizer;
+    }
+
+    public List<Artist> getArtists() {
+        return artists;
+    }
+
+    public void setArtists(List<Artist> artists) {
+        this.artists = artists;
     }
 }

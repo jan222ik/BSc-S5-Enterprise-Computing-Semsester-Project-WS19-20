@@ -9,6 +9,8 @@ public class EventDTO implements Serializable {
     private String description;
     private String genre;
 
+    private List<String> artistNames;
+
     private List<EvOccurrenceDTO> occurrences;
 
     //Organizer Flattened
@@ -22,11 +24,12 @@ public class EventDTO implements Serializable {
     private String org_street;
     private String org_house;
 
-    public EventDTO(long eventId, String title, String description, String genre, List<EvOccurrenceDTO> occurrences, Long organizerId, String org_name, String org_email, Long org_addressId, String org_country, String org_zip, String org_city, String org_street, String org_house) {
+    public EventDTO(long eventId, String title, String description, String genre, List<String> artistNames, List<EvOccurrenceDTO> occurrences, Long organizerId, String org_name, String org_email, Long org_addressId, String org_country, String org_zip, String org_city, String org_street, String org_house) {
         this.eventId = eventId;
         this.title = title;
         this.description = description;
         this.genre = genre;
+        this.artistNames = artistNames;
         this.occurrences = occurrences;
         this.organizerId = organizerId;
         this.org_name = org_name;
@@ -93,5 +96,9 @@ public class EventDTO implements Serializable {
 
     public String getOrg_house() {
         return org_house;
+    }
+
+    public List<String> getArtistNames() {
+        return artistNames;
     }
 }

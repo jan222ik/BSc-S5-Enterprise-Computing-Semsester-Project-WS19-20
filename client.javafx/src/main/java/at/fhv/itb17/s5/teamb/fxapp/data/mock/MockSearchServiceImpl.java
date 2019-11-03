@@ -22,12 +22,13 @@ public class MockSearchServiceImpl implements SearchService {
         EvOccurrenceDTO evOccurrenceDTO0 = new EvOccurrenceDTO(12789L, LocalDate.now(), LocalTime.now(), cats, 1231234L, "evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
         EvOccurrenceDTO evOccurrenceDTO1 = new EvOccurrenceDTO(127123L, LocalDate.now().plusDays(3), LocalTime.now(), cats, 1231234L, "evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
         LinkedList<EvOccurrenceDTO> occurrences = new LinkedList<>(Arrays.asList(evOccurrenceDTO0, evOccurrenceDTO1));
+        LinkedList<String> artistNames = new LinkedList<>(Arrays.asList("Hugo Hugo", "Franz Peter Werner"));
         EventDTO eventDTO0 = new EventDTO(123L, "Demo Concert", "A very descriptive description", "08/15",
-                occurrences, 90L, "org_name", "org_email",
+                artistNames, occurrences, 90L, "org_name", "org_email",
                 131L, "org_country", "org_zip", "org_city",
                 "org_street", "org_house");
         EventDTO eventDTO1 = new EventDTO(123L, "Demo Concert1", "A very descriptive description1", "08/15 1",
-                occurrences, 90L, "org_name", "org_email",
+                artistNames, occurrences, 90L, "org_name", "org_email",
                 131L, "org_country", "org_zip", "org_city",
                 "org_street", "org_house");
         return new LinkedList<>(Arrays.asList(eventDTO0, eventDTO1));
