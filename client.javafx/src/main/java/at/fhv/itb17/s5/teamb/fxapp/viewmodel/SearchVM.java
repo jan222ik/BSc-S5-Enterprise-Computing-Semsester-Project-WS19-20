@@ -18,15 +18,15 @@ public class SearchVM implements ViewModel {
 
     public static class SearchViewData {
         private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        public boolean includeFrom;
-        public LocalDate fromDate;
-        public boolean includeTill;
-        public LocalDate tillDate;
-        public String event;
-        public String artist;
-        public int genre;
-        public String genreValue;
-        public String location;
+        private boolean includeFrom;
+        private LocalDate fromDate;
+        private boolean includeTill;
+        private LocalDate tillDate;
+        private String event;
+        private String artist;
+        private int genre;
+        private String genreValue;
+        private String location;
 
         public String toQueryString() {
             //TODO Change type to SearchCategory.NAME.catIdf to work
@@ -50,6 +50,78 @@ public class SearchVM implements ViewModel {
                 sb.append("-").append(SearchCategories.LOCATION.getIdf()).append("=\"").append(location).append("\"");
             }
             return sb.toString();
+        }
+
+        public boolean isIncludeFrom() {
+            return includeFrom;
+        }
+
+        public void setIncludeFrom(boolean includeFrom) {
+            this.includeFrom = includeFrom;
+        }
+
+        public LocalDate getFromDate() {
+            return fromDate;
+        }
+
+        public void setFromDate(LocalDate fromDate) {
+            this.fromDate = fromDate;
+        }
+
+        public boolean isIncludeTill() {
+            return includeTill;
+        }
+
+        public void setIncludeTill(boolean includeTill) {
+            this.includeTill = includeTill;
+        }
+
+        public LocalDate getTillDate() {
+            return tillDate;
+        }
+
+        public void setTillDate(LocalDate tillDate) {
+            this.tillDate = tillDate;
+        }
+
+        public String getEvent() {
+            return event;
+        }
+
+        public void setEvent(String event) {
+            this.event = event;
+        }
+
+        public String getArtist() {
+            return artist;
+        }
+
+        public void setArtist(String artist) {
+            this.artist = artist;
+        }
+
+        public int getGenre() {
+            return genre;
+        }
+
+        public void setGenre(int genre) {
+            this.genre = genre;
+        }
+
+        public String getGenreValue() {
+            return genreValue;
+        }
+
+        public void setGenreValue(String genreValue) {
+            this.genreValue = genreValue;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
         }
     }
 }
