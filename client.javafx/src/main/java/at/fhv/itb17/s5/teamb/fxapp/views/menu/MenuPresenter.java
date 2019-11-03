@@ -167,7 +167,7 @@ public class MenuPresenter implements Initializable {
             );
             applicationViews.put(ApplicationMenuViews.BROWSER_VIEW,
                     new MenuContentfulViewWrapper<>(
-                            new BrowserView(), new ViewModelImpl(), "Event Browser",
+                            new BrowserView(), rootVM.getResultVM(), "Event Browser",
                             "Event Browser", FontAwesomeIcon.LIST_UL, this)
             );
             applicationViews.put(ApplicationMenuViews.DEMO_VIEW,

@@ -43,7 +43,7 @@ public class ApplicationMain extends Application {
         MenuView view = new MenuView();
         Scene main = new Scene(
                 view.getView(),
-                Double.parseDouble(args.getArgValue("-width", "700")),
+                Double.parseDouble(args.getArgValue("-width", "800")),
                 Double.parseDouble(args.getArgValue("-height", "400")));
         primaryStage.setTitle("#PLACEHOLDER");
         primaryStage.initStyle(

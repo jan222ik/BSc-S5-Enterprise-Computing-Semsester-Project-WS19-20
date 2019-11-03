@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.browser.browseritem.BrowserItemPresenter">
+    <children>
+        <VBox layoutX="250.0" layoutY="60.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <HBox>
+                    <children>
+                        <Label fx:id="evtTitleL" maxWidth="1.7976931348623157E308" text="#placeholderTitleEvent"
+                               HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="dateFromL" maxWidth="1.7976931348623157E308" text="#placeholderDateFrom"
+                               HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="dateUntilL" layoutX="131.0" layoutY="10.0" maxWidth="1.7976931348623157E308"
+                               text="#placeholderDateUntil" HBox.hgrow="ALWAYS"/>
+                    </children>
+                </HBox>
+                <HBox VBox.vgrow="NEVER">
+                    <children>
+                        <Label fx:id="artistNameL" text="#placeholderArtistName"/>
+                    </children>
+                </HBox>
+                <HBox VBox.vgrow="NEVER">
+                    <children>
+                        <Label text="Occurrences:" HBox.hgrow="NEVER"/>
+                    </children>
+                </HBox>
+                <TableView VBox.vgrow="ALWAYS" fx:id="occurrenceTable">
+                    <columns>
+                        <TableColumn prefWidth="75.0" text="Date" fx:id="dateCol"/>
+                        <TableColumn prefWidth="75.0" text="Time" fx:id="timeCol"/>
+                        <TableColumn prefWidth="75.0" text="Location" fx:id="locationCol"/>
+                        <TableColumn prefWidth="75.0" text="Tickets" fx:id="ticketsCol"/>
+                        <TableColumn prefWidth="75.0" text="Type" fx:id="typeCol"/>
+                        <TableColumn prefWidth="75.0" text="Price" fx:id="priceRangeCol"/>
+                        <TableColumn prefWidth="75.0" text="Action" fx:id="actionCol"/>
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -34,4 +34,14 @@ public class EvCategoryFreeDTO implements EvCategoryInterface {
     public Integer getUsedSpace() {
         return usedSpace;
     }
+
+    @Override
+    public int getTotalTickets() {
+        return getTotalSpace();
+    }
+
+    @Override
+    public int getUsedTickets() {
+        return getUsedSpace();
+    }
 }

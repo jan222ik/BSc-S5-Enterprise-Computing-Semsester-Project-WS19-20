@@ -44,10 +44,10 @@ public class SearchVM implements ViewModel {
             if (!artist.isEmpty()) {
                 sb.append("-").append(SearchCategories.ARTIST_NAME).append(artist);
             }
-            if (!genreValue.isEmpty()) {
+            if (genreValue != null && !genreValue.isEmpty()) {
                 sb.append("-").append(SearchCategories.GENRE).append(genreValue);
             }
-            if(!location.isEmpty()) {
+            if(location != null && !location.isEmpty()) {
                 sb.append("-").append(SearchCategories.LOCATION).append(location);
             }
             return sb.toString();

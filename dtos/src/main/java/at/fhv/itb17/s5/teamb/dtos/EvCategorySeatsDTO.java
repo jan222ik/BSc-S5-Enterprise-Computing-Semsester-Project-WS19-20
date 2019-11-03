@@ -23,6 +23,17 @@ public class EvCategorySeatsDTO implements EvCategoryInterface {
         return categoryName;
     }
 
+    @Override
+    public int getTotalTickets() {
+        return getSeatingRows().stream().mapToInt(e -> e.getSeats().size()).sum();
+    }
+
+    @Override
+    public int getUsedTickets() {
+        //TODO CALC RIGHT VALUE
+        return getSeatingRows().stream().mapToInt(e -> e.getSeats().size()).sum();
+    }
+
     public int getPriceInCent() {
         return priceInCent;
     }
