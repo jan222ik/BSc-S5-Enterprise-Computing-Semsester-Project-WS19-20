@@ -42,11 +42,4 @@ public class EntryPointRMI extends EntryPoint {
     public void destroy() {
 
     }
-
-    public static void main(String[] args) throws RemoteException {
-        EntryPointRMI entryPointRMI = new EntryPointRMI(2345, new Object());
-        entryPointRMI.start();
-        System.out.println("Server started");
-
-    }
 }
