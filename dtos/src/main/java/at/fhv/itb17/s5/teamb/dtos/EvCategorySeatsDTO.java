@@ -2,7 +2,7 @@ package at.fhv.itb17.s5.teamb.dtos;
 
 import java.util.List;
 
-public class EvCategorySeatsDTO {
+public class EvCategorySeatsDTO implements EvCategoryInterface {
     private Long eventCategoryId;
     private String categoryName;
     private int priceInCent;

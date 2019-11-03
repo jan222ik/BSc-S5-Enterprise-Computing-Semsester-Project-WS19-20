@@ -8,7 +8,7 @@ public class EvOccurrenceDTO {
     private Long occurrenceId;
     private LocalDate date;
     private LocalTime time;
-    private List<EvCategoryFreeDTO> priceCategories;
+    private List<EvCategoryInterface> priceCategories;
 
     private Long addressId;
     private String country;
@@ -17,7 +17,7 @@ public class EvOccurrenceDTO {
     private String street;
     private String house;
 
-    public EvOccurrenceDTO(Long occurrenceId, LocalDate date, LocalTime time, List<EvCategoryFreeDTO> priceCategories, Long addressId, String country, String zip, String city, String street, String house) {
+    public EvOccurrenceDTO(Long occurrenceId, LocalDate date, LocalTime time, List<EvCategoryInterface> priceCategories, Long addressId, String country, String zip, String city, String street, String house) {
         this.occurrenceId = occurrenceId;
         this.date = date;
         this.time = time;
@@ -42,7 +42,7 @@ public class EvOccurrenceDTO {
         return time;
     }
 
-    public List<EvCategoryFreeDTO> getPriceCategories() {
+    public List<EvCategoryInterface> getPriceCategories() {
         return priceCategories;
     }
 

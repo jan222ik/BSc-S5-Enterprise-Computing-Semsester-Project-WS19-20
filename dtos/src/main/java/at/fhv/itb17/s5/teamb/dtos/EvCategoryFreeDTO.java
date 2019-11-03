@@ -1,6 +1,6 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
-public class EvCategoryFreeDTO {
+public class EvCategoryFreeDTO implements EvCategoryInterface {
     private Long eventCategoryId;
     private String categoryName;
     private int priceInCent;

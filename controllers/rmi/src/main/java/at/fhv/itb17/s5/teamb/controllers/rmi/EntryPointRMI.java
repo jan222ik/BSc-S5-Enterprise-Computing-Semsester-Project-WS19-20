@@ -33,7 +33,6 @@ public class EntryPointRMI extends EntryPoint {
             e1.printStackTrace();
         }
         System.out.println("Started RMI");
-
     }
 
     @Override
