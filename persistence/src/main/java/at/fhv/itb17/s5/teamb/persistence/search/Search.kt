@@ -34,7 +34,7 @@ data class SearchPair(
 
 enum class SearchCategories(private val catIdf: String) {
     DATE_FROM("from"), DATE_UNTIL("until"),
-    EVENT_NAME("event"), ARTIST_NAME("artist"),
+        EVENT_NAME("title"), ARTIST_NAME("artists"),
     GENRE("genre"), LOCATION("location");
 
     companion object {

@@ -4,6 +4,7 @@ import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
 
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,7 +40,8 @@ public class WhereCondition {
                     predicates.add(criteriaBuilder.notEqual(root.get(clause.getAttributeName()), clause.getValue()));
                     break;
                 case like:
-                    predicates.add(criteriaBuilder.like(root.get(clause.getAttributeName()), (String) clause.getValue()));
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.upper(
+                            root.get(clause.getAttributeName())),((String)clause.getValue()).toUpperCase()+"%"));
                     break;
             }
         }

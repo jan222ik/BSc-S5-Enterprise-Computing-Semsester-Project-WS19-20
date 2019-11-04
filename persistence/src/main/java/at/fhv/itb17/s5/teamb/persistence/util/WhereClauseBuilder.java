@@ -1,5 +1,7 @@
 package at.fhv.itb17.s5.teamb.persistence.util;
 
+import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories;
+import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,6 +65,31 @@ public class WhereClauseBuilder {
 
     public WhereCondition build(){
         return new WhereCondition(clauses);
+    }
+
+    public WhereCondition build(List<SearchPair> searchPairs){
+        for (SearchPair searchPair : searchPairs) {
+            addClause(searchPair);
+        }
+        return new WhereCondition(clauses);
+    }
+
+    private void addClause(SearchPair searchPair){
+        SearchCategories searchCategory = searchPair.component1();
+        switch (searchCategory) {
+            case DATE_FROM:
+                greaterThan(searchCategory.getIdf(), searchPair.getValue());
+                break;
+            case DATE_UNTIL:
+                smallerThan(searchCategory.getIdf(), searchPair.getValue());
+                break;
+            case EVENT_NAME:
+            case ARTIST_NAME:
+            case GENRE:
+            case LOCATION:
+                like(searchCategory.getIdf(), searchPair.getValue());
+                break;
+        }
     }
 
 
