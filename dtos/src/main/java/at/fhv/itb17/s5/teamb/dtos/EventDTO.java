@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class EventDTO implements Serializable {
-    private long eventId;
+    private Long eventId;
     private String title;
     private String description;
     private String genre;
@@ -24,7 +24,7 @@ public class EventDTO implements Serializable {
     private String org_street;
     private String org_house;
 
-    public EventDTO(long eventId, String title, String description, String genre, List<String> artistNames, List<EvOccurrenceDTO> occurrences, Long organizerId, String org_name, String org_email, Long org_addressId, String org_country, String org_zip, String org_city, String org_street, String org_house) {
+    public EventDTO(Long eventId, String title, String description, String genre, List<String> artistNames, List<EvOccurrenceDTO> occurrences, Long organizerId, String org_name, String org_email, Long org_addressId, String org_country, String org_zip, String org_city, String org_street, String org_house) {
         this.eventId = eventId;
         this.title = title;
         this.description = description;
@@ -42,7 +42,7 @@ public class EventDTO implements Serializable {
         this.org_house = org_house;
     }
 
-    public long getEventId() {
+    public Long getEventId() {
         return eventId;
     }
 

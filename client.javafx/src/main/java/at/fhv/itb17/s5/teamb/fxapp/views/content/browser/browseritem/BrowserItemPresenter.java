@@ -57,22 +57,9 @@ public class BrowserItemPresenter implements Initializable {
         timeCol.setCellValueFactory(dto -> new SimpleObjectProperty<>(dto.getValue().getTime()));
         locationCol.setCellValueFactory(dto -> new SimpleStringProperty(this.getDisplayableAddressString(dto.getValue())));
         ticketsCol.setCellValueFactory(dto -> new SimpleStringProperty(this.getTicketQuantities(dto.getValue())));
-        typeCol.setCellValueFactory(dto -> new SimpleStringProperty(this.getTicketTypes(dto.getValue())));
-        priceRangeCol.setCellValueFactory(dto -> new SimpleStringProperty(this.getPriceRange(dto.getValue())));
+        typeCol.setCellValueFactory(dto -> new SimpleStringProperty(dto.getValue().getCategoryCalcDataDTO().getTicketTypes()));
+        priceRangeCol.setCellValueFactory(dto -> new SimpleStringProperty(dto.getValue().getCategoryCalcDataDTO().getPriceRangeString()));
         actionCol.setCellValueFactory(dto -> new SimpleStringProperty("TODO ADD Button for Details"));
-    }
-
-    @NotNull
-    private String getPriceRange(@NotNull EvOccurrenceDTO value) {
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        int cur = 0;
-        for (EvCategoryInterface cat : value.getPriceCategories()) {
-            cur = cat.getPriceInCent();
-            min = Integer.min(min, cur);
-            max = Integer.max(max, cur);
-        }
-        return min / 100.0 + "€ / " + max / 100.0 + "€";
     }
 
     @NotNull
@@ -84,23 +71,6 @@ public class BrowserItemPresenter implements Initializable {
             usedSpace += cat.getUsedTickets();
         }
         return usedSpace + "/" + totalSpace;
-    }
-
-    @NotNull
-    private String getTicketTypes(@NotNull EvOccurrenceDTO value) {
-        boolean[] occs = new boolean[]{false, false};
-        for (EvCategoryInterface cat : value.getPriceCategories()) {
-            if (!occs[0] && cat instanceof EvCategoryFreeDTO) {
-                occs[0] = true;
-            }
-            if (!occs[1] && cat instanceof EvCategorySeatsDTO) {
-                occs[1] = true;
-            }
-            if (occs[0] && occs[1]) {
-                break;
-            }
-        }
-        return ((occs[0]) ? "Free" : "") + ((occs[0] && occs[1]) ? " & " : "") + ((occs[1]) ? "Specific" : "") + " Seating";
     }
 
     @NotNull

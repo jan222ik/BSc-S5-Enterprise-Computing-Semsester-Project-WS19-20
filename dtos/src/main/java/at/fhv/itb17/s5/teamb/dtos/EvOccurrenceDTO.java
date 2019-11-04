@@ -17,8 +17,9 @@ public class EvOccurrenceDTO implements Serializable {
     private String city;
     private String street;
     private String house;
+    private CategoryCalcDataDTO categoryCalcDataDTO;
 
-    public EvOccurrenceDTO(Long occurrenceId, LocalDate date, LocalTime time, List<EvCategoryInterface> priceCategories, Long addressId, String country, String zip, String city, String street, String house) {
+    public EvOccurrenceDTO(Long occurrenceId, LocalDate date, LocalTime time, List<EvCategoryInterface> priceCategories, Long addressId, String country, String zip, String city, String street, String house, CategoryCalcDataDTO categoryCalcDataDTO) {
         this.occurrenceId = occurrenceId;
         this.date = date;
         this.time = time;
@@ -29,6 +30,7 @@ public class EvOccurrenceDTO implements Serializable {
         this.city = city;
         this.street = street;
         this.house = house;
+        this.categoryCalcDataDTO = categoryCalcDataDTO;
     }
 
     public Long getOccurrenceId() {
@@ -69,5 +71,9 @@ public class EvOccurrenceDTO implements Serializable {
 
     public String getHouse() {
         return house;
+    }
+
+    public CategoryCalcDataDTO getCategoryCalcDataDTO() {
+        return categoryCalcDataDTO;
     }
 }
