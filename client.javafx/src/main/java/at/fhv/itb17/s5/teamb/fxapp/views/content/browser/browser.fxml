@@ -14,8 +14,8 @@
          <children>
             <HBox>
                <children>
-                  <Label text="Results for:" />
-                  <Label maxWidth="1.7976931348623157E308" text="#placeholderSearchQuery" HBox.hgrow="ALWAYS" />
+                  <Label text="Results for:" textFill="WHITE" />
+                  <Label maxWidth="1.7976931348623157E308" text="#placeholderSearchQuery" textFill="WHITE" HBox.hgrow="ALWAYS" />
                   <Button fx:id="back2FilterBtn" mnemonicParsing="false" text="Back to Filter" />
                </children>
             </HBox>
@@ -23,8 +23,8 @@
                <children>
                   <HBox VBox.vgrow="NEVER">
                      <children>
-                        <Label text="#" />
-                        <Label fx:id="numberOfResults" text="#placeholderNumberOfResults" />
+                        <Label text="#" textFill="WHITE" />
+                        <Label fx:id="numberOfResults" text="#placeholderNumberOfResults" textFill="WHITE" />
                         <Region HBox.hgrow="ALWAYS" />
                         <Button fx:id="refreshBtn" mnemonicParsing="false" text="Re Fresch" />
                      </children>
