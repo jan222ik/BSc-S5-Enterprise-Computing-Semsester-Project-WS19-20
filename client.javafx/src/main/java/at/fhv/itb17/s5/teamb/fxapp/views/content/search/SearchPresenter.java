@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -56,9 +55,12 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
     @FXML
     private TextField eventTE;
     @FXML
+    private TextField genreTE;
+    @FXML
     private TextField artistTE;
     @FXML
-    private ChoiceBox<String> genreChoiceBox;
+    private TextField locationTF;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,8 +100,9 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
             fromDateDP.setValue(state.getFromDate());
             tillCB.setSelected(state.isIncludeTill());
             tillDateDP.setValue(state.getTillDate());
-            genreChoiceBox.getSelectionModel().select(state.getGenre());
+            genreTE.setText(state.getGenre());
             artistTE.setText(state.getArtist());
+            locationTF.setText(state.getLocation());
         } else {
             resetFilter();
             viewModel.setLatestSearchViewState(saveState(null));
@@ -116,9 +119,9 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         state.setFromDate(fromDateDP.getValue());
         state.setIncludeTill(tillCB.isSelected());
         state.setTillDate(tillDateDP.getValue());
-        state.setGenre(genreChoiceBox.getSelectionModel().getSelectedIndex());
-        state.setGenreValue(genreChoiceBox.getSelectionModel().getSelectedItem());
+        state.setGenre(genreTE.getText());
         state.setArtist(artistTE.getText());
+        state.setLocation(locationTF.getText());
         return state;
     }
 
@@ -128,7 +131,8 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         fromDateDP.setValue(LocalDate.now());
         tillCB.setSelected(false);
         tillDateDP.setValue(LocalDate.now().plusMonths(1L));
-        genreChoiceBox.getSelectionModel().selectFirst();
+        genreTE.clear();
         artistTE.clear();
+        locationTF.clear();
     }
 }

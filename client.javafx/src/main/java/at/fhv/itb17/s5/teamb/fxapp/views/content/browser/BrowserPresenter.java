@@ -31,6 +31,8 @@ public class BrowserPresenter implements ContentfulViewLifeCycle<ResultVM> {
     @FXML
     private VBox resultBox;
     @FXML
+    private Label qString;
+    @FXML
     private Label numberOfResults;
     @FXML
     private JFXListView<AnchorPane> resultLV;
@@ -52,6 +54,7 @@ public class BrowserPresenter implements ContentfulViewLifeCycle<ResultVM> {
     private void refreshResults(@NotNull ResultVM viewModel) {
         List<EventDTO> results = viewModel.getSearchResults();
         updateNumberOfResults(String.valueOf(results.size()));
+        qString.setText(viewModel.getSearchString());
         resultLV.getItems().clear();
         results.stream().map(this::createBrowserItemView).forEach(v -> resultLV.getItems().add((AnchorPane) v.getView()));
     }

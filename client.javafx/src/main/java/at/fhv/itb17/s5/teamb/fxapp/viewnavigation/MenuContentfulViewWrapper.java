@@ -90,6 +90,7 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
         try {
             menuPresenter.switchMenuContentfulView(viewIdf);
         } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
             logger.error(LogMarkers.UI_NAV, "Cannot change to menuitem {}", viewIdf);
             if (onError != null) {
                 Arrays.asList(onError).forEach(Runnable::run);

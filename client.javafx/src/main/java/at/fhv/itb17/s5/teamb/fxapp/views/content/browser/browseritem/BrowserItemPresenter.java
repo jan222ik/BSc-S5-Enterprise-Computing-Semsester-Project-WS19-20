@@ -1,8 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.browser.browseritem;
 
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryFreeDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
-import at.fhv.itb17.s5.teamb.dtos.EvCategorySeatsDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import javafx.beans.property.SimpleObjectProperty;
@@ -26,6 +24,8 @@ import java.util.ResourceBundle;
 public class BrowserItemPresenter implements Initializable {
 
     @FXML
+    private Label genreL;
+    @FXML
     private Label evtTitleL;
     @FXML
     private Label dateFromL;
@@ -36,7 +36,7 @@ public class BrowserItemPresenter implements Initializable {
     @FXML
     private TableView<EvOccurrenceDTO> occurrenceTable;
     @FXML
-    private TableColumn<EvOccurrenceDTO, LocalDate> dateCol;
+    private TableColumn<EvOccurrenceDTO, String> dateCol;
     @FXML
     private TableColumn<EvOccurrenceDTO, LocalTime> timeCol;
     @FXML
@@ -53,7 +53,8 @@ public class BrowserItemPresenter implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        dateCol.setCellValueFactory(dto -> new SimpleObjectProperty<>(dto.getValue().getDate()));
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        dateCol.setCellValueFactory(dto -> new SimpleStringProperty(dto.getValue().getDate().format(f)));
         timeCol.setCellValueFactory(dto -> new SimpleObjectProperty<>(dto.getValue().getTime()));
         locationCol.setCellValueFactory(dto -> new SimpleStringProperty(this.getDisplayableAddressString(dto.getValue())));
         ticketsCol.setCellValueFactory(dto -> new SimpleStringProperty(this.getTicketQuantities(dto.getValue())));
@@ -83,9 +84,12 @@ public class BrowserItemPresenter implements Initializable {
         occurrenceTable.setItems(FXCollections.observableList(occurrences));
         evtTitleL.setText(evt.getTitle());
         artistNameL.setText(String.join(", ", evt.getArtistNames()));
+        genreL.setText(evt.getGenre());
         occurrences.sort(Comparator.comparing(EvOccurrenceDTO::getDate));
         DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        dateFromL.setText(occurrences.get(0).getDate().format(f));
-        dateUntilL.setText(occurrences.get(occurrences.size() - 1).getDate().format(f));
+        if (!occurrences.isEmpty()) {
+            dateFromL.setText(occurrences.get(0).getDate().format(f));
+            dateUntilL.setText(occurrences.get(occurrences.size() - 1).getDate().format(f));
+        }
     }
 }

@@ -20,7 +20,9 @@
                 </HBox>
                 <HBox VBox.vgrow="NEVER">
                     <children>
-                        <Label fx:id="artistNameL" text="#placeholderArtistName" />
+                        <Label fx:id="artistNameL" maxWidth="1.7976931348623157E308" text="#placeholderArtistName" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="genreL" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" text="#placeholderGenre" HBox.hgrow="ALWAYS" />
+                  <Label  layoutX="287.0" layoutY="10.0" maxWidth="1.7976931348623157E308" text="                                     " HBox.hgrow="ALWAYS" />
                     </children>
                 </HBox>
                 <HBox VBox.vgrow="NEVER">

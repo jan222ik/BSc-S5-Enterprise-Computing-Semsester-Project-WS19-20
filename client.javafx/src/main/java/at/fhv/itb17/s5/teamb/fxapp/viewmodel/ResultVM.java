@@ -20,4 +20,8 @@ public class ResultVM implements ViewModel {
         System.out.println("getSearchQuery = " + getSearchQuery);
         return searchService.searchFor(getSearchQuery);
     }
+
+    public String getSearchString() {
+        return rootVM.getGetSearchQuery();
+    }
 }
