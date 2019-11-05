@@ -1,6 +1,6 @@
 package at.fhv.itb17.s5.teamb.core
 
-import at.fhv.itb17.s5.teamb.core.search.SearchParser
+import at.fhv.itb17.s5.teamb.core.domain.search.SearchParser
 import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories
 import at.fhv.itb17.s5.teamb.persistence.search.SearchException
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair

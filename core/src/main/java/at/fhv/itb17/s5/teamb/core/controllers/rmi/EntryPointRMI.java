@@ -1,8 +1,11 @@
-package at.fhv.itb17.s5.teamb.controllers.rmi;
+package at.fhv.itb17.s5.teamb.core.controllers.rmi;
 
-import at.fhv.itb17.s5.teamb.controllers.EntryPoint;
+import at.fhv.itb17.s5.teamb.core.controllers.general.EntryPoint;
+import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
 
+import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -13,10 +16,13 @@ public class EntryPointRMI extends EntryPoint {
     public static final String FACTORY_BIND_NAME = "factory";
 
     private ConnectionFactoryRMI factoryRMI;
+    private int regPort;
 
-    public EntryPointRMI(int port, Object coreImpl) throws RemoteException {
+    //TODO Replace Injector with concrete class
+    public EntryPointRMI(int port, CoreServiceInjector coreImpl) throws RemoteException {
         super(coreImpl);
-        factoryRMI = new ConnectionFactoryRMI(SearchServiceRMI::new);
+        this.regPort = port;
+        factoryRMI = new ConnectionFactoryRMI(() -> new SearchServiceRMI(coreImpl.getSearchServiceCore()));
     }
 
     @Override
@@ -29,10 +35,11 @@ public class EntryPointRMI extends EntryPoint {
         System.setSecurityManager(sm);
         Registry registry;
         try {
-            registry = LocateRegistry.createRegistry(2345);
-            IConnectionFactoryRMI stub = (IConnectionFactoryRMI) UnicastRemoteObject.exportObject(factoryRMI, 2345);
-            registry.bind(FACTORY_BIND_NAME, stub);
-        } catch (RemoteException | AlreadyBoundException e1) {
+            registry = LocateRegistry.createRegistry(regPort);
+            UnicastRemoteObject.unexportObject(factoryRMI, true);
+            IConnectionFactoryRMI stub = (IConnectionFactoryRMI) UnicastRemoteObject.exportObject(factoryRMI, regPort);
+            registry.rebind("rmi://localhost:" + regPort + "/" + FACTORY_BIND_NAME, stub);
+        } catch (RemoteException e1) {
             e1.printStackTrace();
         }
         System.out.println("Started RMI");

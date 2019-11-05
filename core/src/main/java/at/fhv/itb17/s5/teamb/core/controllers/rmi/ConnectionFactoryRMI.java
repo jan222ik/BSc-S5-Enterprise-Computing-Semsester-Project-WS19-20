@@ -1,12 +1,12 @@
-package at.fhv.itb17.s5.teamb.controllers.rmi;
+package at.fhv.itb17.s5.teamb.core.controllers.rmi;
 
-import at.fhv.itb17.s5.teamb.controllers.SearchService;
+import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.function.Supplier;
 
-public class ConnectionFactoryRMI implements IConnectionFactoryRMI {
+public class ConnectionFactoryRMI extends UnicastRemoteObject implements IConnectionFactoryRMI {
 
     private Supplier<SearchService> serviceInstanceSupplier;
 

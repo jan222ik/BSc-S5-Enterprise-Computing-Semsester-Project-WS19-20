@@ -21,8 +21,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>advanceticketsale.controllers</groupId>
-            <artifactId>rmi</artifactId>
+            <groupId>advanceticketsale.dtos</groupId>
+            <artifactId>dtos</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

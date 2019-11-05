@@ -1,4 +1,4 @@
-package at.fhv.itb17.s5.teamb.controllers;
+package at.fhv.itb17.s5.teamb.core.controllers.general;
 
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 
