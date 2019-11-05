@@ -40,7 +40,7 @@
             <groupId>advanceticketsale.persistence</groupId>
             <artifactId>persistence</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>advanceticketsale.util</groupId>
@@ -57,6 +57,12 @@
         <dependency>
             <groupId>advanceticketsale.core</groupId>
             <artifactId>core</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>advanceticketsale.dtos</groupId>
+            <artifactId>dtos</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

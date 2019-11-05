@@ -82,7 +82,7 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
 
     @Override
     public void onReturned(@NotNull SearchVM viewModel) {
-        restore(viewModel.getLatestSearchViewState());
+        restore(viewModel);
     }
 
     @Override
@@ -90,17 +90,19 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         viewModel.setLatestSearchViewState(saveState(viewModel.getLatestSearchViewState()));
     }
 
-    private void restore(SearchVM.SearchViewData state) {
+    private void restore(SearchVM viewModel) {
+        SearchVM.SearchViewData state = viewModel.getLatestSearchViewState();
         if (state != null) {
-            eventTE.setText(state.event);
-            fromCB.setSelected(state.includeFrom);
-            fromDateDP.setValue(state.fromDate);
-            tillCB.setSelected(state.includeTill);
-            tillDateDP.setValue(state.tillDate);
-            genreChoiceBox.getSelectionModel().select(state.genre);
-            artistTE.setText(state.artist);
+            eventTE.setText(state.getEvent());
+            fromCB.setSelected(state.isIncludeFrom());
+            fromDateDP.setValue(state.getFromDate());
+            tillCB.setSelected(state.isIncludeTill());
+            tillDateDP.setValue(state.getTillDate());
+            genreChoiceBox.getSelectionModel().select(state.getGenre());
+            artistTE.setText(state.getArtist());
         } else {
             resetFilter();
+            viewModel.setLatestSearchViewState(saveState(null));
         }
     }
 
@@ -109,14 +111,14 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         if (state == null) {
             state = new SearchVM.SearchViewData();
         }
-        state.event = eventTE.getText();
-        state.includeFrom = fromCB.isSelected();
-        state.fromDate = fromDateDP.getValue();
-        state.includeTill = tillCB.isSelected();
-        state.tillDate = tillDateDP.getValue();
-        state.genre = genreChoiceBox.getSelectionModel().getSelectedIndex();
-        state.genreValue = genreChoiceBox.getSelectionModel().getSelectedItem();
-        state.artist = artistTE.getText();
+        state.setEvent(eventTE.getText());
+        state.setIncludeFrom(fromCB.isSelected());
+        state.setFromDate(fromDateDP.getValue());
+        state.setIncludeTill(tillCB.isSelected());
+        state.setTillDate(tillDateDP.getValue());
+        state.setGenre(genreChoiceBox.getSelectionModel().getSelectedIndex());
+        state.setGenreValue(genreChoiceBox.getSelectionModel().getSelectedItem());
+        state.setArtist(artistTE.getText());
         return state;
     }
 

@@ -1,6 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
-import at.fhv.itb17.s5.teamb.fxapp.data.SearchServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ResultVM;
@@ -44,6 +44,8 @@ public class MenuPresenter implements Initializable {
 
     @Inject
     private static Style style;
+    @Inject
+    private SearchService searchService;
 
     private static Background background;
     private static Background backgroundError;
@@ -78,7 +80,6 @@ public class MenuPresenter implements Initializable {
     private boolean isMenuDrawerOpen = true;
 
 
-
     @Override
     @SuppressWarnings("squid:S2696")
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,7 +99,8 @@ public class MenuPresenter implements Initializable {
         menubarHBox.setOnKeyReleased(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 this.toggleMenuDrawer(null);
-            }});
+            }
+        });
         this.setMenuItems(new LinkedList<>(getMenuViews().values()));
         Platform.runLater(() -> switchMenuContentfulView(ApplicationMenuViews.SEARCH_VIEW));
     }
@@ -159,7 +161,7 @@ public class MenuPresenter implements Initializable {
             applicationViews = new EnumMap<>(ApplicationMenuViews.class);
             RootVM rootVM = new RootVM();
             rootVM.setSearchVM(new SearchVM());
-            rootVM.setResultVM(new ResultVM(new SearchServiceImpl(), rootVM));
+            rootVM.setResultVM(new ResultVM(searchService, rootVM));
             applicationViews.put(ApplicationMenuViews.SEARCH_VIEW,
                     new MenuContentfulViewWrapper<>(
                             new SearchView(), rootVM.getSearchVM(),
@@ -167,7 +169,7 @@ public class MenuPresenter implements Initializable {
             );
             applicationViews.put(ApplicationMenuViews.BROWSER_VIEW,
                     new MenuContentfulViewWrapper<>(
-                            new BrowserView(), new ViewModelImpl(), "Event Browser",
+                            new BrowserView(), rootVM.getResultVM(), "Event Browser",
                             "Event Browser", FontAwesomeIcon.LIST_UL, this)
             );
             applicationViews.put(ApplicationMenuViews.DEMO_VIEW,

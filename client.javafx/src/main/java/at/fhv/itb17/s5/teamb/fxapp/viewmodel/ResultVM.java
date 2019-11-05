@@ -1,11 +1,11 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewmodel;
 
-import at.fhv.itb17.s5.teamb.fxapp.data.PlaceholderDTO;
+import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 
-import java.util.LinkedList;
+import java.util.List;
 
-public class ResultVM {
+public class ResultVM implements ViewModel {
 
     private SearchService searchService;
     private RootVM rootVM;
@@ -15,7 +15,9 @@ public class ResultVM {
         this.rootVM = rootVM;
     }
 
-    public LinkedList<PlaceholderDTO> getSearchResults() {
-        return searchService.searchFor(rootVM.getGetSearchQuery());
+    public List<EventDTO> getSearchResults() {
+        String getSearchQuery = rootVM.getGetSearchQuery();
+        System.out.println("getSearchQuery = " + getSearchQuery);
+        return searchService.searchFor(getSearchQuery);
     }
 }

@@ -1,5 +1,9 @@
 package at.fhv.itb17.s5.teamb.core
 
+import at.fhv.itb17.s5.teamb.core.domain.search.SearchParser
+import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories
+import at.fhv.itb17.s5.teamb.persistence.search.SearchException
+import at.fhv.itb17.s5.teamb.persistence.search.SearchPair
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
@@ -18,24 +22,24 @@ internal class SearchParserTest {
 
     @Test
     fun `Parsing Search Successful`() {
-        val searchPairs: LinkedList<SearchParser.Search.SearchPair> = SearchParser.parseString(validString).retrieveSearchPairs()
+        val searchPairs: LinkedList<SearchPair> = SearchParser.parseString(validString)!!.retrieveSearchPairs()
         //searchPairs.forEach { p -> println("Key: ${p.key} Value: ${p.value}") }
         MatcherAssert.assertThat(searchPairs.size, Matchers.equalTo(3))
-        MatcherAssert.assertThat(searchPairs[0].key, Matchers.equalTo(SearchParser.SearchCategories.DATE_UNTIL))
+        MatcherAssert.assertThat(searchPairs[0].key, Matchers.equalTo(SearchCategories.DATE_UNTIL))
         MatcherAssert.assertThat(searchPairs[0].value, Matchers.equalTo(now))
-        MatcherAssert.assertThat(searchPairs[1].key, Matchers.equalTo(SearchParser.SearchCategories.DATE_FROM))
+        MatcherAssert.assertThat(searchPairs[1].key, Matchers.equalTo(SearchCategories.DATE_FROM))
         MatcherAssert.assertThat(searchPairs[1].value, Matchers.equalTo(in7))
-        MatcherAssert.assertThat(searchPairs[2].key, Matchers.equalTo(SearchParser.SearchCategories.EVENT_NAME))
+        MatcherAssert.assertThat(searchPairs[2].key, Matchers.equalTo(SearchCategories.EVENT_NAME))
         MatcherAssert.assertThat(searchPairs[2].value, Matchers.equalTo(evtName))
     }
 
     @Test
     fun `Parsing Search Cached`() {
         val search = SearchParser.parseString(validSingle)
-        val searchPairs: LinkedList<SearchParser.Search.SearchPair> = search.retrieveSearchPairs()
-        MatcherAssert.assertThat(searchPairs[0].key, Matchers.equalTo(SearchParser.SearchCategories.EVENT_NAME))
+        val searchPairs: LinkedList<SearchPair> = search!!.retrieveSearchPairs()
+        MatcherAssert.assertThat(searchPairs[0].key, Matchers.equalTo(SearchCategories.EVENT_NAME))
         MatcherAssert.assertThat(searchPairs[0].value, Matchers.equalTo(evtName))
-        val searchPairsCached: LinkedList<SearchParser.Search.SearchPair> = search.retrieveSearchPairs()
+        val searchPairsCached: LinkedList<SearchPair> = search.retrieveSearchPairs()
         MatcherAssert.assertThat(searchPairs, Matchers.equalTo(searchPairsCached))
 
     }
@@ -47,7 +51,7 @@ internal class SearchParserTest {
         try {
             SearchParser.parseString(invalid)
             fail("Call should have thrown error");
-        } catch (e: SearchParser.SearchException) {
+        } catch (e: SearchException) {
             executed = false;
         }
         MatcherAssert.assertThat(executed, Matchers.`is`(false))
