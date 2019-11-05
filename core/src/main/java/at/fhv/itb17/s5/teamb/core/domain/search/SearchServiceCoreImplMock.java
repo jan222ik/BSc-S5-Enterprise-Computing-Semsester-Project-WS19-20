@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SearchServiceCoreImplMock implements Serializable, SearchServiceCore {
+public class SearchServiceCoreImplMock implements SearchServiceCore {
 
     @SuppressWarnings("DuplicatedCode")
     @Override

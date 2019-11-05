@@ -80,7 +80,7 @@ public class DatabaseMain {
 //        repository.save(new Address("deutschland", "61250", "landsberg", "jannikstreet", "0815"));
 
 
-        EventRepository eventRepository = new EventRepository();
+        EventRepository eventRepository = new EventRepository(new EntityRepository());
         List<SearchPair> searchPairs = new ArrayList<>();
         searchPairs.add(new SearchPair(SearchCategories.EVENT_NAME, "Spo"));
         List<Event> search = eventRepository.search(searchPairs);

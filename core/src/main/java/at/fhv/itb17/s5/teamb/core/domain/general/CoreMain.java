@@ -26,7 +26,7 @@ public class CoreMain {
         CoreMain coreMain = new CoreMain();
         EntryPointRMI entryPointRMI;
         try {
-            entryPointRMI = new EntryPointRMI(rmiPort, new CoreServiceInjectorImplMock());
+            entryPointRMI = new EntryPointRMI(rmiPort, new CoreServiceInjectorImpl());
             LinkedList<EntryPoint> entryPoints = new LinkedList<>(Arrays.asList(entryPointRMI));
             coreMain.start(entryPoints);
         } catch (RemoteException e) {

@@ -16,6 +16,8 @@ public class ResultVM implements ViewModel {
     }
 
     public List<EventDTO> getSearchResults() {
-        return searchService.searchFor(rootVM.getGetSearchQuery());
+        String getSearchQuery = rootVM.getGetSearchQuery();
+        System.out.println("getSearchQuery = " + getSearchQuery);
+        return searchService.searchFor(getSearchQuery);
     }
 }

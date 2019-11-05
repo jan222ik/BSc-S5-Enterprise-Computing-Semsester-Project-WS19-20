@@ -1,6 +1,8 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
-public class CategoryCalcDataDTO {
+import java.io.Serializable;
+
+public class CategoryCalcDataDTO implements Serializable {
     private int minPrice = Integer.MAX_VALUE;
     private int maxPrice = Integer.MIN_VALUE;
     private String ticketTypes = "";

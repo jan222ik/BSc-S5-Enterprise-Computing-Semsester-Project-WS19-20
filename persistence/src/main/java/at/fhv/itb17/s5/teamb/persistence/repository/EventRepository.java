@@ -9,7 +9,11 @@ import java.util.List;
 
 public class EventRepository {
 
-    private EntityRepository ep = new EntityRepository();
+    private EntityRepository ep;
+
+    public EventRepository(EntityRepository ep) {
+        this.ep = ep;
+    }
 
     public List<Event> search(List<SearchPair> search) {
         WhereCondition build = new WhereClauseBuilder().build(search);

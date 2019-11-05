@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.core.controllers.rmi;
 
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntryPoint;
+import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
 
 import java.net.MalformedURLException;
@@ -10,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.function.Supplier;
 
 public class EntryPointRMI extends EntryPoint {
 
@@ -22,7 +24,14 @@ public class EntryPointRMI extends EntryPoint {
     public EntryPointRMI(int port, CoreServiceInjector coreImpl) throws RemoteException {
         super(coreImpl);
         this.regPort = port;
-        factoryRMI = new ConnectionFactoryRMI(() -> new SearchServiceRMI(coreImpl.getSearchServiceCore()));
+        factoryRMI = new ConnectionFactoryRMI(() -> {
+            try {
+                return new SearchServiceRMI(coreImpl.getSearchServiceCore());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
     }
 
     @Override
@@ -38,7 +47,7 @@ public class EntryPointRMI extends EntryPoint {
             registry = LocateRegistry.createRegistry(regPort);
             UnicastRemoteObject.unexportObject(factoryRMI, true);
             IConnectionFactoryRMI stub = (IConnectionFactoryRMI) UnicastRemoteObject.exportObject(factoryRMI, regPort);
-            registry.rebind("rmi://localhost:" + regPort + "/" + FACTORY_BIND_NAME, stub);
+            registry.rebind(FACTORY_BIND_NAME, stub);
         } catch (RemoteException e1) {
             e1.printStackTrace();
         }

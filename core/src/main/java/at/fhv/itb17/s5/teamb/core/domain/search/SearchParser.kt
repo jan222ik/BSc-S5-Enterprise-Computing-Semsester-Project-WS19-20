@@ -4,7 +4,11 @@ import at.fhv.itb17.s5.teamb.persistence.search.Search
 
 object SearchParser {
 
-    fun parseString(queryString: String): Search {
-        return Search(queryString)
+    fun parseString(queryString: String): Search? {
+        return if (queryString.isNotEmpty()) {
+            Search(queryString)
+        } else {
+            null;
+        }
     }
 }

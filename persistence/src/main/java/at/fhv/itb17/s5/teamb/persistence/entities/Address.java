@@ -74,4 +74,20 @@ public class Address {
     public void setHouse(String house) {
         this.house = house;
     }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "addressId=" + addressId +
+                ", country='" + country + '\'' +
+                ", zip='" + zip + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", house='" + house + '\'' +
+                '}';
+    }
+
+    public String asComparableString() {
+        return country + zip + city + street + house;
+    }
 }
