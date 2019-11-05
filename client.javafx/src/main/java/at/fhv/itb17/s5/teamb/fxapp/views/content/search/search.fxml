@@ -16,13 +16,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="searchRootPlane" prefHeight="296.0" prefWidth="531.0" style="-fx-background-color: #262626;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchPresenter">
+<AnchorPane fx:id="searchRootPlane" prefHeight="296.0" prefWidth="531.0" style="-fx-background-color: #2F2F2F;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchPresenter">
     <children>
       <BorderPane AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
                 <VBox alignment="CENTER" maxWidth="450.0" prefWidth="450.0">
                     <children>
-                        <GridPane fx:id="filterGridPane" alignment="CENTER" prefHeight="191.0" prefWidth="428.0" style="-fx-background-color: #262626;">
+                        <GridPane fx:id="filterGridPane" alignment="CENTER" prefHeight="191.0" prefWidth="428.0" style="-fx-background-color: #2F2F2F;">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="10.0" />
                                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
