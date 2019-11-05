@@ -35,7 +35,8 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
         List<SearchPair> searchPairs = (search != null) ? search.retrieveSearchPairs().stream().filter(sp -> sp.getKey() == SearchCategories.EVENT_NAME || sp.getKey() == SearchCategories.GENRE).collect(Collectors.toList()) : new LinkedList<>();
         List<Event> result = eventRepository.search(searchPairs);
         System.out.println("result = " + result.size());
-        return filter(result, search.retrieveSearchPairs());
+        LinkedList<SearchPair> searchPairs1 = (search != null) ? search.retrieveSearchPairs() : new LinkedList<>();
+        return filter(result, searchPairs1);
     }
 
     public List<Event> filter(List<Event> all, List<SearchPair> pairs) {
