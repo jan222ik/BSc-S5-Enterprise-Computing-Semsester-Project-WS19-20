@@ -1,10 +1,14 @@
 package at.fhv.itb17.s5.teamb.controllers.rmi;
 
 import at.fhv.itb17.s5.teamb.controllers.SearchService;
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryFreeDTO;
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
-import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
+import at.fhv.itb17.s5.teamb.dtos.mapper.EventMapper;
+import at.fhv.itb17.s5.teamb.persistence.entities.Address;
+import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
+import at.fhv.itb17.s5.teamb.persistence.entities.Event;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
+import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,25 +23,27 @@ public class SearchServiceRMI implements SearchService, Serializable {
 
     private static final Logger logger = LogManager.getLogger(SearchServiceRMI.class);
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public LinkedList<EventDTO> searchFor(String queryString) {
         logger.debug(LogMarkers.RMI_CONTROLLER, "Invoked SearchString: {}", queryString);
-        EvCategoryFreeDTO evCat0 = new EvCategoryFreeDTO(1123649L, "cat_name_ev0", 99 * 100, 5000, 4711);
-        EvCategoryFreeDTO evCat1 = new EvCategoryFreeDTO(111233649L, "cat_name_ev1", 20 * 100, 800, 11);
-        LinkedList<EvCategoryInterface> cats = new LinkedList<>(Arrays.asList(evCat0, evCat1));
-        EvOccurrenceDTO evOccurrenceDTO0 = new EvOccurrenceDTO(12789L, LocalDate.now(), LocalTime.now(), cats, 1231234L, "evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
-        EvOccurrenceDTO evOccurrenceDTO1 = new EvOccurrenceDTO(127123L, LocalDate.now().plusDays(3), LocalTime.now(), cats, 1231234L, "evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
-        LinkedList<EvOccurrenceDTO> occurrences = new LinkedList<>(Arrays.asList(evOccurrenceDTO0, evOccurrenceDTO1));
-        LinkedList<String> artistNames = new LinkedList<>(Arrays.asList("Hugo Hugo", "Franz Peter Werner"));
-        EventDTO eventDTO0 = new EventDTO(123L, "Demo Concert", "A very descriptive description", "08/15",
-                artistNames, occurrences, 90L, "org_name", "org_email",
-                131L, "org_country", "org_zip", "org_city",
-                "org_street", "org_house");
-        EventDTO eventDTO1 = new EventDTO(123L, "Demo Concert1", "A very descriptive description1", "08/15 1",
-                artistNames, occurrences, 90L, "org_name", "org_email",
-                131L, "org_country", "org_zip", "org_city",
-                "org_street", "org_house");
-        return new LinkedList<>(Arrays.asList(eventDTO0, eventDTO1));
+        EventCategory evCat0 = new EventCategory("cat_name_ev0", 99 * 100, 5000, 4711);
+        EventCategory evCat1 = new EventCategory("cat_name_ev1", 20 * 100, 800, 11);
+        LinkedList<EventCategory> cats = new LinkedList<>(Arrays.asList(evCat0, evCat1));
+        Address addressEvOc0 = new Address("evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
+        Address addressEvOc1 = new Address("evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
+        EventOccurrence evOccurrenceDTO0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), cats, addressEvOc0);
+        EventOccurrence evOccurrenceDTO1 = new EventOccurrence(LocalDate.now().plusDays(3), LocalTime.now(), cats, addressEvOc1);
+        LinkedList<EventOccurrence> occurrences = new LinkedList<>(Arrays.asList(evOccurrenceDTO0, evOccurrenceDTO1));
+        LinkedList<Artist> artistNames = new LinkedList<>(Arrays.asList(new Artist("Hugo Hugo"), new Artist("Franz Peter Werner")));
+        Address addressOrg0 = new Address("org0_country", "org0_zip", "org0_city", "org0_street", "org0_house");
+        Address addressOrg1 = new Address("org1_country", "org1_zip", "org1_city", "org1_street", "org1_house");
+        Organizer org0 = new Organizer("org0_name", "org0_email", addressOrg0);
+        Organizer org1 = new Organizer("org1_name", "org1_email", addressOrg1);
+        Event eventDTO0 = new Event("Demo Concert0", "A very descriptive description0", "08/15 0", occurrences, org0, artistNames);
+        Event eventDTO1 = new Event("Demo Concert1", "A very descriptive description1", "08/15 1", occurrences, org1, artistNames);
+        LinkedList<Event> events = new LinkedList<>(Arrays.asList(eventDTO0, eventDTO1));
+        return new LinkedList<>(EventMapper.toDTOs(events));
     }
 
     @Override

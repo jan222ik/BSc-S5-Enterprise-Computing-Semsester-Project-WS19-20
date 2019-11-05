@@ -11,6 +11,14 @@
 
     <groupId>advanceticketsale.dtos</groupId>
     <artifactId>dtos</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>advanceticketsale.persistence</groupId>
+            <artifactId>persistence</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 
 </project>
