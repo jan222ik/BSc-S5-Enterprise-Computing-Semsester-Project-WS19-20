@@ -1,8 +1,5 @@
-package at.fhv.itb17.s5.teamb.fxapp.data.mock;
+package at.fhv.itb17.s5.teamb.core.domain.search;
 
-import at.fhv.itb17.s5.teamb.dtos.EventDTO;
-import at.fhv.itb17.s5.teamb.dtos.mapper.EventMapper;
-import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.persistence.entities.Address;
 import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
@@ -10,17 +7,19 @@ import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
+public class SearchServiceCoreImplMock implements SearchServiceCore {
 
-@SuppressWarnings("DuplicatedCode")
-public class MockSearchServiceImpl implements SearchService {
-
+    @SuppressWarnings("DuplicatedCode")
     @Override
-    public LinkedList<EventDTO> searchFor(String searchQuery) {
+    public List<Event> searchFor(String queryString) {
+        System.out.println("USING SearchServiceCoreImplMock");
         EventCategory evCat0 = new EventCategory("cat_name_ev0", 99 * 100, 5000, 4711);
         EventCategory evCat1 = new EventCategory("cat_name_ev1", 20 * 100, 800, 11);
         LinkedList<EventCategory> cats = new LinkedList<>(Arrays.asList(evCat0, evCat1));
@@ -36,7 +35,6 @@ public class MockSearchServiceImpl implements SearchService {
         Organizer org1 = new Organizer("org1_name", "org1_email", addressOrg1);
         Event eventDTO0 = new Event("Demo Concert0", "A very descriptive description0", "08/15 0", occurrences, org0, artistNames);
         Event eventDTO1 = new Event("Demo Concert1", "A very descriptive description1", "08/15 1", occurrences, org1, artistNames);
-        LinkedList<Event> events = new LinkedList<>(Arrays.asList(eventDTO0, eventDTO1));
-        return new LinkedList<>(EventMapper.toDTOs(events));
+        return new LinkedList<>(Arrays.asList(eventDTO0, eventDTO1));
     }
 }

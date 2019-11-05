@@ -1,4 +1,4 @@
-package at.fhv.itb17.s5.teamb.controllers.rmi;
+package at.fhv.itb17.s5.teamb.core.controllers.rmi;
 
 import java.security.Permission;
 

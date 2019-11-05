@@ -1,7 +1,7 @@
-package at.fhv.itb17.s5.teamb.core.search;
+package at.fhv.itb17.s5.teamb.core.domain.general;
 
-import at.fhv.itb17.s5.teamb.controllers.EntryPoint;
-import at.fhv.itb17.s5.teamb.controllers.rmi.EntryPointRMI;
+import at.fhv.itb17.s5.teamb.core.controllers.general.EntryPoint;
+import at.fhv.itb17.s5.teamb.core.controllers.rmi.EntryPointRMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,8 +26,7 @@ public class CoreMain {
         CoreMain coreMain = new CoreMain();
         EntryPointRMI entryPointRMI;
         try {
-            entryPointRMI = new EntryPointRMI(rmiPort, new Object());
-            //TODO replace with real impl
+            entryPointRMI = new EntryPointRMI(rmiPort, new CoreServiceInjectorImpl());
             LinkedList<EntryPoint> entryPoints = new LinkedList<>(Arrays.asList(entryPointRMI));
             coreMain.start(entryPoints);
         } catch (RemoteException e) {

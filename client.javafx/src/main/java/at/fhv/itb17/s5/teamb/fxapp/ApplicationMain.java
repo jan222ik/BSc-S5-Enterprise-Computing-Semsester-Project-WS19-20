@@ -15,8 +15,6 @@ import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.inject.Inject;
-
 public class ApplicationMain extends Application {
 
     private static final Logger logger = LogManager.getLogger(ApplicationMain.class);

@@ -1,6 +1,6 @@
 package at.fhv.itb17.s5.teamb.core
 
-import at.fhv.itb17.s5.teamb.core.search.SearchParser
+import at.fhv.itb17.s5.teamb.core.domain.search.SearchParser
 import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories
 import at.fhv.itb17.s5.teamb.persistence.search.SearchException
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair
@@ -22,7 +22,7 @@ internal class SearchParserTest {
 
     @Test
     fun `Parsing Search Successful`() {
-        val searchPairs: LinkedList<SearchPair> = SearchParser.parseString(validString).retrieveSearchPairs()
+        val searchPairs: LinkedList<SearchPair> = SearchParser.parseString(validString)!!.retrieveSearchPairs()
         //searchPairs.forEach { p -> println("Key: ${p.key} Value: ${p.value}") }
         MatcherAssert.assertThat(searchPairs.size, Matchers.equalTo(3))
         MatcherAssert.assertThat(searchPairs[0].key, Matchers.equalTo(SearchCategories.DATE_UNTIL))
@@ -36,7 +36,7 @@ internal class SearchParserTest {
     @Test
     fun `Parsing Search Cached`() {
         val search = SearchParser.parseString(validSingle)
-        val searchPairs: LinkedList<SearchPair> = search.retrieveSearchPairs()
+        val searchPairs: LinkedList<SearchPair> = search!!.retrieveSearchPairs()
         MatcherAssert.assertThat(searchPairs[0].key, Matchers.equalTo(SearchCategories.EVENT_NAME))
         MatcherAssert.assertThat(searchPairs[0].value, Matchers.equalTo(evtName))
         val searchPairsCached: LinkedList<SearchPair> = search.retrieveSearchPairs()
