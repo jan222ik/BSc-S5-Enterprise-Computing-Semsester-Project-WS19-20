@@ -24,8 +24,7 @@ public class SearchVM implements ViewModel {
         private LocalDate tillDate;
         private String event;
         private String artist;
-        private int genre;
-        private String genreValue;
+        private String genre;
         private String location;
 
         public String toQueryString() {
@@ -43,8 +42,8 @@ public class SearchVM implements ViewModel {
             if (!artist.isEmpty()) {
                 sb.append("-").append(SearchCategories.ARTIST_NAME.getIdf()).append("=\"").append(artist).append("\"");
             }
-            if (genreValue != null && !genreValue.isEmpty()) {
-                sb.append("-").append(SearchCategories.GENRE.getIdf()).append("=\"").append(genreValue).append("\"");
+            if (genre != null && !genre.isEmpty()) {
+                sb.append("-").append(SearchCategories.GENRE.getIdf()).append("=\"").append(genre).append("\"");
             }
             if (location != null && !location.isEmpty()) {
                 sb.append("-").append(SearchCategories.LOCATION.getIdf()).append("=\"").append(location).append("\"");
@@ -100,20 +99,12 @@ public class SearchVM implements ViewModel {
             this.artist = artist;
         }
 
-        public int getGenre() {
+        public String getGenre() {
             return genre;
         }
 
-        public void setGenre(int genre) {
+        public void setGenre(String genre) {
             this.genre = genre;
-        }
-
-        public String getGenreValue() {
-            return genreValue;
-        }
-
-        public void setGenreValue(String genreValue) {
-            this.genreValue = genreValue;
         }
 
         public String getLocation() {

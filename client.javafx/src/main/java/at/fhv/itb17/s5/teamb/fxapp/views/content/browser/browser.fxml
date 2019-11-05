@@ -15,7 +15,7 @@
             <HBox>
                <children>
                   <Label text="Results for:" textFill="WHITE" />
-                  <Label maxWidth="1.7976931348623157E308" text="#placeholderSearchQuery" textFill="WHITE" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="qString" maxWidth="1.7976931348623157E308" text="#placeholderSearchQuery" textFill="WHITE" HBox.hgrow="ALWAYS" />
                   <Button fx:id="back2FilterBtn" mnemonicParsing="false" text="Back to Filter" />
                </children>
             </HBox>

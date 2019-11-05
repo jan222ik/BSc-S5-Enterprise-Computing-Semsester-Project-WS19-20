@@ -16,9 +16,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="searchRootPlane" prefHeight="296.0" prefWidth="531.0" style="-fx-background-color: #2F2F2F;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchPresenter">
+<AnchorPane fx:id="searchRootPlane" prefHeight="296.0" prefWidth="531.0" style="-fx-background-color: #2F2F2F;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchPresenter">
     <children>
-      <BorderPane AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
                 <VBox alignment="CENTER" maxWidth="450.0" prefWidth="450.0">
                     <children>
@@ -33,6 +33,7 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                             </rowConstraints>
                             <children>
                                 <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
@@ -61,7 +62,9 @@
                                 <TextField fx:id="eventTE" GridPane.columnIndex="1" />
                                 <TextField fx:id="artistTE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                 <Label layoutX="10.0" layoutY="271.0" text="Artist:" textFill="white" GridPane.rowIndex="4" />
-                                <ChoiceBox fx:id="genreChoiceBox" prefHeight="25.0" prefWidth="272.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <TextField fx:id="genreTE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label layoutX="10.0" layoutY="146.0" text="Location:" textFill="white" GridPane.rowIndex="5" />
+                        <TextField fx:id="locationTF" layoutX="200.0" layoutY="142.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                             </children>
                         </GridPane>
                         <HBox fx:id="actionEmitter">

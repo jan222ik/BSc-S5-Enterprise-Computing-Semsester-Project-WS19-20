@@ -57,7 +57,7 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
                     break;
                 case GENRE:
                 case EVENT_NAME:
-                    throw new IllegalArgumentException("Should not be reachable");
+
             }
         }
         LinkedList<Event> modResult = new LinkedList<>();
@@ -65,11 +65,14 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
             Boolean toAdd = null;
             if (artistName != null) {
                 String finalArtistName = artistName;
-                toAdd = event.getArtists().stream().anyMatch(e -> finalArtistName.contains(e.getName()));
+                toAdd = event.getArtists().stream().anyMatch(e -> e.getName().contains(finalArtistName));
             }
             if (toAdd == null || toAdd) {
-                event.setOccurrences(filterOccurrences(event.getOccurrences(), fromDate, untilDate, location));
-                modResult.add(event);
+                List<EventOccurrence> eventOccurrences = filterOccurrences(event.getOccurrences(), fromDate, untilDate, location);
+                if (!eventOccurrences.isEmpty()) {
+                    event.setOccurrences(eventOccurrences);
+                    modResult.add(event);
+                }
             }
         }
         return modResult;

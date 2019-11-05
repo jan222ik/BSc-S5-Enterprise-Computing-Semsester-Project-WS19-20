@@ -23,6 +23,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     }
 
     private void addDBDATA() {
+        /*
         EventCategory evCat0 = new EventCategory("cat_name_ev0", 99 * 100, 5000, 4711);
         EventCategory evCat1 = new EventCategory("cat_name_ev1", 20 * 100, 800, 11);
         LinkedList<EventCategory> cats = new LinkedList<>(Arrays.asList(evCat0, evCat1));
@@ -44,21 +45,67 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         entityRepository.saveOrUpdate(eventDTO0);
         entityRepository.saveOrUpdate(eventDTO1);
 
+         */
+
         List<EventOccurrence> sceneOccurrences = new ArrayList<>();
-        sceneOccurrences.add(new EventOccurrence(LocalDate.of(2020, 06,12), LocalTime.of(12,30,0), Arrays.asList(new EventCategory("VIP", 5000, 30, 0), new EventCategory("Standard", 2000, 200, 0)), new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")));
-        sceneOccurrences.add(new EventOccurrence(LocalDate.of(2021, 06,10), LocalTime.of(13, 0,0), Arrays.asList(new EventCategory("VIP", 5500, 40, 0), new EventCategory("Standard", 2500, 250, 0)), new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")));
-        sceneOccurrences.add(new EventOccurrence(LocalDate.of(2020, 06,15), LocalTime.of(12,0,0), Arrays.asList(new EventCategory("VIP", 6000, 50, 0), new EventCategory("Standard", 3000, 400, 0)), new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")));
+        sceneOccurrences.add(
+                new EventOccurrence(LocalDate.of(2020, 06,12),
+                        LocalTime.of(12,30,0),
+                        Arrays.asList(
+                                new EventCategory("VIP", 5000, 30, 0),
+                                new EventCategory("Standard", 2000, 200, 0)
+                        ),
+                        new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
+                ));
+        sceneOccurrences.add(
+                new EventOccurrence(LocalDate.of(2021, 06,10),
+                        LocalTime.of(13, 0,0),
+                        Arrays.asList(
+                                new EventCategory("VIP", 5500, 40, 0),
+                                new EventCategory("Standard", 2500, 250, 0)
+                        ),
+                        new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
+                ));
+        sceneOccurrences.add(
+                new EventOccurrence(LocalDate.of(2020, 06,15),
+                        LocalTime.of(12,0,0),
+                        Arrays.asList(
+                                new EventCategory("VIP", 6000, 50, 0),
+                                new EventCategory("Standard", 3000, 400, 0)
+                        ),
+                        new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
+                ));
 
         List<Artist> sceneArtists = new ArrayList<>();
         sceneArtists.add(new Artist("Capital Bro"));
         sceneArtists.add(new Artist("Imagine Unicorns"));
 
         List<EventOccurrence> sceneWritingOccurence = new ArrayList<>();
-        sceneWritingOccurence.add(new EventOccurrence(LocalDate.of(2019, 8, 14), LocalTime.of(16, 30,0), Arrays.asList(new EventCategory("Standardkarte", 5000, 50, 0)), new Address("Österreich", "6850", "Dornbirn", "Marktstraße", "19")));
-        sceneWritingOccurence.add(new EventOccurrence(LocalDate.of(2019, 8, 20), LocalTime.of(16, 0,0), Arrays.asList(new EventCategory("Standardkarte", 5000, 50, 0)), new Address("Österreich", "6850", "Dornbirn", "Marktstraße", "19")));
+        sceneWritingOccurence.add(
+                new EventOccurrence(
+                        LocalDate.of(2019, 8, 14),
+                        LocalTime.of(16, 30,0),
+                        Arrays.asList(
+                                new EventCategory("Standardkarte", 5000, 50, 0)
+                        ), new Address("Österreich", "6850", "Dornbirn", "Marktstraße", "19")));
+        sceneWritingOccurence.add(
+                new EventOccurrence(
+                        LocalDate.of(2019, 8, 20),
+                        LocalTime.of(16, 0,0),
+                        Arrays.asList(
+                                new EventCategory("Standardkarte", 5000, 50, 0)
+                        ), new Address("Österreich", "6850", "Dornbirn", "Marktstraße", "19")
+                ));
 
         List<EventOccurrence> sponsionOccurences = new ArrayList<>();
-        sponsionOccurences.add(new EventOccurrence(LocalDate.of(2019, 10,20), LocalTime.of(10,0,0), Arrays.asList(new EventCategory("Gratis", 0, 350, 0)), new Address("Östrreich", "6810", "Bregenz", "Seestraße", "12")));
+        sponsionOccurences.add(
+                new EventOccurrence(
+                        LocalDate.of(2019, 10,20),
+                        LocalTime.of(10,0,0),
+                        Arrays.asList(
+                                new EventCategory("Gratis", 0, 350, 0)
+                        ), new Address("Östrreich", "6810", "Bregenz", "Seestraße", "12")
+                ));
 
         List<EventOccurrence> klaasOccurence = new ArrayList<>();
         klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 01,15), LocalTime.of(18,0,0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 0)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
@@ -77,7 +124,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         events.add(new Event("Latenight Berlin", "Klaas hat Spaas", "Comedy", klaasOccurence, new Organizer("Pro 7", "redaktion@prosieben.de", new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")), Arrays.asList(new Artist("Klaas Heufer-Umlauf"))));
         events.add(new Event("Kochshow", "Kochshow mit Janik Mayr", "Unterhaltung", kochshowOccurence, new Organizer("Satteins", "janik.mayr@satteins.de", new Address("Deutschland", "10115", "Berlin", "Kölschwasser", "4711")), Arrays.asList(new Artist("Dr. Janik Mayr"))));
 
-        events.forEach(e -> entityRepository.saveOrUpdate(e));
+        events.forEach(entityRepository::saveOrUpdate);
 
     }
 
