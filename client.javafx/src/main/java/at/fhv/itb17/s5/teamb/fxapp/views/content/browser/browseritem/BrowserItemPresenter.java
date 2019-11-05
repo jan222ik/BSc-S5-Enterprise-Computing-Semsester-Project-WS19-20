@@ -1,8 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.browser.browseritem;
 
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryFreeDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
-import at.fhv.itb17.s5.teamb.dtos.EvCategorySeatsDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import javafx.beans.property.SimpleObjectProperty;

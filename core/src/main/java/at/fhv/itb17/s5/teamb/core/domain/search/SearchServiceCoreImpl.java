@@ -1,23 +1,18 @@
 package at.fhv.itb17.s5.teamb.core.domain.search;
 
-import at.fhv.itb17.s5.teamb.persistence.entities.Address;
-import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
-import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
 import at.fhv.itb17.s5.teamb.persistence.search.Search;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class SearchServiceCoreImpl implements SearchServiceCore {
@@ -39,7 +34,8 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
         return filter(result, searchPairs1);
     }
 
-    public List<Event> filter(List<Event> all, List<SearchPair> pairs) {
+    @NotNull
+    private List<Event> filter(List<Event> all, @NotNull List<SearchPair> pairs) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate fromDate = null;
         LocalDate untilDate = null;
@@ -48,40 +44,59 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
         for (SearchPair pair : pairs) {
             switch (pair.getKey()) {
                 case DATE_FROM:
-                    fromDate = LocalDate.parse(pair.getValue(), formatter); break;
+                    fromDate = LocalDate.parse(pair.getValue(), formatter);
+                    break;
                 case DATE_UNTIL:
-                    untilDate = LocalDate.parse(pair.getValue(), formatter); break;
+                    untilDate = LocalDate.parse(pair.getValue(), formatter);
+                    break;
                 case ARTIST_NAME:
-                    artistName = pair.getValue(); break;
+                    artistName = pair.getValue();
+                    break;
                 case LOCATION:
-                    location = pair.getValue(); break;
+                    location = pair.getValue();
+                    break;
+                case GENRE:
+                case EVENT_NAME:
+                    throw new IllegalArgumentException("Should not be reachable");
             }
         }
         LinkedList<Event> modResult = new LinkedList<>();
         for (Event event : all) {
             Boolean toAdd = null;
-            for (EventOccurrence occurrence : event.getOccurrences()) {
-                if (fromDate != null && canAdd(toAdd)) {
-                    toAdd = occurrence.getDate().isAfter(fromDate);
-                }
-                if (untilDate != null && canAdd(toAdd)) {
-                    toAdd = occurrence.getDate().isBefore(untilDate);
-                }
-                if (location != null && canAdd(toAdd)) {
-                    toAdd = occurrence.getAddress().asComparableString().contains(location);
-                }
-            }
-            if (artistName != null && canAdd(toAdd)) {
+            if (artistName != null) {
                 String finalArtistName = artistName;
                 toAdd = event.getArtists().stream().anyMatch(e -> finalArtistName.contains(e.getName()));
             }
             if (toAdd == null || toAdd) {
+                event.setOccurrences(filterOccurrences(event.getOccurrences(), fromDate, untilDate, location));
                 modResult.add(event);
             }
         }
         return modResult;
     }
 
+    @NotNull
+    private List<EventOccurrence> filterOccurrences(@NotNull List<EventOccurrence> occurrences, LocalDate fromDate, LocalDate untilDate, String location) {
+        List<EventOccurrence> result = new LinkedList<>();
+        Boolean toAdd = null;
+        for (EventOccurrence occurrence : occurrences) {
+            if (fromDate != null && canAdd(toAdd)) {
+                toAdd = occurrence.getDate().isAfter(fromDate);
+            }
+            if (untilDate != null && canAdd(toAdd)) {
+                toAdd = occurrence.getDate().isBefore(untilDate);
+            }
+            if (location != null && canAdd(toAdd)) {
+                toAdd = occurrence.getAddress().asComparableString().contains(location);
+            }
+            if (toAdd == null || toAdd) {
+                result.add(occurrence);
+            }
+        }
+        return result;
+    }
+
+    @Contract(value = "null -> true; !null -> param1", pure = true)
     private boolean canAdd(Boolean bool) {
         if (bool == null) {
             return true;
