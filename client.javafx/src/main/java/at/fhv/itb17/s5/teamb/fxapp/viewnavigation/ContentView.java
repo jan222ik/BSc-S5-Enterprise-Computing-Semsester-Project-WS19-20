@@ -1,6 +1,5 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewnavigation;
 
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModel;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import com.airhacks.afterburner.views.FXMLView;

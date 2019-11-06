@@ -1,14 +1,18 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
+import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ResultVM;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.RootVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
-import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.BookingView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -17,7 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
@@ -25,11 +29,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -39,14 +44,12 @@ public class MenuPresenter implements Initializable {
 
     @Inject
     private static Style style;
+    @Inject
+    private SearchService searchService;
 
     private static Background background;
     private static Background backgroundError;
     private static Background backgroundSurf;
-
-    private MouseEvent originEvent;
-    private double xOffset;
-    private double yOffset;
 
     @FXML
     private Button closeBtn;
@@ -72,7 +75,10 @@ public class MenuPresenter implements Initializable {
     @FXML
     private FontAwesomeIconView hamburgerIcon;
 
+    private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> applicationViews;
     private MenuContentfulViewWrapper current;
+    private boolean isMenuDrawerOpen = true;
+
 
     @Override
     @SuppressWarnings("squid:S2696")
@@ -87,12 +93,16 @@ public class MenuPresenter implements Initializable {
             backgroundSurf = style.SURFACE().asBackground();
         }
         logger.debug(LogMarkers.UI_LIFECYCLE, "Init {}", MenuPresenter.class.getName());
-        applyStyle();
-        setupWindowListener();
-        glyphHostBtn.setOnAction(this::toggleMenuList);
-        LinkedList<MenuContentfulViewWrapper> menuContentfulViewWrappers = getMenuViews();
-        setMenuItems(menuContentfulViewWrappers);
-        Platform.runLater(() -> switchMenuContentfulView(menuContentfulViewWrappers.getFirst()));
+        this.applyStyle();
+        this.setupWindowListener();
+        glyphHostBtn.setOnAction(this::toggleMenuDrawer);
+        menubarHBox.setOnKeyReleased(e -> {
+            if (e.getCode() == KeyCode.ESCAPE) {
+                this.toggleMenuDrawer(null);
+            }
+        });
+        this.setMenuItems(new LinkedList<>(getMenuViews().values()));
+        Platform.runLater(() -> switchMenuContentfulView(ApplicationMenuViews.SEARCH_VIEW));
     }
 
     private void applyStyle() {
@@ -114,18 +124,18 @@ public class MenuPresenter implements Initializable {
         contentPlane.getChildren().add(viewRootElement);
     }
 
-    private void setMenuItems(final LinkedList<MenuContentfulViewWrapper> views) {
-        views.forEach(e -> {
-            menuVBox.getChildren().add(e.createMenuItemView(() -> {
+    private void setMenuItems(@NotNull final LinkedList<MenuContentfulViewWrapper> views) {
+        views.forEach(view -> {
+            menuVBox.getChildren().add(view.createMenuItemView(() -> {
                 logger.debug(LogMarkers.UI_EVENT, "MenuItem clicked");
-                switchMenuContentfulView(e);
+                this.switchMenuContentfulView(view);
             }, menuVBox.widthProperty()).getView());
-            e.isCurrentMenuItem(false);
+            view.isCurrentMenuItem(false);
         });
     }
 
-    public void switchMenuContentfulView(int itemNumber) {
-        switchMenuContentfulView(this.getMenuViews().get(itemNumber));
+    public void switchMenuContentfulView(ApplicationMenuViews viewIdf) {
+        this.switchMenuContentfulView(this.getMenuViews().get(viewIdf));
     }
 
     private void switchMenuContentfulView(MenuContentfulViewWrapper view) {
@@ -136,7 +146,7 @@ public class MenuPresenter implements Initializable {
         current = view;
         view.isCurrentMenuItem(true);
         logger.debug(LogMarkers.UI, "Switching to {}", view);
-        updateTitle(view.getTitle());
+        this.updateTitle(view.getTitle());
         view.showTOS();
     }
 
@@ -146,26 +156,34 @@ public class MenuPresenter implements Initializable {
         menubarTitle.setText(title);
     }
 
-    private LinkedList<MenuContentfulViewWrapper> _applicationViews;
-
-    private LinkedList<MenuContentfulViewWrapper> getMenuViews() {
-        if (_applicationViews == null) {
-            MenuContentfulViewWrapper<SearchVM> item1 =
-                    new MenuContentfulViewWrapper<>(new SearchView(), new SearchVM(), "Search", "Search", this);
-            MenuContentfulViewWrapper<ViewModelImpl> item2 =
-                    new MenuContentfulViewWrapper<>(new BrowserView(), new ViewModelImpl(), "Event Browser", "Event Browser", this);
-            MenuContentfulViewWrapper<ViewModelImpl> item3 =
-                    new MenuContentfulViewWrapper<>(new BookingView(), new ViewModelImpl(), "Booking", "Booking", this);
-            _applicationViews = new LinkedList<>(Arrays.asList(item1, item2, item3));
+    private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> getMenuViews() {
+        if (applicationViews == null) {
+            applicationViews = new EnumMap<>(ApplicationMenuViews.class);
+            RootVM rootVM = new RootVM();
+            rootVM.setSearchVM(new SearchVM());
+            rootVM.setResultVM(new ResultVM(searchService, rootVM));
+            applicationViews.put(ApplicationMenuViews.SEARCH_VIEW,
+                    new MenuContentfulViewWrapper<>(
+                            new SearchView(), rootVM.getSearchVM(),
+                            "Search", "Search", FontAwesomeIcon.SEARCH, this)
+            );
+            applicationViews.put(ApplicationMenuViews.BROWSER_VIEW,
+                    new MenuContentfulViewWrapper<>(
+                            new BrowserView(), rootVM.getResultVM(), "Event Browser",
+                            "Event Browser", FontAwesomeIcon.LIST_UL, this)
+            );
+            applicationViews.put(ApplicationMenuViews.DEMO_VIEW,
+                    new MenuContentfulViewWrapper<>(
+                            new DemoView(), new ViewModelImpl(), "Demo Item 3",
+                            "Demo Content Title 3", FontAwesomeIcon.ANCHOR, this)
+            );
         }
-        return _applicationViews;
+        return applicationViews;
     }
 
-    private boolean menuOpen = true;
-
-    private void toggleMenuList(@Nullable ActionEvent e) {
-        logger.debug(LogMarkers.UI_EVENT, "Toggle Menu to {}", !menuOpen);
-        if (menuOpen) {
+    private void toggleMenuDrawer(@Nullable ActionEvent e) {
+        logger.debug(LogMarkers.UI_EVENT, "Toggle Menu to {}", !isMenuDrawerOpen);
+        if (isMenuDrawerOpen) {
             menuVBox.setMinWidth(30D);
             menuVBox.setPrefWidth(30D);
             menuVBox.setMaxWidth(30D);
@@ -174,47 +192,13 @@ public class MenuPresenter implements Initializable {
             menuVBox.setPrefWidth(150D);
             menuVBox.setMaxWidth(150D);
         }
-        menuOpen = !menuOpen;
+        isMenuDrawerOpen = !isMenuDrawerOpen;
     }
 
     private void setupWindowListener() {
-        closeBtn.setOnAction(e -> {
-            logger.debug(LogMarkers.WINDOW, "EXIT pressed");
-            Platform.exit();
-        });
-        maximizeBtn.setOnAction(e -> {
-            logger.debug(LogMarkers.WINDOW, "MAXIMIZE pressed");
-            Stage stage = (Stage) ((Button) e.getSource()).getScene().getWindow();
-            stage.setMaximized(!stage.isMaximized());
-        });
-        minimizeBtn.setOnAction(e -> {
-            logger.debug(LogMarkers.WINDOW, "MINIMIZE pressed");
-            Stage stage = (Stage) ((Button) e.getSource()).getScene().getWindow();
-            stage.setIconified(true);
-        });
-        menubarHBox.setOnMousePressed(e -> {
-            originEvent = e;
-            Stage stage = (Stage) ((HBox) originEvent.getSource()).getScene().getWindow();
-            if (!stage.isMaximized()) {
-                xOffset = stage.getX() - originEvent.getScreenX();
-                yOffset = stage.getY() - originEvent.getScreenY();
-            }
-        });
-        menubarHBox.setOnDragDetected(e -> {
-            Stage stage = (Stage) ((HBox) originEvent.getSource()).getScene().getWindow();
-            if (stage.isMaximized()) {
-                double widthPercent = originEvent.getSceneX() / stage.getWidth();
-                stage.setMaximized(false);
-                stage.setX(originEvent.getScreenX() - stage.getWidth() * widthPercent);
-                stage.setY(originEvent.getY());
-                xOffset = stage.getX() - originEvent.getScreenX();
-                yOffset = stage.getY() - originEvent.getScreenY();
-            }
-        });
-        menubarHBox.setOnMouseDragged(e -> {
-            Stage stage = (Stage) ((HBox) e.getSource()).getScene().getWindow();
-            stage.setX(e.getScreenX() + xOffset);
-            stage.setY(e.getScreenY() + yOffset);
-        });
+        WindowEventHelper.closeApplicationImpl(closeBtn);
+        WindowEventHelper.maximizeApplicationImpl(maximizeBtn);
+        WindowEventHelper.minimizeApplicationImpl(minimizeBtn);
+        WindowEventHelper.draggableApplicationWindowImpl(menubarHBox);
     }
 }

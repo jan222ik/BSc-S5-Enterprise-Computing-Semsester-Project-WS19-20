@@ -27,7 +27,7 @@
         <dependency>
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx</artifactId>
-            <version>8.9</version>
+            <version>8.8</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
         <dependency>
@@ -40,7 +40,7 @@
             <groupId>advanceticketsale.persistence</groupId>
             <artifactId>persistence</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>advanceticketsale.util</groupId>
@@ -53,6 +53,18 @@
             <artifactId>advanceticketsale</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>advanceticketsale.core</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>advanceticketsale.dtos</groupId>
+            <artifactId>dtos</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -2,14 +2,14 @@ package at.fhv.itb17.s5.teamb.fxapp.views.content.search;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -55,9 +55,12 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
     @FXML
     private TextField eventTE;
     @FXML
+    private TextField genreTE;
+    @FXML
     private TextField artistTE;
     @FXML
-    private ChoiceBox<String> genreChoiceBox;
+    private TextField locationTF;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -75,13 +78,13 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
 
     @Override
     public void onCreate(SearchVM viewModel, NavigationStackActions<SearchVM> navActions) {
-        searchBtn.setOnAction(e -> navActions.changeToMenuItem(1,
+        searchBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW,
                 () -> NotificationsHelper.error("Error", "Could not switch to menuitem!")));
     }
 
     @Override
     public void onReturned(@NotNull SearchVM viewModel) {
-        restore(viewModel.getLatestSearchViewState());
+        restore(viewModel);
     }
 
     @Override
@@ -89,32 +92,36 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         viewModel.setLatestSearchViewState(saveState(viewModel.getLatestSearchViewState()));
     }
 
-    private void restore(SearchVM.SearchViewState state) {
+    private void restore(SearchVM viewModel) {
+        SearchVM.SearchViewData state = viewModel.getLatestSearchViewState();
         if (state != null) {
-            eventTE.setText(state.event);
-            fromCB.setSelected(state.includeFrom);
-            fromDateDP.setValue(state.fromDate);
-            tillCB.setSelected(state.includeTill);
-            tillDateDP.setValue(state.tillDate);
-            genreChoiceBox.getSelectionModel().select(state.genre);
-            artistTE.setText(state.artist);
+            eventTE.setText(state.getEvent());
+            fromCB.setSelected(state.isIncludeFrom());
+            fromDateDP.setValue(state.getFromDate());
+            tillCB.setSelected(state.isIncludeTill());
+            tillDateDP.setValue(state.getTillDate());
+            genreTE.setText(state.getGenre());
+            artistTE.setText(state.getArtist());
+            locationTF.setText(state.getLocation());
         } else {
             resetFilter();
+            viewModel.setLatestSearchViewState(saveState(null));
         }
     }
 
     @NotNull
-    private SearchVM.SearchViewState saveState(SearchVM.SearchViewState state) {
+    private SearchVM.SearchViewData saveState(SearchVM.SearchViewData state) {
         if (state == null) {
-            state = new SearchVM.SearchViewState();
+            state = new SearchVM.SearchViewData();
         }
-        state.event = eventTE.getText();
-        state.includeFrom = fromCB.isSelected();
-        state.fromDate = fromDateDP.getValue();
-        state.includeTill = tillCB.isSelected();
-        state.tillDate = tillDateDP.getValue();
-        state.genre = genreChoiceBox.getSelectionModel().getSelectedIndex();
-        state.artist = artistTE.getText();
+        state.setEvent(eventTE.getText());
+        state.setIncludeFrom(fromCB.isSelected());
+        state.setFromDate(fromDateDP.getValue());
+        state.setIncludeTill(tillCB.isSelected());
+        state.setTillDate(tillDateDP.getValue());
+        state.setGenre(genreTE.getText());
+        state.setArtist(artistTE.getText());
+        state.setLocation(locationTF.getText());
         return state;
     }
 
@@ -124,7 +131,8 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
         fromDateDP.setValue(LocalDate.now());
         tillCB.setSelected(false);
         tillDateDP.setValue(LocalDate.now().plusMonths(1L));
-        genreChoiceBox.getSelectionModel().selectFirst();
+        genreTE.clear();
         artistTE.clear();
+        locationTF.clear();
     }
 }

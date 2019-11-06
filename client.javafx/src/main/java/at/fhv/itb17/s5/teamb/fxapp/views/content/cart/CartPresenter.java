@@ -1,9 +1,10 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.cart;
 
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ContentfulViewLifeCycle;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -33,8 +34,8 @@ public class CartPresenter implements ContentfulViewLifeCycle<ViewModelImpl> {
             navActions.popLast();
             navActions.showTOS();
         });
-        openItemViewIndex0.setOnAction(e -> navActions.changeToMenuItem(0));
-        openItemViewIndex2.setOnAction(e -> navActions.changeToMenuItem(2));
-        openItemViewIndexOutBound.setOnAction(e -> navActions.changeToMenuItem(Integer.MAX_VALUE, () -> NotificationsHelper.error("Error", "Could not switch to MenuItem")));
+        openItemViewIndex0.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.SEARCH_VIEW));
+        openItemViewIndex2.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.DEMO_VIEW));
+        openItemViewIndexOutBound.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.NOT_EXISTING, () -> NotificationsHelper.error("Error", "Could not switch to MenuItem")));
     }
 }

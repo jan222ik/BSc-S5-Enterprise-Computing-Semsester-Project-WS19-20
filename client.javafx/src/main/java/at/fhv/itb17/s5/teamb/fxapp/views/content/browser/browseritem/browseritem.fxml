@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.browser.browseritem.BrowserItemPresenter">
+    <children>
+        <VBox layoutX="250.0" layoutY="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <HBox>
+                    <children>
+                        <Label fx:id="evtTitleL" maxWidth="1.7976931348623157E308" text="#placeholderTitleEvent" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="dateFromL" maxWidth="1.7976931348623157E308" text="#placeholderDateFrom" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="dateUntilL" layoutX="131.0" layoutY="10.0" maxWidth="1.7976931348623157E308" text="#placeholderDateUntil" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox VBox.vgrow="NEVER">
+                    <children>
+                        <Label fx:id="artistNameL" maxWidth="1.7976931348623157E308" text="#placeholderArtistName" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="genreL" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" text="#placeholderGenre" HBox.hgrow="ALWAYS" />
+                  <Label  layoutX="287.0" layoutY="10.0" maxWidth="1.7976931348623157E308" text="                                     " HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox VBox.vgrow="NEVER">
+                    <children>
+                        <Label text="Occurrences:" HBox.hgrow="NEVER" />
+                    </children>
+                </HBox>
+                <TableView fx:id="occurrenceTable" minHeight="0.0" prefHeight="150.0" VBox.vgrow="NEVER">
+                    <columns>
+                        <TableColumn fx:id="dateCol" prefWidth="75.0" text="Date" />
+                        <TableColumn fx:id="timeCol" prefWidth="75.0" text="Time" />
+                        <TableColumn fx:id="locationCol" prefWidth="75.0" text="Location" />
+                        <TableColumn fx:id="ticketsCol" prefWidth="75.0" text="Tickets" />
+                        <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type" />
+                        <TableColumn fx:id="priceRangeCol" prefWidth="75.0" text="Price" />
+                        <TableColumn fx:id="actionCol" prefWidth="75.0" text="Action" />
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

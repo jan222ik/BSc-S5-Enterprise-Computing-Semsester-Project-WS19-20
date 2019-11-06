@@ -16,43 +16,44 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="searchRootPlane" maxHeight="250.0" maxWidth="600.0" minHeight="250.0" minWidth="600.0" prefHeight="250.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchPresenter">
+<AnchorPane fx:id="searchRootPlane" prefHeight="296.0" prefWidth="531.0" style="-fx-background-color: #2F2F2F;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchPresenter">
     <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
                 <VBox alignment="CENTER" maxWidth="450.0" prefWidth="450.0">
                     <children>
-                        <GridPane fx:id="filterGridPane" alignment="CENTER">
+                        <GridPane fx:id="filterGridPane" alignment="CENTER" prefHeight="191.0" prefWidth="428.0" style="-fx-background-color: #2F2F2F;">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="10.0" />
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                             </rowConstraints>
                             <children>
                                 <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                     <children>
                                         <CheckBox fx:id="fromCB" mnemonicParsing="false" text="from:" textFill="white">
                                             <padding>
-                                                <Insets right="5.0" />
+                                                <Insets right="35.0" />
                                             </padding>
                                         </CheckBox>
-                                        <DatePicker fx:id="fromDateDP" />
+                                        <DatePicker fx:id="fromDateDP" prefHeight="25.0" prefWidth="175.0" />
                                     </children>
                                 </HBox>
                                 <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                     <children>
-                                        <CheckBox fx:id="tillCB" mnemonicParsing="false" text="until:" textFill="white">
+                                        <CheckBox fx:id="tillCB" mnemonicParsing="false" prefHeight="17.0" prefWidth="95.0" text="until:" textFill="white">
                                             <HBox.margin>
-                                                <Insets right="3.0" />
+                                                <Insets right="35.0" />
                                             </HBox.margin>
                                         </CheckBox>
-                                        <DatePicker fx:id="tillDateDP" />
+                                        <DatePicker fx:id="tillDateDP" prefHeight="25.0" prefWidth="218.0" />
                                     </children>
                                 </HBox>
                                 <Label text="Date:" textFill="white" GridPane.rowIndex="1" />
@@ -61,12 +62,17 @@
                                 <TextField fx:id="eventTE" GridPane.columnIndex="1" />
                                 <TextField fx:id="artistTE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                 <Label layoutX="10.0" layoutY="271.0" text="Artist:" textFill="white" GridPane.rowIndex="4" />
-                                <ChoiceBox fx:id="genreChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <TextField fx:id="genreTE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label layoutX="10.0" layoutY="146.0" text="Location:" textFill="white" GridPane.rowIndex="5" />
+                        <TextField fx:id="locationTF" layoutX="200.0" layoutY="142.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                             </children>
                         </GridPane>
                         <HBox fx:id="actionEmitter">
                             <children>
-                                <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin></Region>
                                 <Button fx:id="resetBtn" mnemonicParsing="false" text="Reset Filter">
                            <HBox.margin>
                               <Insets right="5.0" />
@@ -74,22 +80,22 @@
                         </Button>
                                 <Button fx:id="searchBtn" mnemonicParsing="false" text="Search" />
                             </children>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
                         </HBox>
                     </children>
                 </VBox>
          </center>
-         <top>
-            <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
-         </top>
-         <left>
-            <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
-         </left>
          <right>
             <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
          </right>
          <bottom>
             <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
          </bottom>
+         <padding>
+            <Insets left="30.0" top="30.0" />
+         </padding>
       </BorderPane>
     </children>
 </AnchorPane>
