@@ -9,6 +9,7 @@ import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.cart.CartView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
@@ -172,10 +173,10 @@ public class MenuPresenter implements Initializable {
                             new BrowserView(), rootVM.getResultVM(), "Event Browser",
                             "Event Browser", FontAwesomeIcon.LIST_UL, this)
             );
-            applicationViews.put(ApplicationMenuViews.DEMO_VIEW,
+            applicationViews.put(ApplicationMenuViews.CART_VIEW,
                     new MenuContentfulViewWrapper<>(
-                            new DemoView(), new ViewModelImpl(), "Demo Item 3",
-                            "Demo Content Title 3", FontAwesomeIcon.ANCHOR, this)
+                            new CartView(), rootVM.getResultVM(), "Cart",
+                            "Cart", FontAwesomeIcon.SHOPPING_CART, this)
             );
         }
         return applicationViews;

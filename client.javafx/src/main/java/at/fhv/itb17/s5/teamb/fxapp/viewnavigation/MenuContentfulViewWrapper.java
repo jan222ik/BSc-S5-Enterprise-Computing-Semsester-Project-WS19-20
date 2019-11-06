@@ -53,29 +53,32 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     }
 
     @Override
-    public void popToRoot() {
+    public NavigationStackActions<T> popToRoot() {
         for (int i = navigationStack.size(); i > 1; i--) {
             popLast();
         }
+        return this;
     }
 
     @Override
-    public void popLast() {
+    public NavigationStackActions<T> popLast() {
         if (navigationStack.size() > 1) {
             ContentView<T> pop = navigationStack.pop();
             pop.preDestroy(viewModel);
         } else {
             logger.warn(LogMarkers.UI_NAV, "Tried to pop root element of stack");
         }
+        return this;
     }
 
     @Override
-    public void push(ContentView<T> view) {
+    public NavigationStackActions<T> push(ContentView<T> view) {
         navigationStack.push(view);
         if (viewModel == null) {
             logger.error(LogMarkers.UI_NAV, "Model not present: METHOD PUSH");
         }
         view.onCreate(viewModel, this);
+        return this;
     }
 
     @Override
