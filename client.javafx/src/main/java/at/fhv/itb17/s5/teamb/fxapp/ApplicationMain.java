@@ -4,10 +4,13 @@ import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
+import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginView;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuView;
 import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import com.airhacks.afterburner.injection.Injector;
+import com.airhacks.afterburner.views.FXMLView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -44,11 +47,12 @@ public class ApplicationMain extends Application {
         SearchService service = (args.containsKeyword("-mock")) ? new MockSearchServiceImpl() : new RMISearchServiceImpl("localhost", 2345);
         Injector.setModelOrService(SearchService.class, service);
         logger.info(LogMarkers.APPLICATION, "Application Started");
-        MenuView view = new MenuView();
+        boolean withLogin = args.containsKeyword("-login");
+        FXMLView view = (withLogin) ? new LoginView() : new MenuView();
         Scene main = new Scene(
                 view.getView(),
-                Double.parseDouble(args.getArgValue("-width", "800")),
-                Double.parseDouble(args.getArgValue("-height", "400")));
+                Double.parseDouble(args.getArgValue("-width", ((withLogin) ? "600" : "800"))),
+                Double.parseDouble(args.getArgValue("-height", ((withLogin) ? "300" : "400"))));
         primaryStage.setTitle("#PLACEHOLDER");
         primaryStage.initStyle(
                 args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
