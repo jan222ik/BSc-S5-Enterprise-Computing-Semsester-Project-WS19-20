@@ -5,5 +5,5 @@ public enum ApplicationMenuViews {
     BROWSER_VIEW,
     CART_VIEW,
     DEMO_VIEW,
-    NOT_EXISTING //Test only !
+    USER_VIEW, NOT_EXISTING //Test only !
 }

@@ -22,6 +22,11 @@
                   </Button>
                   <Label fx:id="menubarTitle" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="#placeholder" />
                         <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="userBtn" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" prefHeight="30.0" text="#user">
+                     <graphic>
+                        <FontAwesomeIconView fx:id="userIcon" glyphName="USER" />
+                     </graphic>
+                  </Button>
                         <Button fx:id="minimizeBtn" maxHeight="30.0" maxWidth="45.0" minHeight="30.0" minWidth="45.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="45.0" text="_">
                             <HBox.margin>
                                 <Insets right="1.0" />
