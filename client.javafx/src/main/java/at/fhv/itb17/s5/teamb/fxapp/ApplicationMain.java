@@ -64,11 +64,7 @@ public class ApplicationMain extends Application {
         };
         ((LoginPresenter) loginView.getPresenter()).setNextSceneCallback(afterLogin);
         if (withLogin) {
-            Scene main = new Scene(
-                    loginView.getView(),
-                    Double.parseDouble(args.getArgValue("-width", "600")),
-                    Double.parseDouble(args.getArgValue("-height", "300"))
-            );
+            Scene main = new Scene(loginView.getView(), 600D, 300D);
             primaryStage.setScene(main);
             primaryStage.setTitle("#placeholder");
         } else {
