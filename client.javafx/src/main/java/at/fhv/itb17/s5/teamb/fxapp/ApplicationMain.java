@@ -10,13 +10,16 @@ import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuView;
 import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import com.airhacks.afterburner.injection.Injector;
-import com.airhacks.afterburner.views.FXMLView;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 public class ApplicationMain extends Application {
 
@@ -44,9 +47,9 @@ public class ApplicationMain extends Application {
                     .error("#B00020").onError(white).getStyle();
         });
         Injector.setModelOrService(Style.class, style[0]);
-        SearchService service = (args.containsKeyword("-mock")) ? new MockSearchServiceImpl() : new RMISearchServiceImpl("localhost", 2345);
+        SearchService service = (args.containsKeyword("-mock")) ?
+                new MockSearchServiceImpl() : new RMISearchServiceImpl("localhost", 2345);
         Injector.setModelOrService(SearchService.class, service);
-        logger.info(LogMarkers.APPLICATION, "Application Started");
         boolean withLogin = args.containsKeyword("-login");
         LoginView loginView = new LoginView();
         MenuView menuView = new MenuView();
@@ -70,8 +73,11 @@ public class ApplicationMain extends Application {
         } else {
             afterLogin.run();
         }
+        File file = new File("client.javafx/src/main/resources/icon.png");
+        primaryStage.getIcons().add(new Image(new FileInputStream(file)));
         primaryStage.show();
         primaryStage.toFront();
+        logger.info(LogMarkers.APPLICATION, "Application Started");
     }
 
     @Override
