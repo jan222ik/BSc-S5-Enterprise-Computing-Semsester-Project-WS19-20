@@ -48,16 +48,32 @@ public class ApplicationMain extends Application {
         Injector.setModelOrService(SearchService.class, service);
         logger.info(LogMarkers.APPLICATION, "Application Started");
         boolean withLogin = args.containsKeyword("-login");
-        FXMLView view = (withLogin) ? new LoginView() : new MenuView();
-        Scene main = new Scene(
-                view.getView(),
-                Double.parseDouble(args.getArgValue("-width", ((withLogin) ? "600" : "800"))),
-                Double.parseDouble(args.getArgValue("-height", ((withLogin) ? "300" : "400"))));
-        primaryStage.setTitle("#PLACEHOLDER");
+        LoginView loginView = new LoginView();
+        MenuView menuView = new MenuView();
         primaryStage.initStyle(
                 args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
         );
-        primaryStage.setScene(main);
+        Runnable afterLogin = () -> {
+            Scene scene = new Scene(
+                    menuView.getView(),
+                    Double.parseDouble(args.getArgValue("-width", "800")),
+                    Double.parseDouble(args.getArgValue("-height", "400"))
+            );
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Login");
+        };
+        ((LoginPresenter) loginView.getPresenter()).setNextSceneCallback(afterLogin);
+        if (withLogin) {
+            Scene main = new Scene(
+                    loginView.getView(),
+                    Double.parseDouble(args.getArgValue("-width", "600")),
+                    Double.parseDouble(args.getArgValue("-height", "300"))
+            );
+            primaryStage.setScene(main);
+            primaryStage.setTitle("#placeholder");
+        } else {
+            afterLogin.run();
+        }
         primaryStage.show();
         primaryStage.toFront();
     }
