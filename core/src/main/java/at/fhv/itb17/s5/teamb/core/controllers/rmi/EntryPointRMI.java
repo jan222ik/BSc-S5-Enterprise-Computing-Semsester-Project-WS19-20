@@ -1,17 +1,13 @@
 package at.fhv.itb17.s5.teamb.core.controllers.rmi;
 
+import at.fhv.itb17.s5.teamb.core.controllers.general.ClientSessionRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntryPoint;
-import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
 
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.function.Supplier;
 
 public class EntryPointRMI extends EntryPoint {
 
@@ -27,6 +23,13 @@ public class EntryPointRMI extends EntryPoint {
         factoryRMI = new ConnectionFactoryRMI(() -> {
             try {
                 return new SearchServiceRMI(coreImpl.getSearchServiceCore());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }, (ClientSessionRMI client) -> {
+            try {
+                return new BookingServiceRMI(coreImpl.getBookingServiceCore(), client);
             } catch (RemoteException e) {
                 e.printStackTrace();
                 return null;
