@@ -16,7 +16,6 @@ public class EventRepository {
     }
 
     public List<Event> search(List<SearchPair> search) {
-        WhereCondition build = new WhereClauseBuilder().build(search);
-        return ep.getAll(Event.class, build);
+        return ep.getAll(Event.class, search);
     }
 }
