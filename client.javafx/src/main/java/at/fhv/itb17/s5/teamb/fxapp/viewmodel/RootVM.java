@@ -23,4 +23,8 @@ public class RootVM implements ViewModel {
     public String getGetSearchQuery() {
         return searchVM.getLatestSearchViewState().toQueryString();
     }
+
+    public String getUsername() {
+        return "Hugo"; //TODO use actual data
+    }
 }

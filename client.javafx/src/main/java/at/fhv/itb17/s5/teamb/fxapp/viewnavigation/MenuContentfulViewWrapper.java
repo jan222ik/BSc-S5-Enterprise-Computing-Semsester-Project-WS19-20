@@ -25,7 +25,7 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     private MenuPresenter menuPresenter;
     private MenuItemPresenter menuItemPresenter;
     private FontAwesomeIcon icon;
-    boolean isMenuView;
+    private boolean isMenuView;
 
     public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, FontAwesomeIcon icon, boolean isMenuView, MenuPresenter menuPresenter) {
         this.viewModel = viewModel;
@@ -101,6 +101,11 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
                 Arrays.asList(onError).forEach(Runnable::run);
             }
         }
+    }
+
+    @Override
+    public void logout() {
+        logger.debug(LogMarkers.UI_NAV, "Logout user");
     }
 
     public void beforeMenuSwitch() {
