@@ -1,8 +1,12 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import org.hibernate.annotations.Cascade;
-
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Ticket {
@@ -32,6 +36,16 @@ public class Ticket {
         this.bookedCategory = bookedCategory;
         this.bookedRow = bookedRow;
         this.bookedSeat = bookedSeat;
+    }
+
+    public Ticket(Client client, TicketStates state, Event bookedEvent, EventOccurrence bookedOccurrence, EventCategory bookedCategory) {
+        this.client = client;
+        this.state = state;
+        this.bookedEvent = bookedEvent;
+        this.bookedOccurrence = bookedOccurrence;
+        this.bookedCategory = bookedCategory;
+        this.bookedRow = null;
+        this.bookedSeat = null;
     }
 
     public Ticket() {

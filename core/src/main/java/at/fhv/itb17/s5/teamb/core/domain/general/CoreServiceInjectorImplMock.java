@@ -1,13 +1,18 @@
 package at.fhv.itb17.s5.teamb.core.domain.general;
 
 import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCore;
+import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImplMock;
+import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 
 public class CoreServiceInjectorImplMock implements CoreServiceInjector {
 
     private final SearchServiceCore searchServiceCore = new SearchServiceCoreImplMock();
-    private final BookingServiceCore bookingServiceCore = null;
+    private final EntityRepository entityRepository = new EntityRepository();
+    private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
+    private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
 
     public SearchServiceCore getSearchServiceCore() {
         return searchServiceCore;
