@@ -25,8 +25,9 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     private MenuPresenter menuPresenter;
     private MenuItemPresenter menuItemPresenter;
     private FontAwesomeIcon icon;
+    private boolean isMenuView;
 
-    public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, FontAwesomeIcon icon, MenuPresenter menuPresenter) {
+    public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, FontAwesomeIcon icon, boolean isMenuView, MenuPresenter menuPresenter) {
         this.viewModel = viewModel;
         this.icon = icon;
         if (viewModel == null) {
@@ -34,6 +35,7 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
         }
         push(view);
         this.menuName = menuName;
+        this.isMenuView = isMenuView;
         this.title = title;
         this.menuPresenter = menuPresenter;
     }
@@ -101,11 +103,23 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
         }
     }
 
+    @Override
+    public void logout() throws IllegalAccessException {
+        logger.debug(LogMarkers.UI_NAV, "Logout user");
+        menuPresenter.logout();
+    }
+
     public void beforeMenuSwitch() {
         navigationStack.peek().beforeMenuSwitch(viewModel);
     }
 
     public void isCurrentMenuItem(boolean isCurrent) {
-        menuItemPresenter.setSelected(isCurrent);
+        if (menuItemPresenter != null) {
+            menuItemPresenter.setSelected(isCurrent);
+        }
+    }
+
+    public boolean inMenuList() {
+        return isMenuView;
     }
 }

@@ -1,6 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewmodel;
 
-public class RootVM {
+public class RootVM implements ViewModel {
     private SearchVM searchVM;
     private ResultVM resultVM;
 
@@ -22,5 +22,9 @@ public class RootVM {
 
     public String getGetSearchQuery() {
         return searchVM.getLatestSearchViewState().toQueryString();
+    }
+
+    public String getUsername() {
+        return "Hugo"; //TODO use actual data
     }
 }
