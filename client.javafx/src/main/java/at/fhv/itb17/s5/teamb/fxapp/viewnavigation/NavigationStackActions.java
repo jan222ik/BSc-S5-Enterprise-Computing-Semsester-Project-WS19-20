@@ -14,5 +14,5 @@ public interface NavigationStackActions<T extends ViewModel> {
 
     void changeToMenuItem(ApplicationMenuViews viewIdf, Runnable... onError);
 
-    void logout();
+    void logout() throws IllegalAccessException;
 }

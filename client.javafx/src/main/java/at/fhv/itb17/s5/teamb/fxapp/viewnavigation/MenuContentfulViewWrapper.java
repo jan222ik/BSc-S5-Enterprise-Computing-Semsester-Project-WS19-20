@@ -104,8 +104,9 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     }
 
     @Override
-    public void logout() {
+    public void logout() throws IllegalAccessException {
         logger.debug(LogMarkers.UI_NAV, "Logout user");
+        menuPresenter.logout();
     }
 
     public void beforeMenuSwitch() {

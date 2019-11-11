@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.user;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.RootVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
@@ -23,7 +24,14 @@ public class UserPresenter implements ContentfulViewLifeCycle<RootVM> {
     @Override
     public void onCreate(RootVM viewModel, NavigationStackActions<RootVM> navActions) {
         style.hoverBtn(logoutBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.ERROR().asPaint());
-        logoutBtn.setOnAction(e -> navActions.logout());
+        logoutBtn.setOnAction(e -> {
+            try {
+                navActions.logout();
+            } catch (IllegalAccessException ex) {
+                ex.printStackTrace();
+                NotificationsHelper.error("Navigation Exception", "Unable to Logout — View unreachable");
+            }
+        });
     }
 
     @Override

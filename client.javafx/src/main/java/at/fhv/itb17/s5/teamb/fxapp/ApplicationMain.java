@@ -6,6 +6,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginView;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuView;
 import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
@@ -17,14 +18,18 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class ApplicationMain extends Application {
 
     private static final Logger logger = LogManager.getLogger(ApplicationMain.class);
     private ArgumentParser args;
+
+    private Runnable createMenu;
 
     @Override
     public void init() throws Exception {
@@ -35,50 +40,63 @@ public class ApplicationMain extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         Thread.currentThread().setName("FX Main");
-        final Style[] style = {new Style()};
-        args.checkForKeyword("-light", a -> {
-            final String white = "#FFFFFF";
-            final String black = "#000000";
-            style[0] = Style.builder()
-                    .primary("#6200EE").onPrimary(black)
-                    .secondary("#03DAC6").onSecondary(black)
-                    .background(white).onBackground(black)
-                    .surface(white).onSurface(black)
-                    .error("#B00020").onError(white).getStyle();
-        });
-        Injector.setModelOrService(Style.class, style[0]);
+        Injector.setModelOrService(Style.class, new Style());
         SearchService service = (args.containsKeyword("-mock")) ?
                 new MockSearchServiceImpl() : new RMISearchServiceImpl("localhost", 2345);
         Injector.setModelOrService(SearchService.class, service);
         boolean withLogin = args.containsKeyword("-login");
-        LoginView loginView = new LoginView();
-        MenuView menuView = new MenuView();
-        primaryStage.initStyle(
-                args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
-        );
-        Runnable afterLogin = () -> {
-            Scene scene = new Scene(
-                    menuView.getView(),
-                    Double.parseDouble(args.getArgValue("-width", "800")),
-                    Double.parseDouble(args.getArgValue("-height", "400"))
-            );
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("Login");
-        };
-        ((LoginPresenter) loginView.getPresenter()).setNextSceneCallback(afterLogin);
+
+        Runnable createLogin = () -> generateLogin(primaryStage);
+        createMenu = () -> generateMenu(primaryStage);
+
         if (withLogin) {
-            Scene main = new Scene(loginView.getView(), 600D, 300D);
-            primaryStage.setScene(main);
-            primaryStage.setTitle("#placeholder");
+            createLogin.run();
         } else {
-            afterLogin.run();
+            createMenu.run();
         }
-        File file = new File("client.javafx/src/main/resources/icon.png");
-        primaryStage.getIcons().add(new Image(new FileInputStream(file)));
-        primaryStage.show();
-        primaryStage.toFront();
+        showStage(primaryStage);
         logger.info(LogMarkers.APPLICATION, "Application Started");
     }
+
+    @NotNull
+    @SuppressWarnings("UnusedReturnValue")
+    private MenuView generateMenu(Stage primary) {
+        MenuView menuView = new MenuView();
+        Scene scene = new Scene(
+                menuView.getView(),
+                Double.parseDouble(args.getArgValue("-width", "800")),
+                Double.parseDouble(args.getArgValue("-height", "400"))
+        );
+        ((MenuPresenter) menuView.getPresenter()).setLogoutCallback(() -> generateLogin(primary));
+        showScene(primary, scene, "#placeholder");
+        return menuView;
+    }
+
+    @NotNull
+    @SuppressWarnings("UnusedReturnValue")
+    private LoginView generateLogin(@NotNull Stage primary) {
+        LoginView loginView = new LoginView();
+        ((LoginPresenter) loginView.getPresenter()).setNextSceneCallback(createMenu);
+        Scene scene = new Scene(loginView.getView(), 600D, 300D);
+        showScene(primary, scene, "Login");
+        return loginView;
+    }
+
+    private void showScene(Stage primary, Scene scene, String title) {
+        primary.setScene(scene);
+        primary.setTitle(title);
+    }
+
+    private void showStage(@NotNull Stage primary) throws FileNotFoundException {
+        primary.initStyle(
+                args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
+        );
+        File file = new File("client.javafx/src/main/resources/icon.png");
+        primary.getIcons().add(new Image(new FileInputStream(file)));
+        primary.show();
+        primary.toFront();
+    }
+
 
     @Override
     public void stop() throws Exception {

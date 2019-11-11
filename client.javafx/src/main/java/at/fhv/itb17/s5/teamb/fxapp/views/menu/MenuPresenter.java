@@ -85,6 +85,7 @@ public class MenuPresenter implements Initializable {
     private MenuContentfulViewWrapper current;
     private boolean isMenuDrawerOpen = true;
     private SimpleBooleanProperty userViewOpen = new SimpleBooleanProperty(false);
+    private Runnable logoutCallback = null;
 
 
     @Override
@@ -225,5 +226,14 @@ public class MenuPresenter implements Initializable {
         WindowEventHelper.maximizeApplicationImpl(maximizeBtn);
         WindowEventHelper.minimizeApplicationImpl(minimizeBtn);
         WindowEventHelper.draggableApplicationWindowImpl(menubarHBox);
+    }
+
+    public void setLogoutCallback(Runnable callbackLogout) {
+        this.logoutCallback = callbackLogout;
+    }
+
+    public void logout() throws IllegalAccessException {
+        if (logoutCallback == null) throw new IllegalAccessException("Apply Setter before Invocation");
+        logoutCallback.run();
     }
 }
