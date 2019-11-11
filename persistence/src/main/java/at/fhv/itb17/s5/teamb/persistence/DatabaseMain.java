@@ -61,9 +61,15 @@ public class DatabaseMain {
 
         events.add(new Event("Weinverkostung", "Verein der feinen Trinker", "Kulturbesäufnis", occurrences, organizer, new LinkedList<>(Arrays.asList(new Artist("Die Blechtrommel")))));
 
+        //repository.saveOrUpdate(ticket);
+        //System.out.println("ticket = " + ticket.getTicketId());
+
+
 
         repository.saveOrUpdate(event);
         events.forEach(e -> repository.saveOrUpdate(e));
+
+
 
 //        repository.save(address);
 //        repository.saveOrUpdate(client);
@@ -88,7 +94,7 @@ public class DatabaseMain {
         search.forEach(e -> System.out.println(e));
      */
         TicketRepository ticketRepository = new TicketRepository(repository);
-        ticketRepository.bookIfFree(ticket);
+        Ticket ticket1 = ticketRepository.bookIfFree(ticket);
         System.out.println("hello");
     }
 

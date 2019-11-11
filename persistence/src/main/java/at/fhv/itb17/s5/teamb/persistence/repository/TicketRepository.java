@@ -6,8 +6,11 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,10 +23,16 @@ public class TicketRepository {
     }
 
     public Ticket bookIfFree(Ticket ticket) {
-        Optional<Ticket> first = bookIfFree(Collections.singletonList(ticket)).stream().findFirst();
-        return first.orElse(null);
+        List<Ticket> tickets = bookIfFree(Collections.singletonList(ticket));
+        if (tickets != null) {
+            Optional<Ticket> first = tickets.stream().findFirst();
+            return first.orElse(null);
+        } else {
+            return null;
+        }
     }
 
+    @Nullable
     public List<Ticket> bookIfFree(List<Ticket> tickets) {
         SessionFactory sessionFactory = entityRepository.getSessionFactory();
         Session currentSession = sessionFactory.getCurrentSession();
@@ -40,25 +49,29 @@ public class TicketRepository {
                         currentSession.save(ticket);
                     } else {
                         transaction.rollback();
-                        break;
+                        return null;
                     }
                 } else {
-                    EventCategory eventCategory = currentSession.get(EventCategory.class, ticket.getBookedCategory().getEventCategoryId());
+                    EventCategory eventCategory = ticket.getBookedCategory();
+                    currentSession.refresh(eventCategory); //TODO Can be null check against null if true -> ret null
                     if (eventCategory.isFreeSeating()) {
                         if (eventCategory.getTotalSpace() - eventCategory.getUsedSpace() > 0) {
+                            currentSession.detach(eventCategory);
                             currentSession.save(ticket);
                             eventCategory.incUsed();
-                            currentSession.saveOrUpdate(eventCategory);
+                            currentSession.save(eventCategory);
                         }
                     } else {
                         transaction.rollback();
-                        break;
+                        return null;
                     }
                 }
             }
             transaction.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             transaction.rollback();
+            return null;
         }
         return tickets;
     }
