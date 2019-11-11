@@ -88,6 +88,20 @@ public class DatabaseMain {
     }
 
     public static void main(String... test) {
-        test();
+//        test();
+        searchTest();
+    }
+
+    public static void searchTest(){
+
+
+
+        EventRepository eventRepository = new EventRepository(new EntityRepository());
+        List<SearchPair> searchPair = new ArrayList<>();
+        searchPair.add(new SearchPair(SearchCategories.ARTIST_NAME, "capi"));
+        List<Event> search = eventRepository.search(searchPair);
+        for (Event event : search) {
+            System.out.println(event.getTitle());
+        }
     }
 }
