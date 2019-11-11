@@ -201,6 +201,7 @@ public class MenuPresenter implements Initializable {
                             new UserView(), rootVM, "User",
                             "User", FontAwesomeIcon.ANCHOR, false, this)
             );
+            userBtn.setText(rootVM.getUsername());
         }
         return applicationViews;
     }
