@@ -13,6 +13,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import at.fhv.itb17.s5.teamb.persistence.entities.TicketStates;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
 import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
@@ -79,15 +80,21 @@ public class DatabaseMain {
 //        repository.save(new Address("austria", "6850", "hörbranz", "nemetzstraße", "420"));
 //        repository.save(new Address("deutschland", "61250", "landsberg", "jannikstreet", "0815"));
 
-
+    /*
         EventRepository eventRepository = new EventRepository(new EntityRepository());
         List<SearchPair> searchPairs = new ArrayList<>();
         searchPairs.add(new SearchPair(SearchCategories.EVENT_NAME, "Spo"));
         List<Event> search = eventRepository.search(searchPairs);
         search.forEach(e -> System.out.println(e));
+     */
+        TicketRepository ticketRepository = new TicketRepository(repository);
+        ticketRepository.bookIfFree(ticket);
+        System.out.println("hello");
     }
 
     public static void main(String... test) {
         test();
     }
+
+
 }

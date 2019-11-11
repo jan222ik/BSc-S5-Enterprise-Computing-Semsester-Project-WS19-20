@@ -1,20 +1,14 @@
 package at.fhv.itb17.s5.teamb.persistence.repository;
 
 
-import at.fhv.itb17.s5.teamb.persistence.util.WhereClause;
-import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
 import at.fhv.itb17.s5.teamb.persistence.util.WhereCondition;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -62,19 +56,19 @@ public class EntityRepository {
         });
     }
 
-    public boolean atomicSave(final List<Object> objects){
+    public boolean atomicSave(final List<Object> objects) {
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
         if (!(transaction.isActive())) {
             transaction.begin();
         }
-        try{
+        try {
             for (Object object : objects) {
                 currentSession.save(object);
             }
             transaction.commit();
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             transaction.rollback();
             return false;
         }
@@ -122,5 +116,9 @@ public class EntityRepository {
             transaction.rollback();
         }
         return null;
+    }
+
+    SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 }
