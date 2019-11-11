@@ -58,7 +58,7 @@ public class BookingServiceCoreImpl implements BookingServiceCore {
     @Nullable
     private Ticket handleTicket(Client client, TicketStates state, Event event, EventOccurrence occ, EventCategory cat, LocationRow row, LocationSeat seat) {
         Ticket ticket = new Ticket(client, state, event, occ, cat, row, seat);
-        return ticketRepository.bookIfMissing(ticket);
+        return ticketRepository.bookIfFree(ticket);
     }
 
     @Nullable
@@ -67,6 +67,6 @@ public class BookingServiceCoreImpl implements BookingServiceCore {
         for (CatRowSeatWrapper wrapper : catRowSeatWrappers) {
             tickets.add(new Ticket(client, state, event, occ, wrapper.getCat(), wrapper.getRow(), wrapper.getSeat()));
         }
-        return ticketRepository.bookIfMissing(tickets);
+        return ticketRepository.bookIfFree(tickets);
     }
 }

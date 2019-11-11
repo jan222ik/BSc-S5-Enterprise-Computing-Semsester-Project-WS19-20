@@ -12,15 +12,16 @@ public class TicketRepository {
         this.entityRepository = entityRepository;
     }
 
-    public Ticket bookIfMissing(Ticket ticket) {
+    public Ticket bookIfFree(Ticket ticket) {
         int i = entityRepository.hashCode();
         //TODO LERCH IMPL
         return ticket;
     }
 
-    public List<Ticket> bookIfMissing(List<Ticket> tickets) {
-        int i = entityRepository.hashCode();
-        //TODO LERCH IMPL
+    public List<Ticket> bookIfFree(List<Ticket> tickets) {
+        for (Ticket ticket : tickets) {
+            bookIfFree(ticket);
+        }
         return tickets;
     }
 

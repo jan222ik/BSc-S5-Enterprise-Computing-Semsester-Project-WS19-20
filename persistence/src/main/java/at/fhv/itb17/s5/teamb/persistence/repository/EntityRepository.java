@@ -37,7 +37,10 @@ public class EntityRepository {
 
     public void save(final Object o) {
         logger.trace(LogMarkers.DB, "Save Object {}", o);
-        this.doInTransaction(session -> {session.persist(o); return null;});
+        this.doInTransaction(session -> {
+            session.persist(o);
+            return null;
+        });
     }
 
 
@@ -57,7 +60,24 @@ public class EntityRepository {
             session.saveOrUpdate(o);
             return null;
         });
+    }
 
+    public boolean atomicSave(final List<Object> objects){
+        Session currentSession = sessionFactory.getCurrentSession();
+        Transaction transaction = currentSession.getTransaction();
+        if (!(transaction.isActive())) {
+            transaction.begin();
+        }
+        try{
+            for (Object object : objects) {
+                currentSession.save(object);
+            }
+            transaction.commit();
+            return true;
+        }catch (Exception e){
+            transaction.rollback();
+            return false;
+        }
     }
 
     public <T> List<T> getAll(@NotNull final Class<T> type, Predicate... whereClauses) {
