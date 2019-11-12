@@ -3,6 +3,7 @@ package at.fhv.itb17.s5.teamb.core.controllers.rmi;
 import at.fhv.itb17.s5.teamb.core.controllers.general.BookingService;
 import at.fhv.itb17.s5.teamb.core.controllers.general.ClientSessionRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.general.FrontEndClient;
+import at.fhv.itb17.s5.teamb.core.controllers.general.IFrontEndClient;
 import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
 
 import java.rmi.RemoteException;
@@ -26,7 +27,8 @@ public class ConnectionFactoryRMI extends UnicastRemoteObject implements IConnec
     }
 
     @Override
-    public BookingService createBookingService(FrontEndClient feClient, String username, String password) throws RemoteException {
+    public BookingService createBookingService(IFrontEndClient feClient, String username, String password) throws RemoteException {
+        //TODO Insert sec manager call to auth user
         return bookingServiceInstanceSupplier.apply(new ClientSessionRMI(username, password, feClient));
     }
 }

@@ -15,7 +15,7 @@ public class TestRMI {
         rmi = new RMISearchServiceImpl("localhost", 2345);
     }
 
-    @Test
+    //@Test
 
     public void checkRMI() {
         System.out.println("RUN");

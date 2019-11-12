@@ -1,13 +1,12 @@
 package at.fhv.itb17.s5.teamb.core.controllers.general;
 
-import java.rmi.server.UnicastRemoteObject;
-
 public class ClientSessionRMI {
     private String username;
     private String password;
-    private UnicastRemoteObject client;
+    private IFrontEndClient client;
 
-    public ClientSessionRMI(String username, String password, UnicastRemoteObject client) {
+    public ClientSessionRMI(String username, String password, IFrontEndClient client) {
+        System.out.println("client = " + client);
         this.username = username;
         this.password = password;
         this.client = client;

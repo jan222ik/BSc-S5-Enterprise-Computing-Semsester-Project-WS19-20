@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.rmi;
 
 import at.fhv.itb17.s5.teamb.core.controllers.general.FrontEndClient;
+import at.fhv.itb17.s5.teamb.core.controllers.general.IFrontEndClient;
 import at.fhv.itb17.s5.teamb.core.controllers.rmi.EntryPointRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.rmi.IConnectionFactoryRMI;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
@@ -12,6 +13,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 
 public class RMISearchServiceImpl implements SearchService {
@@ -22,11 +24,12 @@ public class RMISearchServiceImpl implements SearchService {
     private at.fhv.itb17.s5.teamb.core.controllers.general.BookingService remoteBookingService = null;
 
     private IConnectionFactoryRMI stub;
+    private Registry registry;
 
     public RMISearchServiceImpl(String host, int port) throws RemoteException {
         System.setSecurityManager(new SecManager());
         try {
-            Registry registry = LocateRegistry.getRegistry(host, port);
+            registry = LocateRegistry.getRegistry(host, port);
 
             stub = (IConnectionFactoryRMI) registry.lookup(EntryPointRMI.FACTORY_BIND_NAME);
             System.out.println("stub = " + stub);
@@ -40,7 +43,8 @@ public class RMISearchServiceImpl implements SearchService {
 
     public boolean doLoginBooking(String username, String password) {
         try {
-            FrontEndClient client = new FrontEndClient();
+            IFrontEndClient client = new FrontEndClient();
+            //UnicastRemoteObject.exportObject(client, 2345);
             remoteBookingService = stub.createBookingService(client, username, password);
             if (remoteBookingService != null) {
                 return true;

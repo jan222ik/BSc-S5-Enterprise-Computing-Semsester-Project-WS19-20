@@ -31,7 +31,7 @@ public class DatabaseMain {
 
     private static void test() {
         Address address = new Address("AT", "685ftui0", "Do", "ABCStr.", "4711");
-        Client client = new Client("test_client", "Hugo Hugo", "pw", "salt", ClientRoles.EXTERNAL, address);
+        Client client = new Client("test_client", "Hugo Hugo", ClientRoles.EXTERNAL, address);
         EventCategory g21 = new EventCategory("G21", 9001, 500, 69);
         EventCategory g16 = new EventCategory("G16", 12312312, 19, 3);
         EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)), address);

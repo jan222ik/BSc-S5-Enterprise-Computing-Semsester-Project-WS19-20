@@ -41,7 +41,9 @@ public class ApplicationMain extends Application {
                     .error("#B00020").onError(white).getStyle();
         });
         Injector.setModelOrService(Style.class, style[0]);
-        SearchService service = (args.containsKeyword("-mock")) ? new MockSearchServiceImpl() : new RMISearchServiceImpl("localhost", 2345);
+        RMISearchServiceImpl localhost = new RMISearchServiceImpl("0.0.0.0", 2345);
+        localhost.doLoginBooking("Hans Wurscht", "password1234");
+        SearchService service = (args.containsKeyword("-mock")) ? new MockSearchServiceImpl() : localhost;
         Injector.setModelOrService(SearchService.class, service);
         logger.info(LogMarkers.APPLICATION, "Application Started");
         MenuView view = new MenuView();
