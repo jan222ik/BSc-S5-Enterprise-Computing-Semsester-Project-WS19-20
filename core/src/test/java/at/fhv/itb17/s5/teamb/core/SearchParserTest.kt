@@ -17,8 +17,8 @@ internal class SearchParserTest {
     private val now: String = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     private val in7: String = LocalDate.now().plusDays(7L).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     private val evtName: String = "A fancy concert"
-    private val validString: String = "-until=\"$now\" -from=\"$in7\" -event=\"$evtName\""
-    private val validSingle: String = "-event=\"$evtName\""
+    private val validString: String = "-until=\"$now\" -from=\"$in7\" -title=\"$evtName\""
+    private val validSingle: String = "-title=\"$evtName\""
 
     @Test
     fun `Parsing Search Successful`() {

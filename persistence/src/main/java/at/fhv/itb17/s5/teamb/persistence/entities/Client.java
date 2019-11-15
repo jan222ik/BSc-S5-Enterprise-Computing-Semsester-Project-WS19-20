@@ -7,18 +7,14 @@ public class Client {
     @Id
     private String username;
     private String name;
-    private String password;
-    private String salt;
     @Enumerated
     private ClientRoles role;
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
 
-    public Client(String username, String name, String password, String salt, ClientRoles role, Address address) {
+    public Client(String username, String name, ClientRoles role, Address address) {
         this.username = username;
         this.name = name;
-        this.password = password;
-        this.salt = salt;
         this.role = role;
         this.address = address;
     }
@@ -40,22 +36,6 @@ public class Client {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 
     public ClientRoles getRole() {

@@ -1,10 +1,18 @@
 package at.fhv.itb17.s5.teamb.core.domain.general;
 
+import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCore;
+import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImpl;
-import at.fhv.itb17.s5.teamb.persistence.entities.*;
+import at.fhv.itb17.s5.teamb.persistence.entities.Address;
+import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
+import at.fhv.itb17.s5.teamb.persistence.entities.Event;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
+import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -17,6 +25,8 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final EntityRepository entityRepository = new EntityRepository();
     private final EventRepository eventRepository = new EventRepository(entityRepository);
     private final SearchServiceCore searchServiceCore = new SearchServiceCoreImpl(eventRepository);
+    private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
+    private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
 
     public CoreServiceInjectorImpl() {
         addDBDATA();
@@ -49,8 +59,8 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         List<EventOccurrence> sceneOccurrences = new ArrayList<>();
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2020, 06,12),
-                        LocalTime.of(12,30,0),
+                new EventOccurrence(LocalDate.of(2020, 06, 12),
+                        LocalTime.of(12, 30, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 5000, 30, 0),
                                 new EventCategory("Standard", 2000, 200, 0)
@@ -58,8 +68,8 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
                         new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
                 ));
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2021, 06,10),
-                        LocalTime.of(13, 0,0),
+                new EventOccurrence(LocalDate.of(2021, 06, 10),
+                        LocalTime.of(13, 0, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 5500, 40, 0),
                                 new EventCategory("Standard", 2500, 250, 0)
@@ -67,8 +77,8 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
                         new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
                 ));
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2020, 06,15),
-                        LocalTime.of(12,0,0),
+                new EventOccurrence(LocalDate.of(2020, 06, 15),
+                        LocalTime.of(12, 0, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 6000, 50, 0),
                                 new EventCategory("Standard", 3000, 400, 0)
@@ -84,14 +94,14 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         sceneWritingOccurence.add(
                 new EventOccurrence(
                         LocalDate.of(2019, 8, 14),
-                        LocalTime.of(16, 30,0),
+                        LocalTime.of(16, 30, 0),
                         Arrays.asList(
                                 new EventCategory("Standardkarte", 5000, 50, 0)
                         ), new Address("Österreich", "6850", "Dornbirn", "Marktstraße", "19")));
         sceneWritingOccurence.add(
                 new EventOccurrence(
                         LocalDate.of(2019, 8, 20),
-                        LocalTime.of(16, 0,0),
+                        LocalTime.of(16, 0, 0),
                         Arrays.asList(
                                 new EventCategory("Standardkarte", 5000, 50, 0)
                         ), new Address("Österreich", "6850", "Dornbirn", "Marktstraße", "19")
@@ -100,21 +110,21 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         List<EventOccurrence> sponsionOccurences = new ArrayList<>();
         sponsionOccurences.add(
                 new EventOccurrence(
-                        LocalDate.of(2019, 10,20),
-                        LocalTime.of(10,0,0),
+                        LocalDate.of(2019, 10, 20),
+                        LocalTime.of(10, 0, 0),
                         Arrays.asList(
                                 new EventCategory("Gratis", 0, 350, 0)
                         ), new Address("Östrreich", "6810", "Bregenz", "Seestraße", "12")
                 ));
 
         List<EventOccurrence> klaasOccurence = new ArrayList<>();
-        klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 01,15), LocalTime.of(18,0,0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 0)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
-        klaasOccurence.add(new EventOccurrence(LocalDate.of(2019, 01,22), LocalTime.of(18,0,0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 10)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
-        klaasOccurence.add(new EventOccurrence(LocalDate.of(2019, 01,29), LocalTime.of(18,0,0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 11)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
+        klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 01, 15), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 0)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
+        klaasOccurence.add(new EventOccurrence(LocalDate.of(2019, 01, 22), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 10)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
+        klaasOccurence.add(new EventOccurrence(LocalDate.of(2019, 01, 29), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 11)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
 
         List<EventOccurrence> kochshowOccurence = new ArrayList<>();
-        kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12,20), LocalTime.of(16,30,0), Arrays.asList(new EventCategory("Standardeintritt", 500, 80, 0)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
-        kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12,25), LocalTime.of(18,0,0), Arrays.asList(new EventCategory("Standardeintritt", 500, 80, 0)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
+        kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12, 20), LocalTime.of(16, 30, 0), Arrays.asList(new EventCategory("Standardeintritt", 500, 80, 0)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
+        kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12, 25), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 500, 80, 0)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
 
         List<Event> events = new LinkedList<>();
 
@@ -128,7 +138,13 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
     }
 
+    @Override
     public SearchServiceCore getSearchServiceCore() {
         return searchServiceCore;
+    }
+
+    @Override
+    public BookingServiceCore getBookingServiceCore() {
+        return bookingServiceCore;
     }
 }
