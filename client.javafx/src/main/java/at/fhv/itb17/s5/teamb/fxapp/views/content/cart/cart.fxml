@@ -1,28 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.cart.CartPresenter">
+<AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.cart.CartPresenter">
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Button fx:id="backBtn" mnemonicParsing="false" text="Button" />
-            <TextField fx:id="syncText" promptText="Sycronized With Viewmodel" />
-            <TableView prefHeight="200.0" prefWidth="200.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="C1" />
-                <TableColumn prefWidth="75.0" text="C2" />
-              </columns>
-            </TableView>
-             <Button fx:id="openItemViewIndex0" mnemonicParsing="false" text="to Menu Item 0" />
-             <Button fx:id="openItemViewIndex2" mnemonicParsing="false" text="to Menu Item 2" />
-             <Button fx:id="openItemViewIndexOutBound" mnemonicParsing="false" text="to Menu Item Out Of Bounds" />
-         </children>
-      </VBox>
+       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
+           <VBox.margin>
+               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+           </VBox.margin>
+           <children>
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Button fx:id="backBtn" mnemonicParsing="false" text="back to browser" />
+               </children>
+            </HBox>
+               <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                   <children>
+                  <HBox>
+                     <children>
+                             <Label text="Booked:" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="clearBtn" mnemonicParsing="false" text="Clear" />
+                     </children>
+                  </HBox>
+                       <JFXListView fx:id="categoriesLV" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                   </children>
+               </VBox>
+             <HBox alignment="CENTER_RIGHT">
+                 <children>
+                     <Label text="Total Price:">
+                         <HBox.margin>
+                             <Insets right="10.0" />
+                         </HBox.margin>
+                     </Label>
+                     <Label fx:id="totalPriceL" text="#placholderTotalPrice">
+                         <HBox.margin>
+                             <Insets right="10.0" />
+                         </HBox.margin>
+                     </Label>
+                     <Label layoutX="10.0" layoutY="10.0" text="Total Amount:">
+                         <HBox.margin>
+                             <Insets right="10.0" />
+                         </HBox.margin>
+                     </Label>
+                     <Label fx:id="totalAmountL" layoutX="176.0" layoutY="10.0" text="#placeholderTotalAmount">
+                         <HBox.margin>
+                             <Insets right="10.0" />
+                         </HBox.margin>
+                     </Label>
+                 </children>
+             </HBox>
+            <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+               <children>
+                  <Button fx:id="reserveBtn" mnemonicParsing="false" text="Reserve" />
+                  <Button fx:id="buyBtn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Buy" />
+               </children>
+            </HBox>
+           </children>
+       </VBox>
    </children>
 </AnchorPane>

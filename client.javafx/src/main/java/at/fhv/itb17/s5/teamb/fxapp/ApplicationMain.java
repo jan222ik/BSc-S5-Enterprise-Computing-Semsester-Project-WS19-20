@@ -1,7 +1,11 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
+import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
+import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
@@ -20,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,6 +35,7 @@ public class ApplicationMain extends Application {
     private ArgumentParser args;
 
     private Runnable createMenu;
+    private RMIController rmiController;
 
     @Override
     public void init() throws Exception {
@@ -41,9 +47,19 @@ public class ApplicationMain extends Application {
     public void start(Stage primaryStage) throws Exception {
         Thread.currentThread().setName("FX Main");
         Injector.setModelOrService(Style.class, new Style());
-        SearchService service = (args.containsKeyword("-mock")) ?
-                new MockSearchServiceImpl() : new RMISearchServiceImpl("localhost", 2345);
-        Injector.setModelOrService(SearchService.class, service);
+        SearchService searchService;
+        BookingService bookingService;
+        if (args.containsKeyword("-mock")) {
+            searchService = new MockSearchServiceImpl();
+            bookingService = new MockBookingServiceImpl();
+        } else {
+            rmiController = new RMIController("localhost", 2345);
+            searchService = new RMISearchServiceImpl(rmiController);
+            bookingService = new RMIBookingServiceImpl(rmiController);
+
+        }
+        Injector.setModelOrService(SearchService.class, searchService);
+        Injector.setModelOrService(BookingService.class, bookingService);
         boolean withLogin = args.containsKeyword("-login");
 
         Runnable createLogin = () -> generateLogin(primaryStage);
@@ -52,6 +68,7 @@ public class ApplicationMain extends Application {
         if (withLogin) {
             createLogin.run();
         } else {
+            bookingService.doLoginBooking("backdoor", "backdoorPWD");
             createMenu.run();
         }
         showStage(primaryStage);
@@ -101,6 +118,7 @@ public class ApplicationMain extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
+        rmiController.stopRMI();
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 }

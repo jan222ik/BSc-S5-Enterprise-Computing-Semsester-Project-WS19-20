@@ -1,8 +1,10 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
+import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.CartVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ResultVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.RootVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
@@ -48,6 +50,8 @@ public class MenuPresenter implements Initializable {
     private static Style style;
     @Inject
     private SearchService searchService;
+    @Inject
+    private BookingService bookingService;
 
     private static Background background;
     private static Background backgroundError;
@@ -181,6 +185,7 @@ public class MenuPresenter implements Initializable {
             applicationViews = new EnumMap<>(ApplicationMenuViews.class);
             RootVM rootVM = new RootVM();
             rootVM.setSearchVM(new SearchVM());
+            rootVM.setCartVM(new CartVM(bookingService));
             rootVM.setResultVM(new ResultVM(searchService, rootVM));
             applicationViews.put(ApplicationMenuViews.SEARCH_VIEW,
                     new MenuContentfulViewWrapper<>(
@@ -194,7 +199,7 @@ public class MenuPresenter implements Initializable {
             );
             applicationViews.put(ApplicationMenuViews.CART_VIEW,
                     new MenuContentfulViewWrapper<>(
-                            new CartView(), rootVM.getResultVM(), "Cart",
+                            new CartView(), rootVM.getCartVM(), "Cart",
                             "Cart", FontAwesomeIcon.SHOPPING_CART, true, this)
             );
             applicationViews.put(ApplicationMenuViews.USER_VIEW,
@@ -234,6 +239,7 @@ public class MenuPresenter implements Initializable {
 
     public void logout() throws IllegalAccessException {
         if (logoutCallback == null) throw new IllegalAccessException("Apply Setter before Invocation");
+        bookingService.logout();
         logoutCallback.run();
     }
 }
