@@ -26,4 +26,7 @@ public interface BookingServiceCore {
     List<Ticket> bookTickets(@NotNull Client client, @NotNull Event event, @NotNull EventOccurrence occ, @NotNull List<CatRowSeatWrapper> catRowSeatWrappers);
     @Nullable
     List<Ticket> reserveTickets(@NotNull Client client, @NotNull Event event, @NotNull EventOccurrence occ, @NotNull List<CatRowSeatWrapper> catRowSeatWrappers);
+
+    @Nullable
+    List<Ticket> bookTickets(List<Ticket> tickets);
 }

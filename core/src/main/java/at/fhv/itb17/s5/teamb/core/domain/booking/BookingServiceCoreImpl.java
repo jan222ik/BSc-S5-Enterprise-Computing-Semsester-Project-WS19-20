@@ -56,6 +56,12 @@ public class BookingServiceCoreImpl implements BookingServiceCore {
     }
 
     @Nullable
+    @Override
+    public List<Ticket> bookTickets(List<Ticket> tickets) {
+        return ticketRepository.bookIfFree(tickets);
+    }
+
+    @Nullable
     private Ticket handleTicket(Client client, TicketStates state, Event event, EventOccurrence occ, EventCategory cat, LocationRow row, LocationSeat seat) {
         Ticket ticket = new Ticket(client, state, event, occ, cat, row, seat);
         return ticketRepository.bookIfFree(ticket);
