@@ -8,6 +8,8 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
+import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
+import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
 import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
 
 import java.time.LocalDate;
@@ -22,7 +24,8 @@ public class MockSearchServiceImpl implements SearchService {
     @Override
     public LinkedList<EventDTO> searchFor(String searchQuery) {
         EventCategory evCat0 = new EventCategory("cat_name_ev0", 99 * 100, 5000, 4711);
-        EventCategory evCat1 = new EventCategory("cat_name_ev1", 20 * 100, 800, 11);
+        LinkedList<LocationRow> locationRows = new LinkedList<>(Arrays.asList(new LocationRow("A", Arrays.asList(new LocationSeat("1", true), new LocationSeat("2", false), new LocationSeat("3", false))), new LocationRow("B", Arrays.asList(new LocationSeat("45", true), new LocationSeat("46", true)))));
+        EventCategory evCat1 = new EventCategory("cat_name_ev1", 20 * 100, locationRows);
         LinkedList<EventCategory> cats = new LinkedList<>(Arrays.asList(evCat0, evCat1));
         Address addressEvOc0 = new Address("evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
         Address addressEvOc1 = new Address("evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");

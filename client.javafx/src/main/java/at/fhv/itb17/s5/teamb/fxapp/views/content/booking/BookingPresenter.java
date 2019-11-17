@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.booking;
 
+import at.fhv.itb17.s5.teamb.dtos.EvCategorySeatsDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
@@ -9,6 +10,8 @@ import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.CatItemView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.catfree.CatFreePresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.catfree.CatFreeView;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.catseat.CatSeatPresenter;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.catseat.CatSeatView;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 import com.jfoenix.controls.JFXListView;
 import javafx.beans.value.ChangeListener;
@@ -97,20 +100,30 @@ public class BookingPresenter implements ContentfulViewLifeCycle<ResultVM> {
         categoriesLV.getItems().clear();
         final ChangeListener<Integer> changeListener = (observable, oldValue, newValue) -> updateTotals();
         List<Parent> collect = occ.getPriceCategories().stream().map(cat -> {
-            CatFreeView view = new CatFreeView();
-            CatFreePresenter presenter = (CatFreePresenter) view.getPresenter();
-            catItemViewPresenter.add(presenter);
-            presenter.setData(cat, changeListener);
-            return view.getView();
+            if (cat instanceof EvCategorySeatsDTO) {
+                CatSeatView view = new CatSeatView();
+                CatSeatPresenter presenter = (CatSeatPresenter) view.getPresenter();
+                catItemViewPresenter.add(presenter);
+                presenter.setData(cat, changeListener);
+                return view.getView();
+            } else {
+                CatFreeView view = new CatFreeView();
+                CatFreePresenter presenter = (CatFreePresenter) view.getPresenter();
+                catItemViewPresenter.add(presenter);
+                presenter.setData(cat, changeListener);
+                return view.getView();
+            }
         }).collect(Collectors.toList());
         categoriesLV.getItems().addAll(collect);
         updateTotals();
     }
 
     private void updateTotals() {
+        System.out.println("update" + catItemViewPresenter.size());
         int totalPrice = 0;
         int totalAmount = 0;
         for (CatItemView catItemView : catItemViewPresenter) {
+            System.out.println(" catItemView.getTicketAmount(); = " + catItemView.getTicketAmount());
             totalAmount += catItemView.getTicketAmount();
             totalPrice += (catItemView.getCat().getPriceInCent()) * catItemView.getTicketAmount();
         }

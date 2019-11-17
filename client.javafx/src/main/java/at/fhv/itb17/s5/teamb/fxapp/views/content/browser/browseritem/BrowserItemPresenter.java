@@ -1,6 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.browser.browseritem;
 
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
+import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterfaceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,14 +18,12 @@ import javafx.util.Callback;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class BrowserItemPresenter implements Initializable {
 
@@ -74,7 +72,7 @@ public class BrowserItemPresenter implements Initializable {
     private String getTicketQuantities(@NotNull EvOccurrenceDTO value) {
         int totalSpace = 0;
         int usedSpace = 0;
-        for (EvCategoryInterface cat : value.getPriceCategories()) {
+        for (EvCategoryInterfaceDTO cat : value.getPriceCategories()) {
             totalSpace += cat.getTotalTickets();
             usedSpace += cat.getUsedTickets();
         }

@@ -1,6 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewmodel;
 
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
+import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterfaceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
@@ -45,16 +45,16 @@ public class CartVM implements ViewModel {
      * @return Listing of Tickets collected on its Event, Occurrence and Category.
      */
     public List<List<TicketDTO>> getTicketsSortedAfterEventAndOcc() {
-        HashMap<EventDTO, HashMap<EvOccurrenceDTO, HashMap<EvCategoryInterface, List<TicketDTO>>>> evMap = new HashMap<>();
+        HashMap<EventDTO, HashMap<EvOccurrenceDTO, HashMap<EvCategoryInterfaceDTO, List<TicketDTO>>>> evMap = new HashMap<>();
         for (TicketDTO ticket : tickets) {
-            HashMap<EvOccurrenceDTO, HashMap<EvCategoryInterface, List<TicketDTO>>> occMap;
+            HashMap<EvOccurrenceDTO, HashMap<EvCategoryInterfaceDTO, List<TicketDTO>>> occMap;
             if (!evMap.containsKey(ticket.getEventDTO())) {
                 occMap = new HashMap<>();
                 evMap.put(ticket.getEventDTO(), occMap);
             } else {
                 occMap = evMap.get(ticket.getEventDTO());
             }
-            HashMap<EvCategoryInterface, List<TicketDTO>> catMap;
+            HashMap<EvCategoryInterfaceDTO, List<TicketDTO>> catMap;
             if (occMap.containsKey(ticket.getOcc())) {
                 catMap = occMap.get(ticket.getOcc());
             } else {
@@ -70,9 +70,9 @@ public class CartVM implements ViewModel {
         }
         return evMap.values().stream()
                 .flatMap(
-                        (HashMap<EvOccurrenceDTO, HashMap<EvCategoryInterface, List<TicketDTO>>> occMap) ->
+                        (HashMap<EvOccurrenceDTO, HashMap<EvCategoryInterfaceDTO, List<TicketDTO>>> occMap) ->
                                 occMap.values().stream()
-                                        .flatMap((HashMap<EvCategoryInterface, List<TicketDTO>> catMap) ->
+                                        .flatMap((HashMap<EvCategoryInterfaceDTO, List<TicketDTO>> catMap) ->
                                                 catMap.values().stream()
                                         )
                 ).collect(Collectors.toList());

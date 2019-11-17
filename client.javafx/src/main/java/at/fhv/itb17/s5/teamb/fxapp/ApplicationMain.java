@@ -24,7 +24,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -118,7 +117,9 @@ public class ApplicationMain extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        rmiController.stopRMI();
+        if (rmiController != null) {
+            rmiController.stopRMI();
+        }
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 }

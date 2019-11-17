@@ -1,14 +1,12 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.catfree;
 
 import at.fhv.itb17.s5.teamb.dtos.EvCategoryFreeDTO;
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
+import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterfaceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
-import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.BookingPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.CatItemView;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -29,11 +27,10 @@ public class CatFreePresenter implements CatItemView {
     @FXML
     private Spinner<Integer> ticketBookAmountSpinner;
 
-    private EvCategoryInterface cat;
+    private EvCategoryInterfaceDTO cat;
 
 
-
-    public void setData(@NotNull EvCategoryInterface cat, @NotNull ChangeListener<Integer> changeListener) {
+    public void setData(@NotNull EvCategoryInterfaceDTO cat, @NotNull ChangeListener<Integer> changeListener) {
         this.cat = cat;
         catNameL.setText(cat.getCategoryName());
         catPriceL.setText((cat.getPriceInCent() / 100) + "€");
@@ -50,7 +47,7 @@ public class CatFreePresenter implements CatItemView {
     }
 
     @Override
-    public EvCategoryInterface getCat() {
+    public EvCategoryInterfaceDTO getCat() {
         return cat;
     }
 
