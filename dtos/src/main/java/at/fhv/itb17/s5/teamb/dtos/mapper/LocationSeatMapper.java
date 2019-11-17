@@ -20,6 +20,6 @@ public final class LocationSeatMapper {
     @NotNull
     @Contract("_ -> new")
     public static LocationSeatDTO toDTO(@NotNull LocationSeat seat) {
-        return new LocationSeatDTO(seat.getSeatId(), seat.getSeatIdentifier());
+        return new LocationSeatDTO(seat.getSeatId(), seat.isTaken(), seat.getSeatIdentifier());
     }
 }

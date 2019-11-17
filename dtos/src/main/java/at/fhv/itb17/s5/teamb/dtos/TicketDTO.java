@@ -3,14 +3,14 @@ package at.fhv.itb17.s5.teamb.dtos;
 import java.io.Serializable;
 
 public class TicketDTO implements Serializable {
-    private Integer id;
+    private Long id;
     private EventDTO eventDTO;
     private EvOccurrenceDTO occ;
-    private EvCategoryInterface cat;
+    private EvCategoryInterfaceDTO cat;
     private LocationRowDTO row;
     private LocationSeatDTO seat;
 
-    public TicketDTO(Integer id, EventDTO eventDTO, EvOccurrenceDTO occ, EvCategoryInterface cat, LocationRowDTO row, LocationSeatDTO seat) {
+    public TicketDTO(Long id, EventDTO eventDTO, EvOccurrenceDTO occ, EvCategoryInterfaceDTO cat, LocationRowDTO row, LocationSeatDTO seat) {
         this.id = id;
         this.eventDTO = eventDTO;
         this.occ = occ;
@@ -35,7 +35,7 @@ public class TicketDTO implements Serializable {
         this.row = null;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -47,7 +47,7 @@ public class TicketDTO implements Serializable {
         return occ;
     }
 
-    public EvCategoryInterface getCat() {
+    public EvCategoryInterfaceDTO getCat() {
         return cat;
     }
 

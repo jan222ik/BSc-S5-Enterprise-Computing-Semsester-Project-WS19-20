@@ -1,7 +1,7 @@
 package at.fhv.itb17.s5.teamb.dtos.mapper;
 
 import at.fhv.itb17.s5.teamb.dtos.CategoryCalcDataDTO;
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
+import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterfaceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.persistence.entities.Address;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
@@ -24,7 +24,7 @@ public final class EvOccurrenceMapper {
     @NotNull
     @Contract("_ -> new")
     public static EvOccurrenceDTO toDTO(EventOccurrence e) {
-        List<EvCategoryInterface> cats = EvCategoryMapper.toDTOs(e.getPriceCategories());
+        List<EvCategoryInterfaceDTO> cats = EvCategoryMapper.toDTOs(e.getPriceCategories());
         Address a = e.getAddress();
         return new EvOccurrenceDTO(e.getOccurrenceId(), e.getDate(), e.getTime(), cats, a.getAddressId(), a.getCountry(), a.getZip(), a.getCity(), a.getStreet(), a.getHouse(), calcData(e));
     }

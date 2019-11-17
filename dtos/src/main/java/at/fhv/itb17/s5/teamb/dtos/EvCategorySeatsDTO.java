@@ -3,7 +3,7 @@ package at.fhv.itb17.s5.teamb.dtos;
 import java.io.Serializable;
 import java.util.List;
 
-public class EvCategorySeatsDTO implements EvCategoryInterface, Serializable {
+public class EvCategorySeatsDTO implements EvCategoryInterfaceDTO, Serializable {
     private Long eventCategoryId;
     private String categoryName;
     private int priceInCent;
@@ -31,8 +31,7 @@ public class EvCategorySeatsDTO implements EvCategoryInterface, Serializable {
 
     @Override
     public int getUsedTickets() {
-        //TODO CALC RIGHT VALUE
-        return getSeatingRows().stream().mapToInt(e -> e.getSeats().size()).sum();
+        return (int) getSeatingRows().stream().flatMap(e -> e.getSeats().stream()).filter(seatDTO -> !seatDTO.isFree()).count();
     }
 
     public int getPriceInCent() {

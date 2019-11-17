@@ -1,7 +1,7 @@
 package at.fhv.itb17.s5.teamb.dtos.mapper;
 
 import at.fhv.itb17.s5.teamb.dtos.EvCategoryFreeDTO;
-import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterface;
+import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterfaceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EvCategorySeatsDTO;
 import at.fhv.itb17.s5.teamb.dtos.LocationRowDTO;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
@@ -15,11 +15,11 @@ public final class EvCategoryMapper {
     private EvCategoryMapper() {
     }
 
-    public static List<EvCategoryInterface> toDTOs(@NotNull List<EventCategory> cats) {
+    public static List<EvCategoryInterfaceDTO> toDTOs(@NotNull List<EventCategory> cats) {
         return cats.stream().map(EvCategoryMapper::toDTO).collect(Collectors.toList());
     }
 
-    public static EvCategoryInterface toDTO(@NotNull EventCategory cat) {
+    public static EvCategoryInterfaceDTO toDTO(@NotNull EventCategory cat) {
         return (cat.isFreeSeating()) ? toFreeDTO(cat) : toSeatDTO(cat);
     }
 
