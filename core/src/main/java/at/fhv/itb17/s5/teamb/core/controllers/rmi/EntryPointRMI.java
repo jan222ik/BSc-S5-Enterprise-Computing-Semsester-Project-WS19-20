@@ -22,14 +22,14 @@ public class EntryPointRMI extends EntryPoint {
         this.regPort = port;
         factoryRMI = new ConnectionFactoryRMI(() -> {
             try {
-                return new SearchServiceRMI(coreImpl.getSearchServiceCore());
+                return new SearchServiceRMI(coreImpl.getSearchServiceCore(), coreImpl.getEntityRepo());
             } catch (RemoteException e) {
                 e.printStackTrace();
                 return null;
             }
         }, (ClientSessionRMI client) -> {
             try {
-                return new BookingServiceRMI(coreImpl.getBookingServiceCore(), client);
+                return new BookingServiceRMI(coreImpl.getBookingServiceCore(), client, coreImpl.getEntityRepo());
             } catch (RemoteException e) {
                 e.printStackTrace();
                 return null;

@@ -21,9 +21,10 @@ public class BookingServiceRMI extends UnicastRemoteObject implements BookingSer
     private ClientSessionRMI clientSessionRMI;
     private EntityDTORepo entityDTORepo;
 
-    public BookingServiceRMI(BookingServiceCore bookingServiceCore, ClientSessionRMI client) throws RemoteException {
+    public BookingServiceRMI(BookingServiceCore bookingServiceCore, ClientSessionRMI client, EntityDTORepo entityDTORepo) throws RemoteException {
         this.bookingServiceCore = bookingServiceCore;
         this.clientSessionRMI = client;
+        this.entityDTORepo = entityDTORepo;
     }
 
     @Override
@@ -34,6 +35,9 @@ public class BookingServiceRMI extends UnicastRemoteObject implements BookingSer
         // 2. FWD Tickets.
         // 3, return successState
         List<Ticket> tickets = entityDTORepo.toTickets(ticketDTOs, clientSessionRMI.getClient());
+        for (int i = 0; i < tickets.size(); i++) {
+            System.out.println(ticketDTOs.get(0) + " -> " + tickets.get(i));
+        }
         List<Ticket> tickets1 = bookingServiceCore.bookTickets(tickets);
         return tickets1 != null; //TODO Returning Tickets would be better
     }

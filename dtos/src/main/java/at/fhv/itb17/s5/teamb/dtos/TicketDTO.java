@@ -58,4 +58,16 @@ public class TicketDTO implements Serializable {
     public LocationSeatDTO getSeat() {
         return seat;
     }
+
+    @Override
+    public String toString() {
+        return "TicketDTO{" +
+                "id=" + id +
+                ", eventDTO=" + eventDTO +
+                ", occ=" + occ +
+                ", cat=" + cat +
+                ", row=" + row +
+                ", seat=" + seat +
+                '}';
+    }
 }

@@ -1,5 +1,7 @@
 package at.fhv.itb17.s5.teamb.core.domain.general;
 
+import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
+import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepoImpl;
 import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
@@ -29,6 +31,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
 
     private final AuthManagerCore authManagerCore = new AuthManagerCore(true);
+    private final EntityDTORepo entityDTORepo = new EntityDTORepoImpl();
 
     public CoreServiceInjectorImpl() {
         addDBDATA();
@@ -153,5 +156,10 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     @Override
     public AuthManagerCore getAuthManagerCore() {
         return authManagerCore;
+    }
+
+    @Override
+    public EntityDTORepo getEntityRepo() {
+        return entityDTORepo;
     }
 }

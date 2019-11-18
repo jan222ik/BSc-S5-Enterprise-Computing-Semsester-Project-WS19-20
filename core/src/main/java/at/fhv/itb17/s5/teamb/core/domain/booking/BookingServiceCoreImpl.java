@@ -58,6 +58,7 @@ public class BookingServiceCoreImpl implements BookingServiceCore {
     @Nullable
     @Override
     public List<Ticket> bookTickets(List<Ticket> tickets) {
+        tickets.forEach(e -> e.setState(TicketStates.PAID));
         return ticketRepository.bookIfFree(tickets);
     }
 

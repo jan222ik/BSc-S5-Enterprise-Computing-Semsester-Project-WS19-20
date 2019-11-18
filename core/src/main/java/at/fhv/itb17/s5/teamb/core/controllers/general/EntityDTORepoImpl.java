@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityDTORepoImpl implements EntityDTORepo {
-    private HashMap<TicketDTO, Ticket> tickets;
-    private HashMap<EventDTO, Event> events;
+    private HashMap<TicketDTO, Ticket> tickets = new HashMap<>();
+    private HashMap<EventDTO, Event> events = new HashMap<>();
 
 
     @Override
@@ -66,11 +66,10 @@ public class EntityDTORepoImpl implements EntityDTORepo {
             EventCategory cat = toCat(occ, ticketDTO.getCat());
             LocationRow row = toRow(cat, ticketDTO.getRow());
             LocationSeat seat = toSeat(row, ticketDTO.getSeat());
-            new Ticket(client, TicketStates.FREE, evt, occ, cat, row, seat);
+            return new Ticket(client, TicketStates.FREE, evt, occ, cat, row, seat);
         } else {
             return tickets.getOrDefault(ticketDTO, null);
         }
-        return null;
     }
 
     private LocationSeat toSeat(LocationRow row, LocationSeatDTO seat) {
