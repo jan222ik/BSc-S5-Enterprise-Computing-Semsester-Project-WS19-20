@@ -1,51 +1,49 @@
 package at.fhv.itb17.s5.teamb.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.naming.*;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.*;
 import java.util.Hashtable;
 
 public class LDAP {
 
-    public static DirContext getLDAPConnection(String surname, String forename, String username, String password) {
-        Hashtable env = new Hashtable();
+    private DirContext getLDAPConnection(String commonName, String organisationUnit, String password) throws NamingException{
+        Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, "ldaps://dc01.ad.uclv.net:636/OU=fhusers,DC=ad,DC=uclv,DC=net");
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
-        env.put(Context.SECURITY_PRINCIPAL, String.format("CN=%s %s - %s,OU=fhusers,DC=ad,DC=uclv,DC=net", surname, forename, username));
+        env.put(Context.SECURITY_PRINCIPAL, String.format("CN=%s,OU=%s,DC=ad,DC=uclv,DC=net", commonName, organisationUnit));
         env.put(Context.SECURITY_CREDENTIALS, password);
-
-        try {
-            DirContext ctx = new InitialDirContext(env);
-            System.out.println("connected");
-            return ctx;
-        } catch (AuthenticationNotSupportedException ex) {
-            System.out.println("The authentication is not supported by the server");
-            ex.printStackTrace();
-        } catch (AuthenticationException ex) {
-            System.out.println("incorrect password or username");
-            ex.printStackTrace();
-        } catch (NamingException ex) {
-            System.out.println("error when trying to create the context");
-            ex.printStackTrace();
-        }
-        return null;
+        return new InitialDirContext(env);
     }
 
+    //arg[0] = mle2266@students.fhv.at - or other similar username
+    //arg[1] = password
     public static void main(String... args) throws NamingException {
-        DirContext ldapConnection = getLDAPConnection(args[0], args[1], args[2], args[3]);
-        browseRecursive(ldapConnection, 100);
+        LDAP ldap = new LDAP();
+        System.out.println(ldap.areCredentialsCorrect(args[0], args[1]));
     }
 
-    private static void browseRecursive(Context ctx, int depth) throws NamingException {
-        NamingEnumeration<Binding> namingEnum = ctx.listBindings("");
-        for (int j = 0; j < 100 && namingEnum.hasMore(); j++) {
-            Binding bnd = namingEnum.next();
-            if (bnd.getObject() instanceof Context) {
-                System.out.println(bnd.getName());
-                Context curCtx = (Context) bnd.getObject();
-                browseRecursive(curCtx, depth + 1);
-            }
+    public boolean areCredentialsCorrect(String username, String password) throws NamingException {
+        DirContext ldapConnection = getLDAPConnection("tf-test2", "SpecialUsers","1d48oOffxMXb");
+        String commonName = search((InitialDirContext) ldapConnection, username);
+        boolean validUser = true;
+        try {
+            getLDAPConnection(commonName, "fhusers", password);
+        }catch (AuthenticationException e){
+            validUser = false;
         }
+        return validUser;
+    }
+
+    private String search(@NotNull InitialDirContext ctx, String username) throws NamingException {
+        Attributes match = new BasicAttributes("userprincipalname", username);
+        NamingEnumeration<SearchResult> search = ctx.search("", match);
+        if(search.hasMore()){
+            SearchResult next = search.next();
+            return next.getAttributes().get("cn").get().toString();
+        }
+        return "";
     }
 }
