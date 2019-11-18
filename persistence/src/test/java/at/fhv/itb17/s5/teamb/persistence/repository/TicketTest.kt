@@ -1,8 +1,6 @@
-package at.fhv.itb17.s5.teamb.persistence
+package at.fhv.itb17.s5.teamb.persistence.repository
 
 import at.fhv.itb17.s5.teamb.persistence.entities.*
-import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository
-import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
@@ -26,7 +24,7 @@ class TicketTest {
 
 
     @Test
-    fun `Insert basic ticket`() {
+    fun `Insert single ticket`() {
         entityRepository.save(event)
         val aNewTicket = getANewTicket()
         assertThat(aNewTicket.ticketId, Matchers.nullValue())
@@ -47,5 +45,29 @@ class TicketTest {
         return Ticket(client, TicketStates.PAID, event, occurrence0, g21, null, null)
     }
 
+    @Test
+    fun `Book or Reserve List of Tickets - Success`() {
+        TODO("Implement Test")
+    }
+
+    @Test
+    fun `Book or Reserve Tickets - Fail - OneOf tickets already exists`() {
+        TODO("Implement Test")
+    }
+
+    @Test
+    fun `Book or Reserve Tickets - Fail - Seat for Occurrence already booked`() {
+        TODO("Implement Test")
+    }
+
+    @Test
+    fun `Book or Reserve Tickets - Fail - Number of Seats is insufficient`() {
+        TODO("Implement Test")
+    }
+
+    @Test
+    fun `Book or Reserve Tickets - Fail - Number of Free Seats is insufficent`() {
+        TODO("Implement Test")
+    }
 
 }
