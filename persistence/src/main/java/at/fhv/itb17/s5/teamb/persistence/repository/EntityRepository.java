@@ -3,6 +3,7 @@ package at.fhv.itb17.s5.teamb.persistence.repository;
 
 import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
 import at.fhv.itb17.s5.teamb.persistence.util.WhereCondition;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
@@ -94,8 +95,15 @@ public class EntityRepository {
                     break;
                 case EVENT_NAME:
                 case GENRE:
-                case LOCATION:
                     criteriaQuery.where(cb.like(cb.upper(root.get(searchPair.getKey().getIdf())), searchPair.getValue().toUpperCase() + "%"));
+                    break;
+                case LOCATION:
+                    Subquery<EventOccurrence> subL = criteriaQuery.subquery(EventOccurrence.class);
+                    Root<EventOccurrence> subRootL = subL.from(EventOccurrence.class);
+                    Join<Event, EventOccurrence> occs = root.join("occurrences");
+                    subL.select(subRootL);
+                    //TODO Repair
+                    criteriaQuery.where(cb.like(cb.upper(occs.get(searchPair.getKey().getIdf())), searchPair.getValue().toUpperCase() + "%"));
                     break;
                 case ARTIST_NAME:
                     Subquery<Artist> sub = criteriaQuery.subquery(Artist.class);

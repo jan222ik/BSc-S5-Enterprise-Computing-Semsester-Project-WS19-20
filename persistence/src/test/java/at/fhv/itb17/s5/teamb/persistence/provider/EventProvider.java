@@ -24,12 +24,26 @@ public class EventProvider {
         Client client = new Client(cName + "test_client", cName + "Hugo Hugo", ClientRoles.EXTERNAL, address);
         EventCategory g21 = new EventCategory(cName + "G21", 9001, 500, 69);
         EventCategory g16 = new EventCategory(cName + "G16", 12312312, 19, 3);
-        EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList(Arrays.asList(g21, g16)), address);
+        EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)), address);
         Organizer organizer = new Organizer(cName + "Std. Do", cName + "e@mail.com", address);
         Artist hugo_hugo = new Artist(cName + "Hugo Hugo");
-        List<Artist> artists = new LinkedList(Collections.singletonList(hugo_hugo));
-        Event event = new Event(cName + "Weihnachtsmarkt", cName + "Weihnachtsmarkt vom 22.11 bis 23.11.2019", cName + "Death Metal", new LinkedList(Arrays.asList(occurrence0)), organizer, artists);
+        List<Artist> artists = new LinkedList<>(Collections.singletonList(hugo_hugo));
+        Event event = new Event(cName + "Weihnachtsmarkt", cName + "Weihnachtsmarkt vom 22.11 bis 23.11.2019", cName + "Death Metal", new LinkedList<>(Collections.singletonList(occurrence0)), organizer, artists);
         ep.save(event);
         return event;
     }
+
+    public static Event getNewTransientEvent(String cName) {
+        Address address = new Address(cName + "AT", cName + "685ftui0", cName + "Do", cName + "ABCStr.", cName + "4711");
+        Client client = new Client(cName + "test_client", cName + "Hugo Hugo", ClientRoles.EXTERNAL, address);
+        EventCategory g21 = new EventCategory(cName + "G21", 9001, 500, 69);
+        EventCategory g16 = new EventCategory(cName + "G16", 12312312, 19, 3);
+        EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)), address);
+        Organizer organizer = new Organizer(cName + "Std. Do", cName + "e@mail.com", address);
+        Artist hugo_hugo = new Artist(cName + "Hugo Hugo");
+        List<Artist> artists = new LinkedList<>(Collections.singletonList(hugo_hugo));
+        return new Event(cName + "Weihnachtsmarkt", cName + "Weihnachtsmarkt vom 22.11 bis 23.11.2019", cName + "Death Metal", new LinkedList<>(Collections.singletonList(occurrence0)), organizer, artists);
+    }
+
+
 }
