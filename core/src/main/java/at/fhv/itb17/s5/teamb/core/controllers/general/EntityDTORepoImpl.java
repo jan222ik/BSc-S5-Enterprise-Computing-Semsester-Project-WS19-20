@@ -24,10 +24,6 @@ import java.util.stream.Collectors;
 public class EntityDTORepoImpl implements EntityDTORepo {
     private HashMap<TicketDTO, Ticket> tickets;
     private HashMap<EventDTO, Event> events;
-    private HashMap<EvOccurrenceDTO, EventOccurrence> occs;
-    private HashMap<EvCategoryInterfaceDTO, EventCategory> cats;
-    private HashMap<LocationRowDTO, LocationRow> rows;
-    private HashMap<LocationSeatDTO, LocationSeat> seats;
 
 
     @Override

@@ -40,6 +40,7 @@ import java.net.URL;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MenuPresenter implements Initializable {
@@ -90,6 +91,7 @@ public class MenuPresenter implements Initializable {
     private boolean isMenuDrawerOpen = true;
     private SimpleBooleanProperty userViewOpen = new SimpleBooleanProperty(false);
     private Runnable logoutCallback = null;
+    private Consumer<String> username;
 
 
     @Override
@@ -184,6 +186,7 @@ public class MenuPresenter implements Initializable {
         if (applicationViews == null) {
             applicationViews = new EnumMap<>(ApplicationMenuViews.class);
             RootVM rootVM = new RootVM();
+            username = rootVM::setUsername;
             rootVM.setSearchVM(new SearchVM());
             rootVM.setCartVM(new CartVM(bookingService));
             rootVM.setResultVM(new ResultVM(searchService, rootVM));
@@ -241,5 +244,10 @@ public class MenuPresenter implements Initializable {
         if (logoutCallback == null) throw new IllegalAccessException("Apply Setter before Invocation");
         bookingService.logout();
         logoutCallback.run();
+    }
+
+    public void setUsername(String name) {
+        username.accept(name);
+        userBtn.setText(name);
     }
 }

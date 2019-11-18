@@ -27,13 +27,14 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.function.Consumer;
 
 public class ApplicationMain extends Application {
 
     private static final Logger logger = LogManager.getLogger(ApplicationMain.class);
     private ArgumentParser args;
 
-    private Runnable createMenu;
+    private Consumer<String> createMenu;
     private RMIController rmiController;
 
     @Override
@@ -62,13 +63,13 @@ public class ApplicationMain extends Application {
         boolean withLogin = args.containsKeyword("-login");
 
         Runnable createLogin = () -> generateLogin(primaryStage);
-        createMenu = () -> generateMenu(primaryStage);
+        createMenu = (String name) -> generateMenu(primaryStage, name);
 
         if (withLogin) {
             createLogin.run();
         } else {
             bookingService.doLoginBooking("backdoor", "backdoorPWD");
-            createMenu.run();
+            createMenu.accept("backdoor");
         }
         showStage(primaryStage);
         logger.info(LogMarkers.APPLICATION, "Application Started");
@@ -76,14 +77,16 @@ public class ApplicationMain extends Application {
 
     @NotNull
     @SuppressWarnings("UnusedReturnValue")
-    private MenuView generateMenu(Stage primary) {
+    private MenuView generateMenu(Stage primary, String name) {
         MenuView menuView = new MenuView();
         Scene scene = new Scene(
                 menuView.getView(),
                 Double.parseDouble(args.getArgValue("-width", "800")),
                 Double.parseDouble(args.getArgValue("-height", "400"))
         );
-        ((MenuPresenter) menuView.getPresenter()).setLogoutCallback(() -> generateLogin(primary));
+        MenuPresenter presenter = (MenuPresenter) menuView.getPresenter();
+        presenter.setLogoutCallback(() -> generateLogin(primary));
+        presenter.setUsername(name);
         showScene(primary, scene, "#placeholder");
         return menuView;
     }

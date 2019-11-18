@@ -8,4 +8,6 @@ public interface CoreServiceInjector {
     SearchServiceCore getSearchServiceCore();
 
     BookingServiceCore getBookingServiceCore();
+
+    AuthManagerCore getAuthManagerCore();
 }

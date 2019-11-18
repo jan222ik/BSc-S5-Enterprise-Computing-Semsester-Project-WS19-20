@@ -13,6 +13,7 @@ public class CoreServiceInjectorImplMock implements CoreServiceInjector {
     private final EntityRepository entityRepository = new EntityRepository();
     private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
     private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
+    private final AuthManagerCore authManagerCore = new AuthManagerCore(true); //TODO Use MockImpl
 
     public SearchServiceCore getSearchServiceCore() {
         return searchServiceCore;
@@ -21,5 +22,10 @@ public class CoreServiceInjectorImplMock implements CoreServiceInjector {
     @Override
     public BookingServiceCore getBookingServiceCore() {
         return bookingServiceCore;
+    }
+
+    @Override
+    public AuthManagerCore getAuthManagerCore() {
+        return authManagerCore;
     }
 }

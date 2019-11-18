@@ -42,8 +42,9 @@ public class TicketRepository {
             for (Ticket ticket : tickets) {
                 LocationSeat bookedSeat = ticket.getBookedSeat();
                 if (bookedSeat != null) {
-                    LocationSeat locationSeat = currentSession.get(LocationSeat.class, bookedSeat.getSeatId());
-                    if (locationSeat != null) {
+                    currentSession.refresh(bookedSeat);
+                    if (!bookedSeat.isTaken()) {
+                        bookedSeat.setTaken(true);
                         currentSession.save(ticket);
                     } else {
                         transaction.rollback();
@@ -51,13 +52,18 @@ public class TicketRepository {
                     }
                 } else {
                     EventCategory eventCategory = ticket.getBookedCategory();
-                    currentSession.refresh(eventCategory); //TODO Can be null check against null if true -> ret null
-                    if (eventCategory.isFreeSeating()) {
-                        if (eventCategory.getTotalSpace() - eventCategory.getUsedSpace() > 0) {
-                            currentSession.detach(eventCategory);
-                            currentSession.save(ticket);
-                            eventCategory.incUsed();
-                            currentSession.save(eventCategory);
+                    if (eventCategory != null) {
+                        currentSession.refresh(eventCategory);
+                        if (eventCategory.isFreeSeating()) {
+                            if (eventCategory.getTotalSpace() - eventCategory.getUsedSpace() > 0) {
+                                currentSession.detach(eventCategory);
+                                currentSession.save(ticket);
+                                eventCategory.incUsed();
+                                currentSession.save(eventCategory);
+                            }
+                        } else {
+                            transaction.rollback();
+                            return null;
                         }
                     } else {
                         transaction.rollback();

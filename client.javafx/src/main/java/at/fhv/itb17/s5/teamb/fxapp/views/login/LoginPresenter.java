@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class LoginPresenter implements Initializable {
 
@@ -34,7 +35,7 @@ public class LoginPresenter implements Initializable {
     @FXML
     private Button loginButton;
 
-    private Runnable callback;
+    private Consumer<String> callback;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -50,29 +51,28 @@ public class LoginPresenter implements Initializable {
         });
     }
 
-    public void setNextSceneCallback(Runnable callback) {
+    public void setNextSceneCallback(Consumer<String> callback) {
         this.callback = callback;
     }
 
     private void checkPWUsernameCombination() {
-        final String username = usernameTextField.getText();
-        final String password = passwordField.getText();
+        String username = usernameTextField.getText();
+        String password = passwordField.getText();
         if (username.isEmpty()) {
             NotificationsHelper.error("Invalid Input", "Username may not be empty!", NotificationsHelper.DisplayDuration.SHORT);
         }
-        //TODO make nested to stop execution
+        if (username.isEmpty()) {
+            username = "backdoor";
+            password = "backdoorPWD";
+        }
         if (checkPasswordRemote(username, password)) {
-            callback.run();
+            callback.accept(username);
         } else {
             NotificationsHelper.error("Invalid Input", "Username or Password wrong!", NotificationsHelper.DisplayDuration.SHORT);
         }
     }
 
     private boolean checkPasswordRemote(String user, String pwd) {
-        if (user.isEmpty()) {
-            user = "backdoor";
-            pwd = "backdoorPWD";
-        }
         return bookingService.doLoginBooking(user, pwd);
     }
 }

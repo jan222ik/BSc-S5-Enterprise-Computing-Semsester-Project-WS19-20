@@ -8,6 +8,7 @@ public class RootVM implements ViewModel {
     private SearchVM searchVM;
     private ResultVM resultVM;
     private CartVM cartVM;
+    private String username;
 
     public SearchVM getSearchVM() {
         return searchVM;
@@ -30,7 +31,11 @@ public class RootVM implements ViewModel {
     }
 
     public String getUsername() {
-        return "Hugo"; //TODO use actual data
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setCartVM(CartVM cartVM) {

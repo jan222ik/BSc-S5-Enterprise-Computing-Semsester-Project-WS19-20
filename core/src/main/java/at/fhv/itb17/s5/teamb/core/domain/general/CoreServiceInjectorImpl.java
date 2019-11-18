@@ -28,6 +28,8 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
     private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
 
+    private final AuthManagerCore authManagerCore = new AuthManagerCore(true);
+
     public CoreServiceInjectorImpl() {
         addDBDATA();
     }
@@ -146,5 +148,10 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     @Override
     public BookingServiceCore getBookingServiceCore() {
         return bookingServiceCore;
+    }
+
+    @Override
+    public AuthManagerCore getAuthManagerCore() {
+        return authManagerCore;
     }
 }

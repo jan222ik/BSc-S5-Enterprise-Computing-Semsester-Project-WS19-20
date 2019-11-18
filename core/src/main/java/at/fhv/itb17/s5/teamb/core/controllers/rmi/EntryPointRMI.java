@@ -16,7 +16,7 @@ public class EntryPointRMI extends EntryPoint {
     private ConnectionFactoryRMI factoryRMI;
     private int regPort;
 
-    //TODO Replace Injector with concrete class
+
     public EntryPointRMI(int port, CoreServiceInjector coreImpl) throws RemoteException {
         super(coreImpl);
         this.regPort = port;
@@ -34,7 +34,7 @@ public class EntryPointRMI extends EntryPoint {
                 e.printStackTrace();
                 return null;
             }
-        });
+        }, coreImpl.getAuthManagerCore());
     }
 
     @Override
