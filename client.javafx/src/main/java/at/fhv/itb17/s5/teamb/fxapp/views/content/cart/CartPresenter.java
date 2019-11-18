@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.cart;
 
+import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.CartVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
@@ -14,11 +15,15 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
+
+    @Inject
+    private Style style;
 
     @FXML
     private Button clearBtn;
@@ -38,12 +43,16 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
     @Override
     public void onCreate(CartVM viewModel, NavigationStackActions<CartVM> navActions) {
         backBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW, () -> NotificationsHelper.error("Internal Error", "Could not switch to menu item")));
+        style.hoverBtn(backBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.SECONDARY().asPaint());
         buyBtn.setOnAction(e -> this.buyOrReserve(viewModel, true, navActions));
+        style.hoverBtn(buyBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.PRIMARY().asPaint());
         reserveBtn.setOnAction(e -> this.buyOrReserve(viewModel, false, navActions));
+        style.hoverBtn(reserveBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.PRIMARY().asPaint());
         clearBtn.setOnAction(e -> {
             viewModel.clear();
             render(viewModel);
         });
+        style.hoverBtn(clearBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.ERROR().asPaint());
     }
 
     private void buyOrReserve(CartVM viewModel, boolean doBuy, NavigationStackActions<CartVM> navActions) {

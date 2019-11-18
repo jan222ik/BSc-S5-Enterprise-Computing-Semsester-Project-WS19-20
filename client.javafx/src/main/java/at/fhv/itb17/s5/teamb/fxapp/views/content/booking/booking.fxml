@@ -41,53 +41,53 @@
                      <children>
                         <HBox>
                            <children>
-                              <Label text="Event name:" />
-                              <Label fx:id="eventL" text="#placeholderEventName" />
+                              <Label text="Event name:" textFill="white"/>
+                              <Label fx:id="eventL" text="#placeholderEventName" textFill="white"/>
                            </children>
                         </HBox>
                         <HBox GridPane.rowIndex="1">
                            <children>
-                              <Label text="Artists:" />
-                              <Label fx:id="artistsL" text="#placeholderArtists" />
+                              <Label text="Artists:" textFill="white"/>
+                              <Label fx:id="artistsL" text="#placeholderArtists" textFill="white"/>
                            </children>
                         </HBox>
-                        <Label text="Description:" GridPane.rowIndex="2" />
-                        <Label fx:id="descriptionL" text="#placeholderDescription" GridPane.rowIndex="3" GridPane.rowSpan="2" />
+                        <Label text="Description:" GridPane.rowIndex="2" textFill="white" />
+                        <Label fx:id="descriptionL" text="#placeholderDescription" GridPane.rowIndex="3" GridPane.rowSpan="2" textFill="white" />
                         <HBox GridPane.columnIndex="1">
                            <children>
-                              <Label text="Date:" />
-                              <Label fx:id="dateL" text="#placholderDate" />
+                              <Label text="Date:" textFill="white" />
+                              <Label fx:id="dateL" text="#placholderDate" textFill="white"/>
                            </children>
                         </HBox>
                         <HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <Label text="Time:" />
-                              <Label fx:id="timeL" text="#placholderTime" />
+                              <Label text="Time:" textFill="white"/>
+                              <Label fx:id="timeL" text="#placholderTime" textFill="white"/>
                            </children>
                         </HBox>
                         <HBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <children>
-                              <Label text="Location:" />
-                              <Label fx:id="locationL" text="#placholderLocation" />
+                              <Label text="Location:" textFill="white" />
+                              <Label fx:id="locationL" text="#placholderLocation" textFill="white"/>
                            </children>
                         </HBox>
                         <HBox GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <children>
-                              <Label text="Address:" />
-                              <Label fx:id="addressL" text="#placholderAddress" />
+                              <Label text="Address:" textFill="white"/>
+                              <Label fx:id="addressL" text="#placholderAddress" textFill="white"/>
                            </children>
                         </HBox>
                         <HBox GridPane.columnIndex="1" GridPane.rowIndex="4">
                            <children>
-                              <Label text="Organizer:" />
-                              <Label fx:id="organizerL" text="#placholderOrganizer" />
+                              <Label text="Organizer:" textFill="white"/>
+                              <Label fx:id="organizerL" text="#placholderOrganizer" textFill="white"/>
                            </children>
                         </HBox>
                      </children>
                   </GridPane>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label text="Categories:" />
+                        <Label text="Categories:" textFill="white"/>
                         <JFXListView fx:id="categoriesLV" />
                      </children>
                   </VBox>
@@ -95,22 +95,22 @@
             </VBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Label text="Total Price:">
+                  <Label text="Total Price:" textFill="white">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Label>
-                  <Label fx:id="totalPriceL" text="#placholderTotalPrice">
+                  <Label fx:id="totalPriceL" text="#placholderTotalPrice" textFill="white">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Label>
-                  <Label layoutX="10.0" layoutY="10.0" text="Total Amount:">
+                  <Label layoutX="10.0" layoutY="10.0" text="Total Amount:" textFill="white">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Label>
-                  <Label fx:id="totalAmountL" layoutX="176.0" layoutY="10.0" text="#placeholderTotalAmount">
+                  <Label fx:id="totalAmountL" layoutX="176.0" layoutY="10.0" text="#placeholderTotalAmount" textFill="white">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
