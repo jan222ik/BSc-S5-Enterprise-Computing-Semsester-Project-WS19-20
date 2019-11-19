@@ -23,20 +23,20 @@ import java.util.stream.Collectors;
 
 public class EntityDTORepoImpl implements EntityDTORepo {
     private HashMap<TicketDTO, Ticket> tickets = new HashMap<>();
-    private HashMap<EventDTO, Event> events = new HashMap<>();
+    private HashMap<Long, Event> events = new HashMap<>();
 
 
     @Override
     public EventDTO toEventDTO(Event event) {
         EventDTO eventDTO = EventMapper.toDTO(event);
-        events.put(eventDTO, event);
+        events.put(eventDTO.getEventId(), event);
         return eventDTO;
     }
 
     @Override
     public Event toEvent(EventDTO eventDTO) {
-        if (events.containsKey(eventDTO)) {
-            return events.get(eventDTO);
+        if (events.containsKey(eventDTO.getEventId())) {
+            return events.get(eventDTO.getEventId());
         }
         return null;
     }

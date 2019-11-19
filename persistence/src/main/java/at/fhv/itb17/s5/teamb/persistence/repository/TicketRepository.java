@@ -6,6 +6,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -76,6 +77,10 @@ public class TicketRepository {
             e.printStackTrace();
             transaction.rollback();
             return null;
+        }
+        if (transaction.getStatus().isOneOf(TransactionStatus.COMMITTED)) {
+            System.out.println("Booked successfully " + tickets.size() + " tickets");
+            tickets.forEach(System.out::println);
         }
         return tickets;
     }
