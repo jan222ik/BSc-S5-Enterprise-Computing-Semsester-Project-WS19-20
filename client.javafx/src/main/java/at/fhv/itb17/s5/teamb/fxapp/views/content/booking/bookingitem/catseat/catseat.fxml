@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.catseat.CatSeatPresenter">
+    <children>
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+              <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308">
+                  <children>
+                      <Label fx:id="catNameL" text="#placeholderCatName" />
+                      <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                      <Label fx:id="catPriceL" text="#placeholderCatPrice" />
+                      <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                      <Label fx:id="catSpaceL" text="#placeholderCatSpace" />
+                      <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                      <Label text="#" />
+                      <Label fx:id="ticketBookAmountL" />
+                  </children>
+              </HBox>
+            <VBox fx:id="seatSelectVBox" prefHeight="200.0" prefWidth="100.0" />
+         </children>
+      </VBox>
+    </children>
+</AnchorPane>

@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewmodel;
 
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
+import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 
 import java.util.List;
@@ -23,5 +24,9 @@ public class ResultVM implements ViewModel {
 
     public String getSearchString() {
         return rootVM.getGetSearchQuery();
+    }
+
+    public void setTicketsForBooking(List<TicketDTO> tickets) {
+        rootVM.addTicketsForCart(tickets);
     }
 }

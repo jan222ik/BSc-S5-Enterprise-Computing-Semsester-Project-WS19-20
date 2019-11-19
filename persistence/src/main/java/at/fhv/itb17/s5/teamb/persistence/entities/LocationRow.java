@@ -13,6 +13,15 @@ public class LocationRow {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<LocationSeat> seats;
 
+
+    public LocationRow(String rowIdentifier, List<LocationSeat> seats) {
+        this.rowIdentifier = rowIdentifier;
+        this.seats = seats;
+    }
+
+    public LocationRow() {
+    }
+
     public Long getRowId() {
         return rowId;
     }

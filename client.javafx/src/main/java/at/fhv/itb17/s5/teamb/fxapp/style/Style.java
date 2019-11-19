@@ -2,8 +2,11 @@ package at.fhv.itb17.s5.teamb.fxapp.style;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
+import javafx.scene.control.Labeled;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 
 @SuppressWarnings({"squid:S1192", "squid:ClassVariableVisibilityCheck", "squid:S00116", "squid:S00100", "WeakerAccess"})
@@ -60,11 +63,11 @@ public class Style {
         return ON_ERROR;
     }
 
-    public void hoverBtn(Button btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB) {
+    public void hoverBtn(Labeled btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB) {
         hoverBtn(btn, defaultB, onDefaultB, hoverB, onHoverB, null);
     }
 
-    public void hoverBtn(Button btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB, SimpleBooleanProperty temporalImmutable) {
+    public void hoverBtn(Labeled btn, Background defaultB, Paint onDefaultB, Background hoverB, Paint onHoverB, SimpleBooleanProperty temporalImmutable) {
         btn.setBackground(defaultB);
         btn.setTextFill(onDefaultB);
         btn.setOnMouseEntered(e -> {

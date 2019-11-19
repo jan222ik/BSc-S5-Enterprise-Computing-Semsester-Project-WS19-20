@@ -1,24 +1,41 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
+import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
+import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
+import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginView;
+import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuView;
 import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import com.airhacks.afterburner.injection.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.function.Consumer;
 
 public class ApplicationMain extends Application {
 
     private static final Logger logger = LogManager.getLogger(ApplicationMain.class);
     private ArgumentParser args;
+
+    private Consumer<String> createMenu;
+    private RMIController rmiController;
 
     @Override
     public void init() throws Exception {
@@ -29,38 +46,83 @@ public class ApplicationMain extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         Thread.currentThread().setName("FX Main");
-        final Style[] style = {new Style()};
-        args.checkForKeyword("-light", a -> {
-            final String white = "#FFFFFF";
-            final String black = "#000000";
-            style[0] = Style.builder()
-                    .primary("#6200EE").onPrimary(black)
-                    .secondary("#03DAC6").onSecondary(black)
-                    .background(white).onBackground(black)
-                    .surface(white).onSurface(black)
-                    .error("#B00020").onError(white).getStyle();
-        });
-        Injector.setModelOrService(Style.class, style[0]);
-        SearchService service = (args.containsKeyword("-mock")) ? new MockSearchServiceImpl() : new RMISearchServiceImpl("localhost", 2345);
-        Injector.setModelOrService(SearchService.class, service);
+        Injector.setModelOrService(Style.class, new Style());
+        SearchService searchService;
+        BookingService bookingService;
+        if (args.containsKeyword("-mock")) {
+            searchService = new MockSearchServiceImpl();
+            bookingService = new MockBookingServiceImpl();
+        } else {
+            rmiController = new RMIController("localhost", 2345);
+            searchService = new RMISearchServiceImpl(rmiController);
+            bookingService = new RMIBookingServiceImpl(rmiController);
+
+        }
+        Injector.setModelOrService(SearchService.class, searchService);
+        Injector.setModelOrService(BookingService.class, bookingService);
+        boolean withLogin = args.containsKeyword("-login");
+
+        Runnable createLogin = () -> generateLogin(primaryStage);
+        createMenu = (String name) -> generateMenu(primaryStage, name);
+
+        if (withLogin) {
+            createLogin.run();
+        } else {
+            bookingService.doLoginBooking("backdoor", "backdoorPWD");
+            createMenu.accept("backdoor");
+        }
+        showStage(primaryStage);
         logger.info(LogMarkers.APPLICATION, "Application Started");
-        MenuView view = new MenuView();
-        Scene main = new Scene(
-                view.getView(),
+    }
+
+    @NotNull
+    @SuppressWarnings("UnusedReturnValue")
+    private MenuView generateMenu(Stage primary, String name) {
+        MenuView menuView = new MenuView();
+        Scene scene = new Scene(
+                menuView.getView(),
                 Double.parseDouble(args.getArgValue("-width", "800")),
-                Double.parseDouble(args.getArgValue("-height", "400")));
-        primaryStage.setTitle("#PLACEHOLDER");
-        primaryStage.initStyle(
+                Double.parseDouble(args.getArgValue("-height", "400"))
+        );
+        MenuPresenter presenter = (MenuPresenter) menuView.getPresenter();
+        presenter.setLogoutCallback(() -> generateLogin(primary));
+        presenter.setUsername(name);
+        showScene(primary, scene, "#placeholder");
+        return menuView;
+    }
+
+    @NotNull
+    @SuppressWarnings("UnusedReturnValue")
+    private LoginView generateLogin(@NotNull Stage primary) {
+        LoginView loginView = new LoginView();
+        ((LoginPresenter) loginView.getPresenter()).setNextSceneCallback(createMenu);
+        Scene scene = new Scene(loginView.getView(), 600D, 300D);
+        showScene(primary, scene, "Login");
+        return loginView;
+    }
+
+    private void showScene(Stage primary, Scene scene, String title) {
+        primary.setScene(scene);
+        primary.setTitle(title);
+    }
+
+    private void showStage(@NotNull Stage primary) throws FileNotFoundException {
+        primary.initStyle(
                 args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
         );
-        primaryStage.setScene(main);
-        primaryStage.show();
-        primaryStage.toFront();
+        File file = new File("client.javafx/src/main/resources/icon.png");
+        primary.getIcons().add(new Image(new FileInputStream(file)));
+        primary.show();
+        primary.toFront();
     }
+
 
     @Override
     public void stop() throws Exception {
         super.stop();
+        if (rmiController != null) {
+            rmiController.stopRMI();
+        }
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 }

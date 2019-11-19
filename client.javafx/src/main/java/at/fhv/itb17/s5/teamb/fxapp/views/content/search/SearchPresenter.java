@@ -78,7 +78,7 @@ public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initi
 
     @Override
     public void onCreate(SearchVM viewModel, NavigationStackActions<SearchVM> navActions) {
-        searchBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW,
+        searchBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW, true,
                 () -> NotificationsHelper.error("Error", "Could not switch to menuitem!")));
     }
 

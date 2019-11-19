@@ -12,6 +12,15 @@ public class LocationSeat {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long seatId;
     private String seatIdentifier;
+    private boolean isTaken;
+
+    public LocationSeat(String seatIdentifier, boolean isTaken) {
+        this.seatIdentifier = seatIdentifier;
+        this.isTaken = isTaken;
+    }
+
+    public LocationSeat() {
+    }
 
     public Long getSeatId() {
         return seatId;
@@ -27,5 +36,13 @@ public class LocationSeat {
 
     public void setSeatIdentifier(String seatIdentifier) {
         this.seatIdentifier = seatIdentifier;
+    }
+
+    public boolean isTaken() {
+        return isTaken;
+    }
+
+    public void setTaken(boolean taken) {
+        isTaken = taken;
     }
 }

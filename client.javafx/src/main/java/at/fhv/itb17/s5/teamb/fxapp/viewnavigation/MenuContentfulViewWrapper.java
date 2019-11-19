@@ -25,8 +25,9 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     private MenuPresenter menuPresenter;
     private MenuItemPresenter menuItemPresenter;
     private FontAwesomeIcon icon;
+    private boolean isMenuView;
 
-    public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, FontAwesomeIcon icon, MenuPresenter menuPresenter) {
+    public MenuContentfulViewWrapper(ContentView<T> view, T viewModel, String menuName, String title, FontAwesomeIcon icon, boolean isMenuView, MenuPresenter menuPresenter) {
         this.viewModel = viewModel;
         this.icon = icon;
         if (viewModel == null) {
@@ -34,6 +35,7 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
         }
         push(view);
         this.menuName = menuName;
+        this.isMenuView = isMenuView;
         this.title = title;
         this.menuPresenter = menuPresenter;
     }
@@ -53,29 +55,32 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     }
 
     @Override
-    public void popToRoot() {
+    public NavigationStackActions<T> popToRoot() {
         for (int i = navigationStack.size(); i > 1; i--) {
             popLast();
         }
+        return this;
     }
 
     @Override
-    public void popLast() {
+    public NavigationStackActions<T> popLast() {
         if (navigationStack.size() > 1) {
             ContentView<T> pop = navigationStack.pop();
             pop.preDestroy(viewModel);
         } else {
             logger.warn(LogMarkers.UI_NAV, "Tried to pop root element of stack");
         }
+        return this;
     }
 
     @Override
-    public void push(ContentView<T> view) {
+    public NavigationStackActions<T> push(ContentView<T> view) {
         navigationStack.push(view);
         if (viewModel == null) {
             logger.error(LogMarkers.UI_NAV, "Model not present: METHOD PUSH");
         }
         view.onCreate(viewModel, this);
+        return this;
     }
 
     @Override
@@ -86,9 +91,9 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     }
 
     @Override
-    public void changeToMenuItem(ApplicationMenuViews viewIdf, Runnable... onError) {
+    public void changeToMenuItem(ApplicationMenuViews viewIdf, boolean popToRoot, Runnable... onError) {
         try {
-            menuPresenter.switchMenuContentfulView(viewIdf);
+            menuPresenter.switchMenuContentfulView(viewIdf, popToRoot);
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
             logger.error(LogMarkers.UI_NAV, "Cannot change to menuitem {}", viewIdf);
@@ -98,11 +103,23 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
         }
     }
 
+    @Override
+    public void logout() throws IllegalAccessException {
+        logger.debug(LogMarkers.UI_NAV, "Logout user");
+        menuPresenter.logout();
+    }
+
     public void beforeMenuSwitch() {
         navigationStack.peek().beforeMenuSwitch(viewModel);
     }
 
     public void isCurrentMenuItem(boolean isCurrent) {
-        menuItemPresenter.setSelected(isCurrent);
+        if (menuItemPresenter != null) {
+            menuItemPresenter.setSelected(isCurrent);
+        }
+    }
+
+    public boolean inMenuList() {
+        return isMenuView;
     }
 }

@@ -27,7 +27,7 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
     @Override
     public List<Event> searchFor(String queryString) {
         Search search = searchParser.parseString(queryString);
-        List<SearchPair> searchPairs = (search != null) ? search.retrieveSearchPairs().stream().filter(sp -> sp.getKey() == SearchCategories.EVENT_NAME || sp.getKey() == SearchCategories.GENRE).collect(Collectors.toList()) : new LinkedList<>();
+        List<SearchPair> searchPairs = (search != null) ? search.retrieveSearchPairs().stream().filter(sp -> sp.getKey() == SearchCategories.EVENT_NAME || sp.getKey() == SearchCategories.GENRE || sp.getKey() == SearchCategories.ARTIST_NAME || sp.getKey() == SearchCategories.LOCATION).collect(Collectors.toList()) : new LinkedList<>();
         List<Event> result = eventRepository.search(searchPairs);
         System.out.println("result = " + result.size());
         LinkedList<SearchPair> searchPairs1 = (search != null) ? search.retrieveSearchPairs() : new LinkedList<>();
@@ -49,13 +49,11 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
                 case DATE_UNTIL:
                     untilDate = LocalDate.parse(pair.getValue(), formatter);
                     break;
-                case ARTIST_NAME:
-                    artistName = pair.getValue();
-                    break;
                 case LOCATION:
                     location = pair.getValue();
                     break;
                 case GENRE:
+                case ARTIST_NAME:
                 case EVENT_NAME:
 
             }

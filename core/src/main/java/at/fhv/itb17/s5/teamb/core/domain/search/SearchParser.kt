@@ -8,7 +8,7 @@ object SearchParser {
         return if (queryString.isNotEmpty()) {
             Search(queryString)
         } else {
-            null;
+            null
         }
     }
 }

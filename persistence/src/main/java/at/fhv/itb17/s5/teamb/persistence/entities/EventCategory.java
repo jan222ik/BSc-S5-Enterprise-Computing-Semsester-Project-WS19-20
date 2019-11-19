@@ -92,4 +92,8 @@ public class EventCategory {
     public void setUsedSpace(Integer usedSpace) {
         this.usedSpace = usedSpace;
     }
+
+    public void incUsed(int amount) {
+        usedSpace += amount;
+    }
 }

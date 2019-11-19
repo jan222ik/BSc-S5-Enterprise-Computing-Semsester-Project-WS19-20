@@ -13,6 +13,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import at.fhv.itb17.s5.teamb.persistence.entities.TicketStates;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
 import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
@@ -30,7 +31,7 @@ public class DatabaseMain {
 
     private static void test() {
         Address address = new Address("AT", "685ftui0", "Do", "ABCStr.", "4711");
-        Client client = new Client("test_client", "Hugo Hugo", "pw", "salt", ClientRoles.EXTERNAL, address);
+        Client client = new Client("test_client", "Hugo Hugo", ClientRoles.EXTERNAL, address);
         EventCategory g21 = new EventCategory("G21", 9001, 500, 69);
         EventCategory g16 = new EventCategory("G16", 12312312, 19, 3);
         EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)), address);
@@ -60,9 +61,15 @@ public class DatabaseMain {
 
         events.add(new Event("Weinverkostung", "Verein der feinen Trinker", "Kulturbesäufnis", occurrences, organizer, new LinkedList<>(Arrays.asList(new Artist("Die Blechtrommel")))));
 
+        //repository.saveOrUpdate(ticket);
+        //System.out.println("ticket = " + ticket.getTicketId());
+
+
 
         repository.saveOrUpdate(event);
         events.forEach(e -> repository.saveOrUpdate(e));
+
+
 
 //        repository.save(address);
 //        repository.saveOrUpdate(client);
@@ -79,15 +86,35 @@ public class DatabaseMain {
 //        repository.save(new Address("austria", "6850", "hörbranz", "nemetzstraße", "420"));
 //        repository.save(new Address("deutschland", "61250", "landsberg", "jannikstreet", "0815"));
 
-
+    /*
         EventRepository eventRepository = new EventRepository(new EntityRepository());
         List<SearchPair> searchPairs = new ArrayList<>();
         searchPairs.add(new SearchPair(SearchCategories.EVENT_NAME, "Spo"));
         List<Event> search = eventRepository.search(searchPairs);
         search.forEach(e -> System.out.println(e));
+     */
+        TicketRepository ticketRepository = new TicketRepository(repository);
+        Ticket ticket1 = ticketRepository.bookIfFree(ticket);
+        System.out.println("hello");
     }
 
     public static void main(String... test) {
-        test();
+//        test();
+        searchTest();
     }
+
+    public static void searchTest(){
+
+
+
+        EventRepository eventRepository = new EventRepository(new EntityRepository());
+        List<SearchPair> searchPair = new ArrayList<>();
+        searchPair.add(new SearchPair(SearchCategories.ARTIST_NAME, "capi"));
+        List<Event> search = eventRepository.search(searchPair);
+        for (Event event : search) {
+            System.out.println(event.getTitle());
+        }
+    }
+
+
 }

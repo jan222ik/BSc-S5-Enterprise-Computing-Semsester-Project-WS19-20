@@ -1,8 +1,14 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewmodel;
 
-public class RootVM {
+import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
+
+import java.util.List;
+
+public class RootVM implements ViewModel {
     private SearchVM searchVM;
     private ResultVM resultVM;
+    private CartVM cartVM;
+    private String username;
 
     public SearchVM getSearchVM() {
         return searchVM;
@@ -22,5 +28,25 @@ public class RootVM {
 
     public String getGetSearchQuery() {
         return searchVM.getLatestSearchViewState().toQueryString();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setCartVM(CartVM cartVM) {
+        this.cartVM = cartVM;
+    }
+
+    public CartVM getCartVM() {
+        return cartVM;
+    }
+
+    public void addTicketsForCart(List<TicketDTO> tickets) {
+        cartVM.addTickets(tickets);
     }
 }

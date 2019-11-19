@@ -4,13 +4,15 @@ import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModel;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 
 public interface NavigationStackActions<T extends ViewModel> {
-    void popToRoot();
+    NavigationStackActions<T> popToRoot();
 
-    void popLast();
+    NavigationStackActions<T> popLast();
 
-    void push(ContentView<T> view);
+    NavigationStackActions<T> push(ContentView<T> view);
 
     void showTOS();
 
-    void changeToMenuItem(ApplicationMenuViews viewIdf, Runnable... onError);
+    void changeToMenuItem(ApplicationMenuViews viewIdf, boolean popToRoot, Runnable... onError);
+
+    void logout() throws IllegalAccessException;
 }

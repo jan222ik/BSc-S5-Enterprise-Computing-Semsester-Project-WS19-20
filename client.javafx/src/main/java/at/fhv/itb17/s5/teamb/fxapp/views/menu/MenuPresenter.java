@@ -1,20 +1,23 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
+import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.CartVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ResultVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.RootVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
-import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ViewModelImpl;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.cart.CartView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
-import at.fhv.itb17.s5.teamb.fxapp.views.demo.DemoView;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.user.UserView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,6 +40,8 @@ import java.net.URL;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class MenuPresenter implements Initializable {
 
@@ -46,6 +51,8 @@ public class MenuPresenter implements Initializable {
     private static Style style;
     @Inject
     private SearchService searchService;
+    @Inject
+    private BookingService bookingService;
 
     private static Background background;
     private static Background backgroundError;
@@ -57,6 +64,10 @@ public class MenuPresenter implements Initializable {
     private Button maximizeBtn;
     @FXML
     private Button minimizeBtn;
+    @FXML
+    private Button userBtn;
+    @FXML
+    private FontAwesomeIconView userIcon;
 
     @FXML
     private HBox separatorH;
@@ -78,6 +89,9 @@ public class MenuPresenter implements Initializable {
     private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> applicationViews;
     private MenuContentfulViewWrapper current;
     private boolean isMenuDrawerOpen = true;
+    private SimpleBooleanProperty userViewOpen = new SimpleBooleanProperty(false);
+    private Runnable logoutCallback = null;
+    private Consumer<String> username;
 
 
     @Override
@@ -101,15 +115,26 @@ public class MenuPresenter implements Initializable {
                 this.toggleMenuDrawer(null);
             }
         });
-        this.setMenuItems(new LinkedList<>(getMenuViews().values()));
-        Platform.runLater(() -> switchMenuContentfulView(ApplicationMenuViews.SEARCH_VIEW));
+        userBtn.setOnAction(e -> switchMenuContentfulView(ApplicationMenuViews.USER_VIEW, true));
+        userViewOpen.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                userBtn.setTextFill(style.PRIMARY().asPaint());
+            } else {
+                userBtn.setTextFill(style.ON_BACKGROUND().asPaint());
+                userBtn.setBackground(background);
+            }
+        });
+        this.setMenuItems(new LinkedList<>(getMenuViews().values().stream().filter(MenuContentfulViewWrapper::inMenuList).collect(Collectors.toList())));
+        Platform.runLater(() -> switchMenuContentfulView(ApplicationMenuViews.SEARCH_VIEW, true));
     }
 
     private void applyStyle() {
         style.hoverBtn(closeBtn, background, style.ON_BACKGROUND().asPaint(), backgroundError, style.ON_ERROR().asPaint());
         style.hoverBtn(maximizeBtn, background, style.ON_BACKGROUND().asPaint(), backgroundSurf, style.ON_SURFACE().asPaint());
         style.hoverBtn(minimizeBtn, background, style.ON_BACKGROUND().asPaint(), backgroundSurf, style.ON_SURFACE().asPaint());
+        style.hoverBtn(userBtn, background, style.ON_BACKGROUND().asPaint(), backgroundSurf, style.ON_SURFACE().asPaint(), userViewOpen);
         style.hoverBtn(glyphHostBtn, background, style.ON_BACKGROUND().asPaint(), backgroundSurf, style.ON_SURFACE().asPaint());
+        userIcon.setFill(style.ON_BACKGROUND().asPaint());
         hamburgerIcon.setFill(style.ON_BACKGROUND().asPaint());
         menubarTitle.setTextFill(style.ON_BACKGROUND().asPaint());
         menubarHBox.setBackground(background);
@@ -128,25 +153,29 @@ public class MenuPresenter implements Initializable {
         views.forEach(view -> {
             menuVBox.getChildren().add(view.createMenuItemView(() -> {
                 logger.debug(LogMarkers.UI_EVENT, "MenuItem clicked");
-                this.switchMenuContentfulView(view);
+                this.switchMenuContentfulViewView(view, true);
             }, menuVBox.widthProperty()).getView());
             view.isCurrentMenuItem(false);
         });
     }
 
-    public void switchMenuContentfulView(ApplicationMenuViews viewIdf) {
-        this.switchMenuContentfulView(this.getMenuViews().get(viewIdf));
+    public void switchMenuContentfulView(ApplicationMenuViews viewIdf, boolean pop2root) {
+        this.switchMenuContentfulViewView(this.getMenuViews().get(viewIdf), pop2root);
     }
 
-    private void switchMenuContentfulView(MenuContentfulViewWrapper view) {
+    private void switchMenuContentfulViewView(MenuContentfulViewWrapper view, boolean pop2root) {
         if (current != null) {
             current.beforeMenuSwitch();
             current.isCurrentMenuItem(false);
         }
+        userViewOpen.set(view.equals(getMenuViews().get(ApplicationMenuViews.USER_VIEW)));
         current = view;
         view.isCurrentMenuItem(true);
         logger.debug(LogMarkers.UI, "Switching to {}", view);
         this.updateTitle(view.getTitle());
+        if (pop2root) {
+            view.popToRoot();
+        }
         view.showTOS();
     }
 
@@ -160,23 +189,31 @@ public class MenuPresenter implements Initializable {
         if (applicationViews == null) {
             applicationViews = new EnumMap<>(ApplicationMenuViews.class);
             RootVM rootVM = new RootVM();
+            username = rootVM::setUsername;
             rootVM.setSearchVM(new SearchVM());
+            rootVM.setCartVM(new CartVM(bookingService));
             rootVM.setResultVM(new ResultVM(searchService, rootVM));
             applicationViews.put(ApplicationMenuViews.SEARCH_VIEW,
                     new MenuContentfulViewWrapper<>(
                             new SearchView(), rootVM.getSearchVM(),
-                            "Search", "Search", FontAwesomeIcon.SEARCH, this)
+                            "Search", "Search", FontAwesomeIcon.SEARCH, true, this)
             );
             applicationViews.put(ApplicationMenuViews.BROWSER_VIEW,
                     new MenuContentfulViewWrapper<>(
                             new BrowserView(), rootVM.getResultVM(), "Event Browser",
-                            "Event Browser", FontAwesomeIcon.LIST_UL, this)
+                            "Event Browser", FontAwesomeIcon.LIST_UL, true, this)
             );
-            applicationViews.put(ApplicationMenuViews.DEMO_VIEW,
+            applicationViews.put(ApplicationMenuViews.CART_VIEW,
                     new MenuContentfulViewWrapper<>(
-                            new DemoView(), new ViewModelImpl(), "Demo Item 3",
-                            "Demo Content Title 3", FontAwesomeIcon.ANCHOR, this)
+                            new CartView(), rootVM.getCartVM(), "Cart",
+                            "Cart", FontAwesomeIcon.SHOPPING_CART, true, this)
             );
+            applicationViews.put(ApplicationMenuViews.USER_VIEW,
+                    new MenuContentfulViewWrapper<>(
+                            new UserView(), rootVM, "User",
+                            "User", FontAwesomeIcon.ANCHOR, false, this)
+            );
+            userBtn.setText(rootVM.getUsername());
         }
         return applicationViews;
     }
@@ -200,5 +237,20 @@ public class MenuPresenter implements Initializable {
         WindowEventHelper.maximizeApplicationImpl(maximizeBtn);
         WindowEventHelper.minimizeApplicationImpl(minimizeBtn);
         WindowEventHelper.draggableApplicationWindowImpl(menubarHBox);
+    }
+
+    public void setLogoutCallback(Runnable callbackLogout) {
+        this.logoutCallback = callbackLogout;
+    }
+
+    public void logout() throws IllegalAccessException {
+        if (logoutCallback == null) throw new IllegalAccessException("Apply Setter before Invocation");
+        bookingService.logout();
+        logoutCallback.run();
+    }
+
+    public void setUsername(String name) {
+        username.accept(name);
+        userBtn.setText(name);
     }
 }
