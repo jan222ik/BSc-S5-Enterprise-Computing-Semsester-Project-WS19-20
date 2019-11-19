@@ -16,7 +16,7 @@ public class ConfirmationPresenter implements ContentfulViewLifeCycle<CartVM> {
     public void onCreate(CartVM viewModel, NavigationStackActions<CartVM> navActions) {
         backSearchBtn.setOnAction(e -> {
             navActions.popToRoot();
-            navActions.changeToMenuItem(ApplicationMenuViews.SEARCH_VIEW, () ->
+            navActions.changeToMenuItem(ApplicationMenuViews.SEARCH_VIEW, false, () ->
                     NotificationsHelper.error("Internal Error", "Could not change to menu item"));
         });
     }

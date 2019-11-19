@@ -11,6 +11,8 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
+import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
+import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
 import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
@@ -128,9 +130,20 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         klaasOccurence.add(new EventOccurrence(LocalDate.of(2019, 01, 29), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 11)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
 
         List<EventOccurrence> kochshowOccurence = new ArrayList<>();
+        List<LocationRow> seatingRows = new ArrayList<>();
+        seatingRows.add(new LocationRow("Row 1", Arrays.asList(new LocationSeat("Seat 1", false),
+                new LocationSeat("Seat 2", false),
+                new LocationSeat("Seat 3", false),
+                new LocationSeat("Seat 4", false),
+                new LocationSeat("Seat 5", false))));
+        seatingRows.add(new LocationRow("Row 2", Arrays.asList(new LocationSeat("Seat 6", false),
+                new LocationSeat("Seat 7", false),
+                new LocationSeat("Seat 8", false),
+                new LocationSeat("Seat 9", false),
+                new LocationSeat("Seat 10", true))));
         kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12, 20), LocalTime.of(16, 30, 0), Arrays.asList(new EventCategory("Standardeintritt", 500, 80, 0)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
         kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12, 25), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 500, 80, 0)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
-
+        kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12, 30), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 600, seatingRows)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
         List<Event> events = new LinkedList<>();
 
         events.add(new Event("Scene-Openair Lustenau", "Openair Festival in Lustenau", "Festival", sceneOccurrences, new Organizer("Lustenau Festivalverband", "scene@lustenau.at", new Address("Österreich", "6830", "Lustenau", "Langegasse", "23")), sceneArtists));

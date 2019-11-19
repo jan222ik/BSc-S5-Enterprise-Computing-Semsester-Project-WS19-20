@@ -115,7 +115,7 @@ public class MenuPresenter implements Initializable {
                 this.toggleMenuDrawer(null);
             }
         });
-        userBtn.setOnAction(e -> switchMenuContentfulView(ApplicationMenuViews.USER_VIEW));
+        userBtn.setOnAction(e -> switchMenuContentfulView(ApplicationMenuViews.USER_VIEW, true));
         userViewOpen.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 userBtn.setTextFill(style.PRIMARY().asPaint());
@@ -125,7 +125,7 @@ public class MenuPresenter implements Initializable {
             }
         });
         this.setMenuItems(new LinkedList<>(getMenuViews().values().stream().filter(MenuContentfulViewWrapper::inMenuList).collect(Collectors.toList())));
-        Platform.runLater(() -> switchMenuContentfulView(ApplicationMenuViews.SEARCH_VIEW));
+        Platform.runLater(() -> switchMenuContentfulView(ApplicationMenuViews.SEARCH_VIEW, true));
     }
 
     private void applyStyle() {
@@ -153,17 +153,17 @@ public class MenuPresenter implements Initializable {
         views.forEach(view -> {
             menuVBox.getChildren().add(view.createMenuItemView(() -> {
                 logger.debug(LogMarkers.UI_EVENT, "MenuItem clicked");
-                this.switchMenuContentfulView(view);
+                this.switchMenuContentfulViewView(view, true);
             }, menuVBox.widthProperty()).getView());
             view.isCurrentMenuItem(false);
         });
     }
 
-    public void switchMenuContentfulView(ApplicationMenuViews viewIdf) {
-        this.switchMenuContentfulView(this.getMenuViews().get(viewIdf));
+    public void switchMenuContentfulView(ApplicationMenuViews viewIdf, boolean pop2root) {
+        this.switchMenuContentfulViewView(this.getMenuViews().get(viewIdf), pop2root);
     }
 
-    private void switchMenuContentfulView(MenuContentfulViewWrapper view) {
+    private void switchMenuContentfulViewView(MenuContentfulViewWrapper view, boolean pop2root) {
         if (current != null) {
             current.beforeMenuSwitch();
             current.isCurrentMenuItem(false);
@@ -173,6 +173,9 @@ public class MenuPresenter implements Initializable {
         view.isCurrentMenuItem(true);
         logger.debug(LogMarkers.UI, "Switching to {}", view);
         this.updateTitle(view.getTitle());
+        if (pop2root) {
+            view.popToRoot();
+        }
         view.showTOS();
     }
 

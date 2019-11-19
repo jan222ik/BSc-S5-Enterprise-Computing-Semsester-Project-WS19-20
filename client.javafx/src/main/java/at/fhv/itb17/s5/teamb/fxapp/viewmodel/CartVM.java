@@ -34,7 +34,11 @@ public class CartVM implements ViewModel {
     }
 
     public boolean book() {
-        return bookingService.book(tickets);
+        boolean book = bookingService.book(tickets);
+        if (book) {
+            this.clear();
+        }
+        return book;
     }
 
 

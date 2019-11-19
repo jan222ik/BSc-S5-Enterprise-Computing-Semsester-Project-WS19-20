@@ -12,7 +12,7 @@ public interface NavigationStackActions<T extends ViewModel> {
 
     void showTOS();
 
-    void changeToMenuItem(ApplicationMenuViews viewIdf, Runnable... onError);
+    void changeToMenuItem(ApplicationMenuViews viewIdf, boolean popToRoot, Runnable... onError);
 
     void logout() throws IllegalAccessException;
 }

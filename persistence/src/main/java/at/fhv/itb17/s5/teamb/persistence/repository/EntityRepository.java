@@ -117,7 +117,8 @@ public class EntityRepository {
             }
         }
 
-        return sessionFactory.getCurrentSession().createQuery(criteriaQuery).getResultList();
+        List<T> resultList = sessionFactory.getCurrentSession().createQuery(criteriaQuery).getResultList();
+        return resultList;
     }
 
     private <T> T doInTransaction(Function<Session, T> supplier) {

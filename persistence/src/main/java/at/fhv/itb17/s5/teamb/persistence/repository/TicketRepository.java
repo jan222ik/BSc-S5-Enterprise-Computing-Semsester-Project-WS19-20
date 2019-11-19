@@ -52,14 +52,15 @@ public class TicketRepository {
                         return null;
                     }
                 } else {
+                    int nbrOfTickets = tickets.size();
                     EventCategory eventCategory = ticket.getBookedCategory();
                     if (eventCategory != null) {
                         currentSession.refresh(eventCategory);
                         if (eventCategory.isFreeSeating()) {
-                            if (eventCategory.getTotalSpace() - eventCategory.getUsedSpace() > 0) {
+                            if (eventCategory.getTotalSpace() - eventCategory.getUsedSpace() + nbrOfTickets >= 0) {
                                 currentSession.detach(eventCategory);
                                 currentSession.save(ticket);
-                                eventCategory.incUsed();
+                                eventCategory.incUsed(nbrOfTickets);
                                 currentSession.save(eventCategory);
                             }
                         } else {

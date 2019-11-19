@@ -42,7 +42,7 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
 
     @Override
     public void onCreate(CartVM viewModel, NavigationStackActions<CartVM> navActions) {
-        backBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW, () -> NotificationsHelper.error("Internal Error", "Could not switch to menu item")));
+        backBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW, true,  () -> NotificationsHelper.error("Internal Error", "Could not switch to menu item")));
         style.hoverBtn(backBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.SECONDARY().asPaint());
         buyBtn.setOnAction(e -> this.buyOrReserve(viewModel, true, navActions));
         style.hoverBtn(buyBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.PRIMARY().asPaint());

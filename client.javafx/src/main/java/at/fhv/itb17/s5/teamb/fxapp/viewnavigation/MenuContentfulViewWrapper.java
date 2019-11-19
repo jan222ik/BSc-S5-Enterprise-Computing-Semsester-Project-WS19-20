@@ -91,9 +91,9 @@ public class MenuContentfulViewWrapper<T extends ViewModel> implements Navigatio
     }
 
     @Override
-    public void changeToMenuItem(ApplicationMenuViews viewIdf, Runnable... onError) {
+    public void changeToMenuItem(ApplicationMenuViews viewIdf, boolean popToRoot, Runnable... onError) {
         try {
-            menuPresenter.switchMenuContentfulView(viewIdf);
+            menuPresenter.switchMenuContentfulView(viewIdf, popToRoot);
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
             logger.error(LogMarkers.UI_NAV, "Cannot change to menuitem {}", viewIdf);

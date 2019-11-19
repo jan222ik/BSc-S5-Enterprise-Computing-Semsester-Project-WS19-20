@@ -43,7 +43,7 @@ public class BrowserPresenter implements ContentfulViewLifeCycle<ResultVM> {
     @Override
     public void onCreate(ResultVM viewModel, NavigationStackActions<ResultVM> navActions) {
         navigationStackActions = navActions;
-        back2FilterBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.SEARCH_VIEW));
+        back2FilterBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.SEARCH_VIEW, false));
         refreshBtn.setOnAction(e -> this.refreshResults(viewModel));
     }
 

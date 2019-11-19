@@ -68,7 +68,7 @@ public class BookingPresenter implements ContentfulViewLifeCycle<ResultVM> {
         backToResultsBtn.setOnAction(e -> navActions.popLast().showTOS());
         addCartBtn.setOnAction(e -> {
             addToCart(viewModel);
-            navActions.changeToMenuItem(ApplicationMenuViews.CART_VIEW);
+            navActions.changeToMenuItem(ApplicationMenuViews.CART_VIEW, false);
         });
         addToCartAndContinueBtn.setOnAction(e -> {
             addToCart(viewModel);
