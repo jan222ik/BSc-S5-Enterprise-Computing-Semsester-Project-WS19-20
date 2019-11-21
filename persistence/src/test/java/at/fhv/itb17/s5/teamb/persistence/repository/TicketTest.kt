@@ -13,7 +13,7 @@ class TicketTest {
     private var ticketRepository: TicketRepository = TicketRepository(entityRepository)
 
     private val address = Address("AT", "685ftui0", "Do", "ABCStr.", "4711")
-    private val client = Client("test_client", "Hugo Hugo", ClientRoles.EXTERNAL, address)
+    private val client = Client("test_client", "Hugo Hugo", LinkedList(), LinkedList(),address)
     private val g21 = EventCategory("G21", 9001, 500, 69)
     private val g16 = EventCategory("G16", 12312312, 19, 3)
     private val occurrence0 = EventOccurrence(LocalDate.now(), LocalTime.now(), LinkedList(Arrays.asList(g21, g16)), address)

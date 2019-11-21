@@ -9,6 +9,7 @@ public class RootVM implements ViewModel {
     private ResultVM resultVM;
     private CartVM cartVM;
     private String username;
+    private MsgTopicVM msgTopicVM;
 
     public SearchVM getSearchVM() {
         return searchVM;
@@ -48,5 +49,13 @@ public class RootVM implements ViewModel {
 
     public void addTicketsForCart(List<TicketDTO> tickets) {
         cartVM.addTickets(tickets);
+    }
+
+    public void setMsgTopicVM(MsgTopicVM msgTopicVM) {
+        this.msgTopicVM = msgTopicVM;
+    }
+
+    public MsgTopicVM getMsgTopicVM() {
+        return msgTopicVM;
     }
 }

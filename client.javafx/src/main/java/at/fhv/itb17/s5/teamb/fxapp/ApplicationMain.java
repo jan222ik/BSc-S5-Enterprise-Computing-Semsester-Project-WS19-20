@@ -1,12 +1,15 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockBookingServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgTopicServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginView;
@@ -49,17 +52,20 @@ public class ApplicationMain extends Application {
         Injector.setModelOrService(Style.class, new Style());
         SearchService searchService;
         BookingService bookingService;
+        MsgTopicService topicService;
         if (args.containsKeyword("-mock")) {
             searchService = new MockSearchServiceImpl();
             bookingService = new MockBookingServiceImpl();
+            topicService = new MockMsgTopicServiceImpl();
         } else {
             rmiController = new RMIController("localhost", 2345);
             searchService = new RMISearchServiceImpl(rmiController);
             bookingService = new RMIBookingServiceImpl(rmiController);
-
+            topicService = new RMITopicServiceImpl(rmiController);
         }
         Injector.setModelOrService(SearchService.class, searchService);
         Injector.setModelOrService(BookingService.class, bookingService);
+        Injector.setModelOrService(MsgTopicService.class, topicService);
         boolean withLogin = args.containsKeyword("-login");
 
         Runnable createLogin = () -> generateLogin(primaryStage);
@@ -68,8 +74,10 @@ public class ApplicationMain extends Application {
         if (withLogin) {
             createLogin.run();
         } else {
-            bookingService.doLoginBooking("backdoor", "backdoorPWD");
-            createMenu.accept("backdoor");
+            final String backdoorUsername = "backdoor";
+            bookingService.doLoginBooking(backdoorUsername, "backdoorPWD");
+            topicService.doLoginMsgTopic(backdoorUsername, "backdoorPWD");
+            createMenu.accept(backdoorUsername);
         }
         showStage(primaryStage);
         logger.info(LogMarkers.APPLICATION, "Application Started");

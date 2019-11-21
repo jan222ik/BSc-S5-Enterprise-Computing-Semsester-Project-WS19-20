@@ -2,6 +2,7 @@ package at.fhv.itb17.s5.teamb.fxapp.data.rmi;
 
 import at.fhv.itb17.s5.teamb.core.controllers.general.BookingService;
 import at.fhv.itb17.s5.teamb.core.controllers.general.IFrontEndClient;
+import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
 import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
 import at.fhv.itb17.s5.teamb.core.controllers.rmi.EntryPointRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.rmi.IConnectionFactoryRMI;
@@ -49,5 +50,12 @@ public class RMIController {
 
     public void stopRMI() {
         registry = null;
+    }
+
+    public MsgTopicService createMsgTopicService(String username, String password) throws RemoteException {
+        logger.info("RMI: Created MsgTopicService");
+        MsgTopicService topicService = stub.createTopicService(username, password);
+        System.out.println("topicService = " + topicService);
+        return topicService;
     }
 }

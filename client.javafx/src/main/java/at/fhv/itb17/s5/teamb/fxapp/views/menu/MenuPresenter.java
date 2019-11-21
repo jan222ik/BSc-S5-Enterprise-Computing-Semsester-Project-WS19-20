@@ -1,16 +1,20 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.CartVM;
+import at.fhv.itb17.s5.teamb.fxapp.viewmodel.MsgTopicVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.ResultVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.RootVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.MenuContentfulViewWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.cart.CartView;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.msgcon.MsgConView;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.msgprod.MsgProdView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.user.UserView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
@@ -53,6 +57,8 @@ public class MenuPresenter implements Initializable {
     private SearchService searchService;
     @Inject
     private BookingService bookingService;
+    @Inject
+    private MsgTopicService msgTopicService;
 
     private static Background background;
     private static Background backgroundError;
@@ -193,6 +199,7 @@ public class MenuPresenter implements Initializable {
             rootVM.setSearchVM(new SearchVM());
             rootVM.setCartVM(new CartVM(bookingService));
             rootVM.setResultVM(new ResultVM(searchService, rootVM));
+            rootVM.setMsgTopicVM(new MsgTopicVM(msgTopicService));
             applicationViews.put(ApplicationMenuViews.SEARCH_VIEW,
                     new MenuContentfulViewWrapper<>(
                             new SearchView(), rootVM.getSearchVM(),
@@ -214,6 +221,16 @@ public class MenuPresenter implements Initializable {
                             "User", FontAwesomeIcon.ANCHOR, false, this)
             );
             userBtn.setText(rootVM.getUsername());
+            applicationViews.put(ApplicationMenuViews.MSG_PROD_VIEW,
+                    new MenuContentfulViewWrapper<>(
+                            new MsgProdView(), rootVM.getMsgTopicVM(), "Message Producer",
+                            "MSG. Prod.", FontAwesomeIcon.ENVELOPE, false, this)
+            );
+            applicationViews.put(ApplicationMenuViews.MSG_CONSUMER_VIEW,
+                    new MenuContentfulViewWrapper<>(
+                            new MsgConView(), rootVM.getMsgTopicVM(), "Message Consumer",
+                            "MSG. Consumer", FontAwesomeIcon.ENVELOPE, true, this)
+            );
         }
         return applicationViews;
     }

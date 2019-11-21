@@ -34,11 +34,18 @@ public class EntryPointRMI extends EntryPoint {
                 e.printStackTrace();
                 return null;
             }
+        }, (ClientSessionRMI client) -> {
+            try {
+                return new MsgTopicServiceRMI(coreImpl.getMsgTopicServiceCore(), client, coreImpl.getEntityRepo());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return null;
+            }
         }, coreImpl.getAuthManagerCore());
     }
 
     @Override
-    public void start() throws RemoteException {
+    public void start() {
         System.setProperty("java.rmi.server.codebaseOnly", String.valueOf(false));
         System.setProperty("javax.management.MBeanTrustPermission", "register");
         System.setProperty("java.security.policy", "./client.policy");

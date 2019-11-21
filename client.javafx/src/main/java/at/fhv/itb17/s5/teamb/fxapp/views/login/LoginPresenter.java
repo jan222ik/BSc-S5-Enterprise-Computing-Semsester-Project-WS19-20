@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.login;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
@@ -23,6 +24,8 @@ public class LoginPresenter implements Initializable {
     private Style style;
     @Inject
     private BookingService bookingService;
+    @Inject
+    private MsgTopicService msgTopicService;
 
     @FXML
     private HBox movebar;
@@ -73,6 +76,7 @@ public class LoginPresenter implements Initializable {
     }
 
     private boolean checkPasswordRemote(String user, String pwd) {
+        msgTopicService.doLoginMsgTopic(user, pwd);
         return bookingService.doLoginBooking(user, pwd);
     }
 }

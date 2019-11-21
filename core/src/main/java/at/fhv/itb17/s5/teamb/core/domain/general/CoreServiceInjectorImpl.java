@@ -4,6 +4,8 @@ import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepoImpl;
 import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCoreImpl;
+import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
+import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.persistence.entities.Address;
@@ -13,9 +15,12 @@ import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
 import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
+import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 
 import java.time.LocalDate;
@@ -32,8 +37,11 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
     private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
 
-    private final AuthManagerCore authManagerCore = new AuthManagerCore(true);
+    private final ClientRepository clientRepository = new ClientRepository(entityRepository);
+    private final AuthManagerCore authManagerCore = new AuthManagerCore(true, clientRepository);
     private final EntityDTORepo entityDTORepo = new EntityDTORepoImpl();
+    private final MsgRepository msgRepository = new MsgRepository(entityRepository);
+    private final MsgServiceCore msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);
 
     public CoreServiceInjectorImpl() {
         addDBDATA();
@@ -154,6 +162,11 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         events.forEach(entityRepository::saveOrUpdate);
 
+        for (int i = 0; i < 10; i++) {
+            MsgTopic msgTopic = new MsgTopic("Topic " + i, false);
+            entityRepository.save(msgTopic);
+        }
+
     }
 
     @Override
@@ -174,5 +187,10 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     @Override
     public EntityDTORepo getEntityRepo() {
         return entityDTORepo;
+    }
+
+    @Override
+    public MsgServiceCore getMsgTopicServiceCore() {
+        return msgTopicServiceCore;
     }
 }

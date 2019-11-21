@@ -4,6 +4,8 @@ public enum ApplicationMenuViews {
     SEARCH_VIEW,
     BROWSER_VIEW,
     CART_VIEW,
+    MSG_PROD_VIEW,
+    MSG_CONSUMER_VIEW,
     DEMO_VIEW,
     USER_VIEW, NOT_EXISTING //Test only !
 }
