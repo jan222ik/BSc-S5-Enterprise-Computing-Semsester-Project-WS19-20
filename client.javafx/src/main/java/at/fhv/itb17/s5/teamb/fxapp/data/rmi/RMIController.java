@@ -42,15 +42,22 @@ public class RMIController {
     }
 
     public SearchService createSearchService() throws RemoteException {
-        logger.info("RMI: Created SearchService");
-        return (stub != null) ? stub.createSearchService() : null;
+        logger.info("RMI: Creating SearchService");
+        if (stub != null) {
+            SearchService searchService = stub.createSearchService();
+            logger.info("RMI: Created SearchService");
+            return searchService;
+        } else {
+            logger.info("RMI: ERROR CREATION SearchService");
+            return null;
+        }
     }
 
     public BookingService createBookingService(IFrontEndClient frontEndClient, String username, String password) throws RemoteException {
-        logger.info("RMI: Created BookingService");
+        logger.info("RMI: Creating BookingService");
         if (stub == null) return null;
         BookingService bookingService = stub.createBookingService(frontEndClient, username, password);
-        System.out.println("bookingService = " + bookingService);
+        System.out.println("Created bookingService = " + bookingService);
         return bookingService;
     }
 
@@ -59,10 +66,10 @@ public class RMIController {
     }
 
     public MsgTopicService createMsgTopicService(String username, String password) throws RemoteException {
-        logger.info("RMI: Created MsgTopicService");
+        logger.info("RMI: Creating MsgTopicService");
         if (stub == null) return null;
         MsgTopicService topicService = stub.createTopicService(username, password);
-        System.out.println("topicService = " + topicService);
+        System.out.println("Created topicService = " + topicService);
         return topicService;
     }
 

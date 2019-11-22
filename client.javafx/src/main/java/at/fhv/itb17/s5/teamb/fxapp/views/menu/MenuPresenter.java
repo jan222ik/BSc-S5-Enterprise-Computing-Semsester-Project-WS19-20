@@ -250,7 +250,13 @@ public class MenuPresenter implements Initializable {
     }
 
     private void setupWindowListener() {
-        WindowEventHelper.closeApplicationImpl(closeBtn);
+        WindowEventHelper.closeApplicationImpl(closeBtn, () -> {
+            try {
+                this.logout();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        });
         WindowEventHelper.maximizeApplicationImpl(maximizeBtn);
         WindowEventHelper.minimizeApplicationImpl(minimizeBtn);
         WindowEventHelper.draggableApplicationWindowImpl(menubarHBox);
@@ -263,6 +269,9 @@ public class MenuPresenter implements Initializable {
     public void logout() throws IllegalAccessException {
         if (logoutCallback == null) throw new IllegalAccessException("Apply Setter before Invocation");
         bookingService.logout();
+        if (msgTopicService != null) {
+            msgTopicService.logout();
+        }
         logoutCallback.run();
     }
 
