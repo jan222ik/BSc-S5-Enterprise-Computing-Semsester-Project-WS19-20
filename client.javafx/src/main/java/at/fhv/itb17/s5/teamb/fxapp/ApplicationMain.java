@@ -58,7 +58,7 @@ public class ApplicationMain extends Application {
             bookingService = new MockBookingServiceImpl();
             topicService = new MockMsgTopicServiceImpl();
         } else {
-            rmiController = new RMIController("localhost", 2345);
+            rmiController = new RMIController();
             searchService = new RMISearchServiceImpl(rmiController);
             bookingService = new RMIBookingServiceImpl(rmiController);
             topicService = new RMITopicServiceImpl(rmiController);
@@ -75,6 +75,8 @@ public class ApplicationMain extends Application {
             createLogin.run();
         } else {
             final String backdoorUsername = "backdoor";
+            rmiController.connect("localhost", 2345);
+            searchService.init();
             bookingService.doLoginBooking(backdoorUsername, "backdoorPWD");
             topicService.doLoginMsgTopic(backdoorUsername, "backdoorPWD");
             createMenu.accept(backdoorUsername);

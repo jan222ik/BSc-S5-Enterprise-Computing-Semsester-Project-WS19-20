@@ -21,17 +21,19 @@ public class RMITopicServiceImpl implements MsgTopicService {
 
 
     @Override
-    public boolean doLoginMsgTopic(String username, String password) {
+    public RMIConnectionStatus doLoginMsgTopic(String username, String password) {
         try {
             msgTopicService = rmi.createMsgTopicService(username, password);
             if (msgTopicService != null) {
-                return true;
+                return RMIConnectionStatus.CONNECTED;
+            }else {
+                return RMIConnectionStatus.CREDENTIALS_INVALID;
             }
         } catch (RemoteException e) {
             e.printStackTrace();
             logger.error("RMI Remote Exception");
         }
-        return false;
+        return RMIConnectionStatus.NO_CONNECTION;
     }
 
     @Override

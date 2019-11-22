@@ -1,11 +1,12 @@
 package at.fhv.itb17.s5.teamb.fxapp.data;
 
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
 
 import java.util.List;
 
 public interface MsgTopicService {
-    boolean doLoginMsgTopic(String username, String password);
+    RMIConnectionStatus doLoginMsgTopic(String username, String password);
 
     void logout();
 

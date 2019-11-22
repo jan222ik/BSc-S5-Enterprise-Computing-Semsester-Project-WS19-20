@@ -19,11 +19,14 @@ public class RMIController {
     private static final Logger logger = LogManager.getLogger(RMIController.class);
 
 
-    private IConnectionFactoryRMI stub;
-    private Registry registry;
+    private IConnectionFactoryRMI stub = null;
+    private Registry registry = null;
 
-    public RMIController(String host, int port) throws RemoteException {
+    public RMIController() throws RemoteException {
         System.setSecurityManager(new SecManager());
+    }
+
+    public boolean connect(String host, int port) throws RemoteException{
         try {
             registry = LocateRegistry.getRegistry(host, port);
 
@@ -32,17 +35,20 @@ public class RMIController {
 
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
+            return false;
         }
         logger.debug("RMI Client Started");
+        return true;
     }
 
     public SearchService createSearchService() throws RemoteException {
         logger.info("RMI: Created SearchService");
-        return stub.createSearchService();
+        return (stub != null) ? stub.createSearchService() : null;
     }
 
     public BookingService createBookingService(IFrontEndClient frontEndClient, String username, String password) throws RemoteException {
         logger.info("RMI: Created BookingService");
+        if (stub == null) return null;
         BookingService bookingService = stub.createBookingService(frontEndClient, username, password);
         System.out.println("bookingService = " + bookingService);
         return bookingService;
@@ -54,8 +60,10 @@ public class RMIController {
 
     public MsgTopicService createMsgTopicService(String username, String password) throws RemoteException {
         logger.info("RMI: Created MsgTopicService");
+        if (stub == null) return null;
         MsgTopicService topicService = stub.createTopicService(username, password);
         System.out.println("topicService = " + topicService);
         return topicService;
     }
+
 }

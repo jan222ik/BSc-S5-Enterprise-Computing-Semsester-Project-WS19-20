@@ -2,31 +2,51 @@ package at.fhv.itb17.s5.teamb.fxapp.views.login;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
+import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 
 import javax.inject.Inject;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+@SuppressWarnings("squid:S2068")
 public class LoginPresenter implements Initializable {
+
+    private static final List<String> servers = Arrays.asList("localhost", "10.0.51.91");
 
     @Inject
     private Style style;
     @Inject
+    private SearchService searchService;
+    @Inject
     private BookingService bookingService;
     @Inject
     private MsgTopicService msgTopicService;
+    @Inject
+    private RMIController rmiController;
 
+    @FXML
+    private StackPane stackPlane;
+    @FXML
+    private AnchorPane msgPlane;
     @FXML
     private HBox movebar;
     @FXML
@@ -37,6 +57,8 @@ public class LoginPresenter implements Initializable {
     private PasswordField passwordField;
     @FXML
     private Button loginButton;
+    @FXML
+    private ChoiceBox<String> serverCB;
 
     private Consumer<String> callback;
 
@@ -52,6 +74,12 @@ public class LoginPresenter implements Initializable {
                 checkPWUsernameCombination();
             }
         });
+        serverCB.getItems().clear();
+        serverCB.getItems().addAll(servers);
+        if (!serverCB.getItems().isEmpty()) {
+            serverCB.getSelectionModel().select(0);
+        }
+        stackPlane.getChildren().remove(msgPlane);
     }
 
     public void setNextSceneCallback(Consumer<String> callback) {
@@ -68,15 +96,37 @@ public class LoginPresenter implements Initializable {
             username = "backdoor";
             password = "backdoorPWD";
         }
-        if (checkPasswordRemote(username, password)) {
+        stackPlane.getChildren().add(stackPlane.getChildren().size(), msgPlane);
+        RMIConnectionStatus status = checkPasswordRemote(username, password);
+        stackPlane.getChildren().remove(msgPlane);
+        if (status == RMIConnectionStatus.CONNECTED) {
             callback.accept(username);
         } else {
-            NotificationsHelper.error("Invalid Input", "Username or Password wrong!", NotificationsHelper.DisplayDuration.SHORT);
+            if (status == RMIConnectionStatus.CREDENTIALS_INVALID) {
+                NotificationsHelper.error("Invalid Input", "Username or Password wrong!", NotificationsHelper.DisplayDuration.SHORT);
+            } else {
+                NotificationsHelper.error("Connection Refused", "No RMI Connection to host possible", NotificationsHelper.DisplayDuration.SHORT);
+            }
         }
     }
 
-    private boolean checkPasswordRemote(String user, String pwd) {
-        msgTopicService.doLoginMsgTopic(user, pwd);
-        return bookingService.doLoginBooking(user, pwd);
+    private RMIConnectionStatus checkPasswordRemote(String user, String pwd) {
+        RMIConnectionStatus status;
+        if (rmiController != null) {
+            try {
+                rmiController.connect(serverCB.getValue(), 2345);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return RMIConnectionStatus.NO_CONNECTION;
+            }
+        }
+        status = searchService.init();
+        if (status == RMIConnectionStatus.CONNECTED) {
+            status = msgTopicService.doLoginMsgTopic(user, pwd);
+            if (status == RMIConnectionStatus.CONNECTED) {
+                status = bookingService.doLoginBooking(user, pwd);
+            }
+        }
+        return status;
     }
 }

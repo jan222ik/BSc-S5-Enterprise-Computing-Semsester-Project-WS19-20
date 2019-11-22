@@ -22,19 +22,21 @@ public class RMIBookingServiceImpl implements BookingService {
 
 
     @Override
-    public boolean doLoginBooking(String username, String password) {
+    public RMIConnectionStatus doLoginBooking(String username, String password) {
         try {
             IFrontEndClient client = new FrontEndClient();
             //UnicastRemoteObject.exportObject(client, 2345);
             remoteBookingService = rmi.createBookingService(client, username, password);
             if (remoteBookingService != null) {
-                return true;
+                return RMIConnectionStatus.CONNECTED;
+            } else {
+                return RMIConnectionStatus.CREDENTIALS_INVALID;
             }
         } catch (RemoteException e) {
             e.printStackTrace();
             logger.error("RMI Remote Exception");
         }
-        return false;
+        return RMIConnectionStatus.NO_CONNECTION;
     }
 
     @Override

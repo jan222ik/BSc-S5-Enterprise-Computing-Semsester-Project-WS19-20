@@ -16,7 +16,15 @@ public class RMISearchServiceImpl implements SearchService {
 
     public RMISearchServiceImpl(RMIController rmi) throws RemoteException {
         this.rmi = rmi;
-        remoteSearchService = rmi.createSearchService();
+    }
+
+    public RMIConnectionStatus init() {
+        try {
+            remoteSearchService = rmi.createSearchService();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return (remoteSearchService != null) ? RMIConnectionStatus.CONNECTED : RMIConnectionStatus.NO_CONNECTION;
     }
 
     @Override
