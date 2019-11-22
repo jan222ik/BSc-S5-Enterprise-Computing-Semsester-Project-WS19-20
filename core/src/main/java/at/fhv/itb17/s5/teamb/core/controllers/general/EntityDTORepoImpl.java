@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityDTORepoImpl implements EntityDTORepo {
+    //FIXME Possible Mem leak
     private HashMap<TicketDTO, Ticket> tickets = new HashMap<>();
     private HashMap<Long, Event> events = new HashMap<>();
     private HashMap<Long, MsgTopic> topics = new HashMap<>();

@@ -2,8 +2,10 @@ package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.CartVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.MsgTopicVM;

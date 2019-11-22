@@ -1,9 +1,12 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockBookingServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgTopicServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
@@ -11,6 +14,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginView;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuPresenter;
@@ -27,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,19 +58,23 @@ public class ApplicationMain extends Application {
         SearchService searchService;
         BookingService bookingService;
         MsgTopicService topicService;
+        MsgAsyncService msgAsyncService;
         if (args.containsKeyword("-mock")) {
             searchService = new MockSearchServiceImpl();
             bookingService = new MockBookingServiceImpl();
             topicService = new MockMsgTopicServiceImpl();
+            msgAsyncService = new MockMsgAsyncServiceImpl();
         } else {
             rmiController = new RMIController();
             searchService = new RMISearchServiceImpl(rmiController);
             bookingService = new RMIBookingServiceImpl(rmiController);
             topicService = new RMITopicServiceImpl(rmiController);
+            msgAsyncService = new MockMsgAsyncServiceImpl(); //TODO Real Impl
         }
         Injector.setModelOrService(SearchService.class, searchService);
         Injector.setModelOrService(BookingService.class, bookingService);
         Injector.setModelOrService(MsgTopicService.class, topicService);
+        Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
         boolean withLogin = args.containsKeyword("-login");
 
         Runnable createLogin = () -> generateLogin(primaryStage);
@@ -79,6 +88,10 @@ public class ApplicationMain extends Application {
             searchService.init();
             bookingService.doLoginBooking(backdoorUsername, "backdoorPWD");
             topicService.doLoginMsgTopic(backdoorUsername, "backdoorPWD");
+            msgAsyncService.setNotification(msg -> {
+                NotificationsHelper.inform("New Message", "Message in topic " + msg.getTopicName());
+            });
+            ((MockMsgAsyncServiceImpl) msgAsyncService).setPresenter(this);
             createMenu.accept(backdoorUsername);
         }
         showStage(primaryStage);
@@ -134,5 +147,10 @@ public class ApplicationMain extends Application {
             rmiController.stopRMI();
         }
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
+    }
+
+    public void showNewMsg(MsgWrapper msg) {
+        NotificationsHelper.inform("New Message", "Message in topic " + msg.getTopicName());
+        //Toolkit.getDefaultToolkit().beep();
     }
 }

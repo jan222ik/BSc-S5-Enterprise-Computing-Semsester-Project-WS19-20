@@ -2,6 +2,7 @@ package at.fhv.itb17.s5.teamb.persistence.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -12,7 +13,7 @@ public class Client {
     @Id
     private String username;
     private String name;
-    @OneToMany(cascade = {CascadeType.PERSIST})
+    @OneToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private List<ClientRole> role;
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;

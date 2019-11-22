@@ -10,6 +10,8 @@ import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.persistence.entities.Address;
 import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
+import at.fhv.itb17.s5.teamb.persistence.entities.Client;
+import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
@@ -167,6 +169,9 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
             MsgTopic msgTopic = new MsgTopic("Topic " + i, false);
             entityRepository.save(msgTopic);
         }
+        ClientRole admin = new ClientRole("ADMIN", true, true, 10);
+        entityRepository.saveOrUpdate(admin);
+        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<>(), new Address("Country", "zip", "city", "street", "house")));
 
     }
 
