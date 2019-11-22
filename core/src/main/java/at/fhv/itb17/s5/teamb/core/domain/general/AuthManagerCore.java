@@ -19,9 +19,9 @@ public class AuthManagerCore {
     private final boolean withBackdoorUsers;
 
 
-    public AuthManagerCore(boolean withBackdoorUsers, ClientRepository clientRepository) {
+    public AuthManagerCore(boolean withBackdoorUsers, boolean withLDAP, ClientRepository clientRepository) {
         this.withBackdoorUsers = withBackdoorUsers;
-        this.ldap = new LDAP();
+        this.ldap = (withLDAP) ? new LDAP() : null;
         this.clientRepository = clientRepository;
         backdoorUsers = new HashMap<>();
         if (withBackdoorUsers) {
@@ -38,7 +38,10 @@ public class AuthManagerCore {
 
     public boolean check(String username, String password) {
         try {
-            boolean b = ldap.areCredentialsCorrect(username, password);
+            boolean b = false;
+            if (ldap != null) {
+                b = ldap.areCredentialsCorrect(username, password);
+            }
             if (!b && backdoorUsers.containsKey(username)) {
                 b = backdoorUsers.get(username).pwd.equals(password);
             }

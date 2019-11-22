@@ -20,7 +20,7 @@ public class CoreServiceInjectorImplMock implements CoreServiceInjector {
     private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
     private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
     private final ClientRepository clientRepository = new ClientRepository(entityRepository);
-    private final AuthManagerCore authManagerCore = new AuthManagerCore(true, clientRepository); //TODO Use MockImpl
+    private final AuthManagerCore authManagerCore = new AuthManagerCore(true, false, clientRepository); //TODO Use MockImpl
     private final EntityDTORepo dtoManager = new EntityDTORepoImpl();
     private final MsgRepository msgRepository = new MsgRepository(entityRepository);//TODO Use MockImpl
     private final MsgServiceCore msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);//TODO Use MockImpl

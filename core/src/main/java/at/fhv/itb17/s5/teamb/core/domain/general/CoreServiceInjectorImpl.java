@@ -38,12 +38,13 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
 
     private final ClientRepository clientRepository = new ClientRepository(entityRepository);
-    private final AuthManagerCore authManagerCore = new AuthManagerCore(true, clientRepository);
+    private final AuthManagerCore authManagerCore;
     private final EntityDTORepo entityDTORepo = new EntityDTORepoImpl();
     private final MsgRepository msgRepository = new MsgRepository(entityRepository);
     private final MsgServiceCore msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);
 
-    public CoreServiceInjectorImpl() {
+    public CoreServiceInjectorImpl(boolean withLDAP) {
+        authManagerCore = new AuthManagerCore(true, withLDAP, clientRepository);
         addDBDATA();
     }
 

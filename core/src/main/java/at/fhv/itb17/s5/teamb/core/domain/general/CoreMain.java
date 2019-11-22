@@ -2,6 +2,7 @@ package at.fhv.itb17.s5.teamb.core.domain.general;
 
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntryPoint;
 import at.fhv.itb17.s5.teamb.core.controllers.rmi.EntryPointRMI;
+import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,6 +13,7 @@ import java.util.LinkedList;
 public class CoreMain {
 
     private static final Logger logger = LogManager.getLogger(CoreMain.class);
+    private static ArgumentParser args = new ArgumentParser();
 
     private void start(LinkedList<EntryPoint> entryPoints) throws RemoteException {
         for (EntryPoint entryPoint : entryPoints) {
@@ -20,13 +22,15 @@ public class CoreMain {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String... arguments) {
         logger.info("Starting Core");
-        int rmiPort = 2345; //TODO add args parser
+        args.parseArgs(Arrays.asList(arguments), '=');
+        int rmiPort = Integer.parseInt(args.getArgValue("-rmiport", "2345"));
+        boolean noLDAP = args.containsKeyword("-noLDAP");
         CoreMain coreMain = new CoreMain();
         EntryPointRMI entryPointRMI;
         try {
-            entryPointRMI = new EntryPointRMI(rmiPort, new CoreServiceInjectorImpl());
+            entryPointRMI = new EntryPointRMI(rmiPort, new CoreServiceInjectorImpl(!noLDAP));
             LinkedList<EntryPoint> entryPoints = new LinkedList<>(Arrays.asList(entryPointRMI));
             coreMain.start(entryPoints);
         } catch (RemoteException e) {
