@@ -1,5 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.data;
 
+import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -9,4 +11,6 @@ public interface MsgAsyncService {
     boolean hasNewMessages();
 
     void setNotification(Consumer<MsgWrapper> consumer);
+
+    void setPresenter(ApplicationMain applicationMain);
 }

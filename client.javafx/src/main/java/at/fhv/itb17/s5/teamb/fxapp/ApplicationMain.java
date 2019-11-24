@@ -2,6 +2,7 @@ package at.fhv.itb17.s5.teamb.fxapp;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
@@ -69,7 +70,11 @@ public class ApplicationMain extends Application {
             searchService = new RMISearchServiceImpl(rmiController);
             bookingService = new RMIBookingServiceImpl(rmiController);
             topicService = new RMITopicServiceImpl(rmiController);
-            msgAsyncService = new MockMsgAsyncServiceImpl(); //TODO Real Impl
+            if (args.containsKeyword("-mockMsg")) {
+                msgAsyncService = new MockMsgAsyncServiceImpl();
+            } else {
+                msgAsyncService = new MsgAsyncServiceImpl();
+            }
         }
         Injector.setModelOrService(SearchService.class, searchService);
         Injector.setModelOrService(BookingService.class, bookingService);
@@ -84,14 +89,16 @@ public class ApplicationMain extends Application {
             createLogin.run();
         } else {
             final String backdoorUsername = "backdoor";
-            rmiController.connect("localhost", 2345);
+            if (rmiController != null) {
+                rmiController.connect("localhost", 2345);
+            }
             searchService.init();
             bookingService.doLoginBooking(backdoorUsername, "backdoorPWD");
             topicService.doLoginMsgTopic(backdoorUsername, "backdoorPWD");
             msgAsyncService.setNotification(msg -> {
                 NotificationsHelper.inform("New Message", "Message in topic " + msg.getTopicName());
             });
-            ((MockMsgAsyncServiceImpl) msgAsyncService).setPresenter(this);
+            msgAsyncService.setPresenter(this);
             createMenu.accept(backdoorUsername);
         }
         showStage(primaryStage);
