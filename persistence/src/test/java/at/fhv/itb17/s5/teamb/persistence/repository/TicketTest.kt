@@ -4,6 +4,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.After
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalTime
@@ -29,16 +30,6 @@ class TicketTest {
 
     private fun getANewTicket(withSeats: Boolean = false, row: LocationRow? = null, seat: LocationSeat? = null): Ticket {
         return Ticket(client, TicketStates.PAID, event, occurrence0, if (withSeats) g16 else g21, row, seat)
-    }
-
-    @After
-    fun clearDataFromDatabase() { //Start transaction, based on your transaction manager
-        entityRepository.sessionFactory.currentSession.createQuery("TRUNCATE SCHEMA PUBLIC AND COMMIT").executeUpdate()
-        val allTickets = entityRepository.getAll(Ticket::class.java, listOf())
-        assertThat(allTickets.size, Matchers.`is`(0))
-        val allEvents = entityRepository.getAll(Event::class.java, listOf())
-        assertThat(allEvents.size, Matchers.`is`(0))
-        //Commit transaction
     }
 
     @Test

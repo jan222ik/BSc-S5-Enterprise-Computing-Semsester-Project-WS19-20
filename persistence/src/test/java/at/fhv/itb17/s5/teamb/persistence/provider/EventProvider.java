@@ -28,7 +28,7 @@ public class EventProvider {
         Artist hugo_hugo = new Artist(cName + "Hugo Hugo");
         List<Artist> artists = new LinkedList<>(Collections.singletonList(hugo_hugo));
         Event event = new Event(cName + "Weihnachtsmarkt", cName + "Weihnachtsmarkt vom 22.11 bis 23.11.2019", cName + "Death Metal", new LinkedList<>(Collections.singletonList(occurrence0)), organizer, artists);
-        ep.save(event);
+        ep.saveOrUpdate(event);
         return event;
     }
 
