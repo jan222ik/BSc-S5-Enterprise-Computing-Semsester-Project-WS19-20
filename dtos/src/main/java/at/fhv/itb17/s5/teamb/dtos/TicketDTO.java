@@ -59,6 +59,26 @@ public class TicketDTO implements Serializable {
         return seat;
     }
 
+    public boolean valueEqual(TicketDTO dto) {
+        if (this.eventDTO != dto.eventDTO) {
+            return false;
+        } else {
+            if (this.occ != dto.occ) {
+                return false;
+            } else {
+                if (this.cat != dto.cat) {
+                    return false;
+                } else {
+                    if (this.row != dto.row) {
+                        return false;
+                    } else {
+                        return this.seat == dto.seat;
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "TicketDTO{" +

@@ -5,9 +5,11 @@ import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,19 +35,43 @@ public class CartVM implements ViewModel {
         //TODO
     }
 
-    public boolean book() {
-        boolean book = bookingService.book(tickets);
-        if (book) {
-            this.clear();
+    @Nullable
+    public Boolean book() {
+        return processChanges(bookingService.book(tickets));
+    }
+
+    @Nullable
+    public Boolean reserve() {
+        return processChanges(bookingService.reserve(tickets));
+    }
+
+    @Nullable
+    @SuppressWarnings("squid:2447")
+    private Boolean processChanges(List<TicketDTO> bookedTickets) {
+        if (bookedTickets != null) {
+            if (bookedTickets.size() == tickets.size()) {
+                this.clear();
+                return true;
+            } else {
+                HashSet<TicketDTO> usedDTOS = new HashSet<>();
+                tickets = tickets.stream().filter(ticketDTO -> {
+                    for (TicketDTO bookedTicket : bookedTickets) {
+                        if (!usedDTOS.contains(bookedTicket) && ticketDTO.valueEqual(bookedTicket)) {
+                            usedDTOS.add(bookedTicket);
+                            return true;
+                        }
+                    }
+                    return false;
+                }).collect(Collectors.toList());
+                return false;
+            }
+        } else {
+            return null;
         }
-        return book;
     }
 
 
     /**
-     * It is pure magic.
-     * Authors: U may address us as grand wizards: Matthias and Janik.
-     *
      * @return Listing of Tickets collected on its Event, Occurrence and Category.
      */
     public List<List<TicketDTO>> getTicketsSortedAfterEventAndOcc() {

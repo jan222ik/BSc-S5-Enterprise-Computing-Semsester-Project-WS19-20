@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,10 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
 
     private void buyOrReserve(CartVM viewModel, boolean doBuy, NavigationStackActions<CartVM> navActions) {
         System.out.println("doBuy = " + doBuy);
-        boolean successful = viewModel.book();
+        boolean successful = Optional.ofNullable(viewModel.book()).orElseGet(() -> {
+            NotificationsHelper.error("Error", "Error during Booking");
+            return false;
+        });
         System.out.println("successful = " + successful);
         if (successful) {
             navActions.push(new ConfirmationView()).showTOS();

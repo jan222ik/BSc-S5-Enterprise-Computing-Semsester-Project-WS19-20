@@ -13,13 +13,14 @@ public final class LocationSeatMapper {
     private LocationSeatMapper() {
     }
 
-    public static List<LocationSeatDTO> toDTOs(@NotNull List<LocationSeat> seats) {
+    public static List<LocationSeatDTO> toDTOs(List<LocationSeat> seats) {
         return seats.stream().map(LocationSeatMapper::toDTO).collect(Collectors.toList());
     }
 
-    @NotNull
+
     @Contract("_ -> new")
-    public static LocationSeatDTO toDTO(@NotNull LocationSeat seat) {
+    public static LocationSeatDTO toDTO(LocationSeat seat) {
+        if (seat == null) return null;
         return new LocationSeatDTO(seat.getSeatId(), !seat.isTaken(), seat.getSeatIdentifier());
     }
 }

@@ -17,7 +17,12 @@ public class MockBookingServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data.
     }
 
     @Override
-    public boolean book(List<TicketDTO> ticketDTOs) {
-        return true;
+    public List<TicketDTO> book(List<TicketDTO> ticketDTOs) {
+        return ticketDTOs;
+    }
+
+    @Override
+    public List<TicketDTO> reserve(List<TicketDTO> ticketDTOs) {
+        return ticketDTOs;
     }
 }
