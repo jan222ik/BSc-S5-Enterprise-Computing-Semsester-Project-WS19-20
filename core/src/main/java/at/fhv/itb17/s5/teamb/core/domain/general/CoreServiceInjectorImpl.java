@@ -165,13 +165,22 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         events.forEach(entityRepository::saveOrUpdate);
 
-        for (int i = 0; i < 10; i++) {
-            MsgTopic msgTopic = new MsgTopic("Topic " + i, false);
-            entityRepository.save(msgTopic);
-        }
+
+        List<MsgTopic> topics = new LinkedList<>();
+        MsgTopic system = new MsgTopic("System", false);
+        MsgTopic rock = new MsgTopic("Rock", false);
+        MsgTopic opera = new MsgTopic("Opera", false);
+        MsgTopic theater = new MsgTopic("Theater", false);
+        topics.add(system);
+        topics.add(rock);
+        topics.add(opera);
+        topics.add(theater);
+        topics.forEach(entityRepository::saveOrUpdate);
+        topics.remove(theater);
+
         ClientRole admin = new ClientRole("ADMIN", true, true, 10);
         entityRepository.saveOrUpdate(admin);
-        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<>(), new Address("Country", "zip", "city", "street", "house")));
+        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<MsgTopic>(topics), new Address("Country", "zip", "city", "street", "house")));
 
     }
 
