@@ -72,6 +72,7 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
             navActions.push(new ConfirmationView()).showTOS();
         } else {
             NotificationsHelper.warn("Booking Warning", "Some or all Events could not be booked");
+            render(viewModel);
         }
     }
 
@@ -83,7 +84,7 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
     private void render(CartVM viewModel) {
         AtomicInteger totalPrice = new AtomicInteger();
         AtomicInteger totalAmount = new AtomicInteger();
-        List<Parent> collect = viewModel.getTicketsSortedAfterEventAndOcc().stream().filter(l -> !l.isEmpty()).map(tick -> {
+        List<Parent> collect = viewModel.getTicketsByCategorySeatDistinct().stream().filter(l -> !l.isEmpty()).map(tick -> {
             CartItemView cartItemView = new CartItemView();
             CartItemPresenter presenter = (CartItemPresenter) cartItemView.getPresenter();
             presenter.setData(tick);
