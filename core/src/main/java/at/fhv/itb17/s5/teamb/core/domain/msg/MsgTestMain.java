@@ -30,8 +30,6 @@ public class MsgTestMain {
             prod.init(VM_LOCALHOST);
             cons.init(VM_LOCALHOST);
             prod.sendCreatedMessages();
-            cons.waitForMsgs(1000);
-            consumer.waitForMsgs(1000);
             prod.close();
             cons.close();
             consumer.close();

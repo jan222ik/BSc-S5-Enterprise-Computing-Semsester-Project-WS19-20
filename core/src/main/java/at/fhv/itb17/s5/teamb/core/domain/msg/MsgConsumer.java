@@ -7,7 +7,7 @@ import javax.jms.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MsgConsumer implements ExceptionListener {
+public class MsgConsumer implements ExceptionListener, MessageListener {
     private List<MsgTopic> topics;
     private Session session;
     private Connection connection;
@@ -42,13 +42,15 @@ public class MsgConsumer implements ExceptionListener {
         // Create the destination (Topic or Queue)
         List<Destination> destinations = new LinkedList<>();
         for (MsgTopic msgTopic : topics) {
-            destinations.add(session.createTopic("VirtualTopic." + msgTopic.getName()));
+            Queue queue = session.createQueue("Consumer." + this.hashCode() + ".VirtualTopic." + msgTopic.getName());
+            destinations.add(queue);
         }
 
         // Create a MessageConsumer from the Session to the Topic or Queue
         msgConsumers = new LinkedList<>();
         for (Destination destination1 : destinations) {
             MessageConsumer consumer = session.createConsumer(destination1);
+            consumer.setMessageListener(this);
             msgConsumers.add(consumer);
         }
     }
@@ -81,6 +83,26 @@ public class MsgConsumer implements ExceptionListener {
             System.out.println(this.hashCode() + "Received Topic: " + textMessage.getStringProperty("topic"));
             System.out.println("Received header: " + textMessage.getStringProperty("header"));
             System.out.println("Received text: " + text);
+        } else {
+            System.out.println("Received message: " + message);
+        }
+    }
+
+    @Override
+    public void onMessage(Message message) {
+        if (message instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) message;
+            String text = null;
+            try {
+                text = textMessage.getText();
+                textMessage.acknowledge();
+                System.out.println(this.hashCode() + "Received Topic: " + textMessage.getStringProperty("topic"));
+                System.out.println("Received header: " + textMessage.getStringProperty("header"));
+                System.out.println("Received text: " + text);
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+
         } else {
             System.out.println("Received message: " + message);
         }
