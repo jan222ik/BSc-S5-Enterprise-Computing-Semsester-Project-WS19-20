@@ -9,6 +9,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
+import javax.jms.TextMessage;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
@@ -51,11 +52,19 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
     }
 
     @Override
-    public List<MsgTopic> getSubscribedTopics() {
+    public List<MsgTopic> getSubscribedTopics() throws RemoteException {
         List<MsgTopic> topics = new LinkedList<>();
         if(client != null) {
             topics = client.getClient().getSubscribedTopics();
         }
         return topics;
+    }
+
+    @Override
+    public List<TextMessage> getAllMessages() throws RemoteException {
+    if(topicService != null) {
+        return topicService.getAllMessages();
+    }
+    return new LinkedList<>();
     }
 }

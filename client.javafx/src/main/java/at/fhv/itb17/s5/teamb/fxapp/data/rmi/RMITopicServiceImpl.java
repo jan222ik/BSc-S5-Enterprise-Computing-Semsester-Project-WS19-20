@@ -2,11 +2,15 @@ package at.fhv.itb17.s5.teamb.fxapp.data.rmi;
 
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +31,7 @@ public class RMITopicServiceImpl implements MsgTopicService {
             msgTopicService = rmi.createMsgTopicService(username, password);
             if (msgTopicService != null) {
                 return RMIConnectionStatus.CONNECTED;
-            }else {
+            } else {
                 return RMIConnectionStatus.CREDENTIALS_INVALID;
             }
         } catch (RemoteException e) {
@@ -87,9 +91,34 @@ public class RMITopicServiceImpl implements MsgTopicService {
 
     @Override
     public List<MsgTopic> getSubscribedTopics() {
-        if(msgTopicService != null) {
-            return msgTopicService.getSubscribedTopics();
+        if (msgTopicService != null) {
+            try {
+                return msgTopicService.getSubscribedTopics();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
         return new LinkedList<>();
+    }
+
+    @Override
+    public List<MsgWrapper> getAllMessages() {
+        List<MsgWrapper> wraps = new LinkedList<>();
+        if (msgTopicService != null) {
+            List<TextMessage> allMessages;
+            try {
+                allMessages = msgTopicService.getAllMessages();
+                allMessages.forEach(message -> {
+                    try {
+                        wraps.add(new MsgWrapper(message.getStringProperty("topic"), message.getText(), message, LocalDateTime.now(), false, message.getStringProperty("header")));
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        return wraps;
     }
 }

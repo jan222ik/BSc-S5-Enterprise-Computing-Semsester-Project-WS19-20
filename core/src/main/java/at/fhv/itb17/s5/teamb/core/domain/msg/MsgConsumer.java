@@ -12,9 +12,11 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
     private Session session;
     private Connection connection;
     private List<MessageConsumer> msgConsumers;
+    private List<TextMessage> messages;
 
     public MsgConsumer() {
-        topics = new LinkedList<>();
+        this.topics = new LinkedList<>();
+        this.messages = new LinkedList<>();
         MsgTopic system = new MsgTopic("SYSTEM", false);
         MsgTopic rock = new MsgTopic("ROCK", false);
         MsgTopic opera = new MsgTopic("OPERA", false);
@@ -25,6 +27,7 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
 
     public MsgConsumer(List<MsgTopic> topics) {
         this.topics = topics;
+        this.messages = new LinkedList<>();
     }
 
     public void init(String brokerUrl) throws JMSException {
@@ -68,6 +71,7 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
     public void onMessage(Message message) {
         if (message instanceof TextMessage) {
             TextMessage textMessage = (TextMessage) message;
+            addMessage(textMessage);
             String text;
             try {
                 text = textMessage.getText();
@@ -83,4 +87,20 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
             System.out.println("Received message: " + message);
         }
     }
+
+    private void addMessage(TextMessage textMessage) {
+        messages.add(textMessage);
+    }
+
+    public List<TextMessage> getMessages() {
+        messages.forEach(mess -> {
+            try {
+                mess.acknowledge();
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        });
+        return messages;
+    }
 }
+

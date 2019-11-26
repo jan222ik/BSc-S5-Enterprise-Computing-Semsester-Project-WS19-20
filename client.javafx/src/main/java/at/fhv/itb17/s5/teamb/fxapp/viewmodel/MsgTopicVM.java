@@ -5,6 +5,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
+import javax.jms.TextMessage;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,14 +35,16 @@ public class MsgTopicVM implements ViewModel {
     }
 
     public List<MsgWrapper> getAllMsgs() {
-        LinkedList<MsgWrapper> msgWrappers = new LinkedList<>();
+        /*LinkedList<MsgWrapper> msgWrappers = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             msgWrappers.add(new MsgWrapper("Topic " + i, "msg " + i, null, LocalDateTime.now(), false, "header " + i));
         }
-        return new LinkedList<>(msgWrappers); //TODO impl
+        return new LinkedList<>(msgWrappers); //TODO impl*/
+        return msgTopicService.getAllMessages();
     }
 
     public List<MsgTopic> getSubscribedTopics() {
         return msgTopicService.getSubscribedTopics();
     }
+
 }

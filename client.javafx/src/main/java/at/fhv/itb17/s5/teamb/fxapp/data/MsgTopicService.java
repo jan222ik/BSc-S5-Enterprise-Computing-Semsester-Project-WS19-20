@@ -18,4 +18,6 @@ public interface MsgTopicService {
     boolean mayPublish();
 
     List<MsgTopic> getSubscribedTopics();
+
+    List<MsgWrapper> getAllMessages();
 }
