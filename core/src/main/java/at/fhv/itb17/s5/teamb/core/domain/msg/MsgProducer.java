@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.core.domain.msg;
 
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
+import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
@@ -17,15 +18,10 @@ public class MsgProducer {
     private HashMap<Destination, MessageProducer> msgProducers;
 
     public MsgProducer() {
-        topics = new LinkedList<>();
-        MsgTopic system = new MsgTopic("SYSTEM", false);
-        MsgTopic rock = new MsgTopic("ROCK", false);
-        MsgTopic opera = new MsgTopic("OPERA", false);
-        topics.add(system);
-        topics.add(rock);
-        topics.add(opera);
-        destinations = new HashMap<>();
-        msgProducers = new HashMap<>();
+    }
+
+    public MsgProducer(MsgRepository repo) {
+        topics = repo.getAllTopics();
     }
 
     public void init(String brokerUrl) throws JMSException {

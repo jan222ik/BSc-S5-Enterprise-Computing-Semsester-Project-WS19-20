@@ -55,16 +55,6 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
         }
     }
 
-    public void waitForMsgs(int time) {
-        for (MessageConsumer msgConsumer : msgConsumers) {
-            try {
-                waitForMessage(msgConsumer, time);
-            } catch (JMSException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void close() throws JMSException {
         session.close();
         connection.close();
@@ -74,25 +64,11 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
         System.out.println("JMS Exception occured.  Shutting down client.");
     }
 
-    private void waitForMessage(MessageConsumer consumer, int milliseconds) throws JMSException {
-        Message message = consumer.receive(milliseconds);
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
-            String text = textMessage.getText();
-            textMessage.acknowledge();
-            System.out.println(this.hashCode() + "Received Topic: " + textMessage.getStringProperty("topic"));
-            System.out.println("Received header: " + textMessage.getStringProperty("header"));
-            System.out.println("Received text: " + text);
-        } else {
-            System.out.println("Received message: " + message);
-        }
-    }
-
     @Override
     public void onMessage(Message message) {
         if (message instanceof TextMessage) {
             TextMessage textMessage = (TextMessage) message;
-            String text = null;
+            String text;
             try {
                 text = textMessage.getText();
                 textMessage.acknowledge();
