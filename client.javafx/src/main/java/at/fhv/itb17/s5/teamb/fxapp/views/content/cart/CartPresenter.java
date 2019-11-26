@@ -14,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -22,6 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
+
+    private static final Logger logger = LogManager.getLogger(CartPresenter.class);
 
     @Inject
     private Style style;
@@ -57,12 +61,13 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
     }
 
     private void buyOrReserve(CartVM viewModel, boolean doBuy, NavigationStackActions<CartVM> navActions) {
-        System.out.println("doBuy = " + doBuy);
-        boolean successful = Optional.ofNullable(viewModel.book()).orElseGet(() -> {
+        logger.debug("doBuy = {}", doBuy);
+        Boolean book = (doBuy) ? viewModel.book() : viewModel.reserve();
+        boolean successful = Optional.ofNullable(book).orElseGet(() -> {
             NotificationsHelper.error("Error", "Error during Booking");
             return false;
         });
-        System.out.println("successful = " + successful);
+        logger.debug("successful = {}", successful);
         if (successful) {
             navActions.push(new ConfirmationView()).showTOS();
         } else {
@@ -78,7 +83,7 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
     private void render(CartVM viewModel) {
         AtomicInteger totalPrice = new AtomicInteger();
         AtomicInteger totalAmount = new AtomicInteger();
-        List<Parent> collect = viewModel.getTicketsSortedAfterEventAndOcc().stream().map(tick -> {
+        List<Parent> collect = viewModel.getTicketsSortedAfterEventAndOcc().stream().filter(l -> !l.isEmpty()).map(tick -> {
             CartItemView cartItemView = new CartItemView();
             CartItemPresenter presenter = (CartItemPresenter) cartItemView.getPresenter();
             presenter.setData(tick);

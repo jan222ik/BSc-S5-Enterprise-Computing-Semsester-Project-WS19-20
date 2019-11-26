@@ -27,11 +27,17 @@ public class RMIController {
     }
 
     public boolean connect(String host, int port) throws RemoteException{
+        logger.debug("RMI: Controller Connect");
         try {
             registry = LocateRegistry.getRegistry(host, port);
-
+            if (registry == null) {
+                logger.error("Registry is null");
+            }
             stub = (IConnectionFactoryRMI) registry.lookup(EntryPointRMI.FACTORY_BIND_NAME);
-            System.out.println("stub = " + stub);
+            if (stub == null) {
+                logger.error("Stub is null");
+            }
+            logger.debug("stub = {}", stub);
 
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();

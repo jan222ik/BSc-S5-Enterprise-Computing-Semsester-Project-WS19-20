@@ -19,11 +19,13 @@ public class RMISearchServiceImpl implements SearchService {
     }
 
     public RMIConnectionStatus init() {
+        logger.debug("Create SearchService");
         try {
             remoteSearchService = rmi.createSearchService();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        logger.debug("SearchService: {}", remoteSearchService);
         return (remoteSearchService != null) ? RMIConnectionStatus.CONNECTED : RMIConnectionStatus.NO_CONNECTION;
     }
 

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,6 +81,7 @@ public class ApplicationMain extends Application {
         Injector.setModelOrService(BookingService.class, bookingService);
         Injector.setModelOrService(MsgTopicService.class, topicService);
         Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
+        Injector.setModelOrService(RMIController.class, rmiController);
         boolean withLogin = args.containsKeyword("-login");
 
         Runnable createLogin = () -> generateLogin(primaryStage);
