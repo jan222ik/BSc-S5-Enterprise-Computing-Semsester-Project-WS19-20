@@ -20,7 +20,8 @@ public class MsgServiceCoreImpl implements MsgServiceCore {
 
     @Override
     public boolean createMessage(MsgTopic topic, String messageHeader, String messageBody) {
-        return ((System.currentTimeMillis() & 1) == 1); //TODO impl
+        MsgProducer prod = new MsgProducer();
+        return prod.createMessagePub(messageHeader, messageBody, topic); //TODO proper impl
     }
 
 }
