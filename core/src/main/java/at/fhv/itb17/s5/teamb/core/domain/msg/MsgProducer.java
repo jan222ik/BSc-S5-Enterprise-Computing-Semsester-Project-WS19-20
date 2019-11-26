@@ -26,7 +26,6 @@ public class MsgProducer {
         topics.add(opera);
         destinations = new HashMap<>();
         msgProducers = new HashMap<>();
-
     }
 
     public void init(String brokerUrl) throws JMSException {
@@ -41,7 +40,7 @@ public class MsgProducer {
 
         // Create the destination (Topic or Queue)
         for (MsgTopic msgTopic : topics) {
-            destinations.put(msgTopic.getName(), session.createTopic(msgTopic.getName()));
+            destinations.put(msgTopic.getName(), session.createTopic("VirtualTopic." + msgTopic.getName()));
         }
 
         // Create a MessageProducer from the Session to the Topic or Queue
@@ -63,7 +62,8 @@ public class MsgProducer {
         List<TextMessage> createdMessages = new LinkedList<>();
         for (MsgTopic topic : topics) {
             for (int i = 0; i < 10; i++) {
-                createdMessages.add(createMessage("Message " + i, "Message Nr. " + i + " for " + topic.getName(), topic));
+                createdMessages.add(createMessage("Message " + i, "Message Nr. " + i + " for "
+                        + topic.getName(), topic));
             }
         }
 
@@ -101,6 +101,5 @@ public class MsgProducer {
         if (producer != null) {
             producer.send(message);
         }
-
     }
 }

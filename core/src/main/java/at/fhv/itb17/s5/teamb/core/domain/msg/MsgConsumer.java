@@ -11,7 +11,7 @@ public class MsgConsumer implements ExceptionListener {
     private List<MsgTopic> topics;
     private Session session;
     private Connection connection;
-    List<MessageConsumer> msgConsumers;
+    private List<MessageConsumer> msgConsumers;
 
     public MsgConsumer() {
         topics = new LinkedList<>();
@@ -21,6 +21,10 @@ public class MsgConsumer implements ExceptionListener {
         topics.add(system);
         topics.add(rock);
         topics.add(opera);
+    }
+
+    public MsgConsumer(List<MsgTopic> topics) {
+        this.topics = topics;
     }
 
     public void init(String brokerUrl) throws JMSException {
@@ -38,7 +42,7 @@ public class MsgConsumer implements ExceptionListener {
         // Create the destination (Topic or Queue)
         List<Destination> destinations = new LinkedList<>();
         for (MsgTopic msgTopic : topics) {
-            destinations.add(session.createTopic(msgTopic.getName()));
+            destinations.add(session.createTopic("VirtualTopic." + msgTopic.getName()));
         }
 
         // Create a MessageConsumer from the Session to the Topic or Queue
@@ -77,7 +81,6 @@ public class MsgConsumer implements ExceptionListener {
             System.out.println(this.hashCode() + "Received Topic: " + textMessage.getStringProperty("topic"));
             System.out.println("Received header: " + textMessage.getStringProperty("header"));
             System.out.println("Received text: " + text);
-            System.out.println("Ack: ");
         } else {
             System.out.println("Received message: " + message);
         }
