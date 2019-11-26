@@ -11,6 +11,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("RedundantThrows")
@@ -47,5 +48,14 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
         } else {
             return false;
         }
+    }
+
+    @Override
+    public List<MsgTopic> getSubscribedTopics() {
+        List<MsgTopic> topics = new LinkedList<>();
+        if(client != null) {
+            topics = client.getClient().getSubscribedTopics();
+        }
+        return topics;
     }
 }
