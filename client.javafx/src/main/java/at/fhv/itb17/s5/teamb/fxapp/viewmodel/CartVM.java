@@ -93,8 +93,8 @@ public class CartVM implements ViewModel {
                 .forEach((BiConsumer<Class<? extends EvCategoryInterfaceDTO>, List<TicketDTO>>) (aClass, ticketDTOS) -> {
                     if (aClass == EvCategorySeatsDTO.class) {
                         ticketDTOS.stream()
-                                .collect(Collectors.groupingBy(it -> it.getRow().getRowId(), Collectors.toList())).values().stream().flatMap(Collection::stream)
-                                .collect(Collectors.groupingBy(it -> it.getSeat().getSeatId(), Collectors.toList())).values().stream().flatMap(Collection::stream)
+                                .collect(Collectors.groupingBy(it -> it.getRow().getRowIdentifier(), Collectors.toList())).values().stream().flatMap(Collection::stream)
+                                .collect(Collectors.groupingBy(it -> it.getSeat().getSeatIdentifier(), Collectors.toList())).values().stream().flatMap(Collection::stream)
                                 .collect(Collectors.groupingBy((TicketDTO it) -> it.getCat().getEventCategoryId()))
                                 .forEach(catSortedMod::put);
                     } else {
