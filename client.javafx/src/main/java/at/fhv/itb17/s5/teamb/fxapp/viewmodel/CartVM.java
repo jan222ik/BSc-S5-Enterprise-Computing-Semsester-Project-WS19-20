@@ -8,9 +8,9 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"WeakerAccess", "DuplicatedCode"})
+@SuppressWarnings("WeakerAccess")
 public class CartVM implements ViewModel {
     private List<TicketDTO> tickets;
     private BookingService bookingService;
@@ -83,11 +83,12 @@ public class CartVM implements ViewModel {
      * @return Listing of Tickets for each existing category reduced to distinct row seat combination for SeatCat.
      */
     public List<List<TicketDTO>> getTicketsByCategorySeatDistinct() {
-        Map<Long, List<TicketDTO>> catSortedMod = new HashMap<>();
-        tickets.stream()
+        Map<Long, List<TicketDTO>> catSorted = tickets.stream()
                 .collect(Collectors.groupingBy(it -> it.getEventDTO().getEventId(), Collectors.toList())).values().stream().flatMap(Collection::parallelStream)
                 .collect(Collectors.groupingBy(it -> it.getOcc().getOccurrenceId(), Collectors.toList())).values().stream().flatMap(Collection::parallelStream)
-                .collect(Collectors.groupingBy(it -> it.getCat().getEventCategoryId(), Collectors.toList())).values().stream().flatMap(Collection::stream)
+                .collect(Collectors.groupingBy(it -> it.getCat().getEventCategoryId(), Collectors.toList()));
+        Map<Long, List<TicketDTO>> catSortedMod = new HashMap<>();
+        catSorted.values().stream().flatMap(Collection::stream)
                 .collect(Collectors.groupingBy(it -> it.getCat().getClass()))
                 .forEach((BiConsumer<Class<? extends EvCategoryInterfaceDTO>, List<TicketDTO>>) (aClass, ticketDTOS) -> {
                     if (aClass == EvCategorySeatsDTO.class) {
@@ -101,19 +102,5 @@ public class CartVM implements ViewModel {
                     }
                 });
         return new ArrayList<>(catSortedMod.values());
-    }
-
-    public List<List<TicketDTO>> getTicketsByCategorySeatDistinct2() {
-        return new ArrayList<>(tickets.stream()
-                .collect(Collectors.groupingBy(it -> it.getOcc().getOccurrenceId(), Collectors.toList())).values().stream().flatMap(Collection::parallelStream)
-                .collect(Collectors.groupingBy(it -> it.getCat().getEventCategoryId(), Collectors.toList())).values().stream().flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(it -> it.getCat().getClass())).entrySet().stream()
-                .map(entry -> (entry.getKey() == EvCategorySeatsDTO.class) ?
-                        entry.getValue().stream()
-                                .collect(Collectors.groupingBy(it -> it.getRow().getRowId(), Collectors.toList())).values().stream().flatMap(Collection::stream)
-                                .collect(Collectors.groupingBy(it -> it.getSeat().getSeatId(), Collectors.toList())).values().stream().flatMap(Collection::stream)
-                                .collect(Collectors.groupingBy((TicketDTO it) -> it.getCat().getEventCategoryId(), Collectors.toList())).entrySet()
-                        : Collections.singletonMap(entry.getValue().get(0).getCat().getEventCategoryId(), entry.getValue()).entrySet()
-                ).flatMap(Collection::stream).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)).values());
     }
 }
