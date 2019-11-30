@@ -1,4 +1,4 @@
-package at.fhv.itb17.s5.teamb.core.domain.msg;
+package at.fhv.itb17.s5.teamb.fxapp.data.msg;
 
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -71,11 +71,11 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
     public void onMessage(Message message) {
         if (message instanceof TextMessage) {
             TextMessage textMessage = (TextMessage) message;
+            System.out.println("textMessage = " + textMessage);
             addMessage(textMessage);
             String text;
             try {
                 text = textMessage.getText();
-                textMessage.acknowledge();
                 System.out.println(this.hashCode() + "Received Topic: " + textMessage.getStringProperty("topic"));
                 System.out.println("Received header: " + textMessage.getStringProperty("header"));
                 System.out.println("Received text: " + text);
@@ -89,17 +89,12 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
     }
 
     private void addMessage(TextMessage textMessage) {
+        System.out.println("messagesadd = " + messages.size());
         messages.add(textMessage);
     }
 
     public List<TextMessage> getMessages() {
-        messages.forEach(mess -> {
-            try {
-                mess.acknowledge();
-            } catch (JMSException e) {
-                e.printStackTrace();
-            }
-        });
+        System.out.println("messagesget = " + messages.size());
         return messages;
     }
 }

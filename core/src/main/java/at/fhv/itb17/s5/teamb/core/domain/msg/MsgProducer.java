@@ -14,10 +14,20 @@ public class MsgProducer {
     private List<MsgTopic> topics;
     private Session session;
     private Connection connection;
-    private HashMap<String, Destination> destinations;
-    private HashMap<Destination, MessageProducer> msgProducers;
+    private HashMap<String, Destination> destinations = new HashMap<>();
+    private HashMap<Destination, MessageProducer> msgProducers = new HashMap<>();
 
     public MsgProducer() {
+        List<MsgTopic> topics = new LinkedList<>();
+        MsgTopic system = new MsgTopic("System", false);
+        MsgTopic rock = new MsgTopic("Rock", false);
+        MsgTopic opera = new MsgTopic("Opera", false);
+        MsgTopic theater = new MsgTopic("Theater", false);
+        topics.add(system);
+        topics.add(rock);
+        topics.add(opera);
+        topics.add(theater);
+        this.topics = topics;
     }
 
     public MsgProducer(MsgRepository repo) {

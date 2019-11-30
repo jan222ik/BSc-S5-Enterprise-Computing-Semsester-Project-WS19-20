@@ -4,19 +4,23 @@ import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
 
 import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import java.util.List;
 
 public class MsgServiceCoreImpl implements MsgServiceCore {
 
+    private static final String VM_LOCALHOST = "vm://localhost";
     private MsgRepository msgRepository;
     private MsgProducer msgProducer;
-    private MsgConsumer msgConsumer;
 
     public MsgServiceCoreImpl(MsgRepository msgRepository) {
         this.msgRepository = msgRepository;
-        this.msgProducer = new MsgProducer(msgRepository);
-        this.msgConsumer = new MsgConsumer(); //TODO get Client into here somehow -> if necessary
+        this.msgProducer = new MsgProducer();
+        try {
+            msgProducer.init(VM_LOCALHOST);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -37,14 +41,11 @@ public class MsgServiceCoreImpl implements MsgServiceCore {
         return created;
     }
 
-    @Override
-    public List<TextMessage> getAllMessages() {
+    public void closeProducer() {
         try {
-            msgProducer.sendCreatedMessages();
+            msgProducer.close();
         } catch (JMSException e) {
             e.printStackTrace();
         }
-        return msgConsumer.getMessages();
     }
-
 }

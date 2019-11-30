@@ -6,6 +6,7 @@ import javax.jms.JMSException;
 import java.util.LinkedList;
 import java.util.List;
 
+@Deprecated
 public class MsgTestMain {
     private static final String VM_LOCALHOST = "vm://localhost";
 
@@ -22,17 +23,17 @@ public class MsgTestMain {
         sysOpera.add(opera);
 
         MsgProducer prod = new MsgProducer();
-        MsgConsumer cons = new MsgConsumer(sysRock);
-        MsgConsumer consumer = new MsgConsumer(sysOpera);
+       /* MsgConsumer cons = new MsgConsumer(sysRock);
+        MsgConsumer consumer = new MsgConsumer(sysOpera);*/
 
         try {
-            consumer.init(VM_LOCALHOST);
+            //consumer.init(VM_LOCALHOST);
             prod.init(VM_LOCALHOST);
-            cons.init(VM_LOCALHOST);
+            //cons.init(VM_LOCALHOST);
             prod.sendCreatedMessages();
             prod.close();
-            cons.close();
-            consumer.close();
+            //cons.close();
+            //consumer.close();
         } catch (JMSException e) {
             e.printStackTrace();
         }
