@@ -10,19 +10,19 @@
 
 <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.msgcon.MsgConPresenter">
    <children>
-      <HBox>
+      <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox>
+            <VBox HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="Notifications:" />
-                  <JFXListView fx:id="notificationLV" />
+                  <Label text="Notifications:" textFill="WHITE" />
+                  <JFXListView fx:id="notificationLV" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
             <VBox fx:id="rootPlane">
                <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox VBox.vgrow="ALWAYS">
                      <children>
-                        <Label text="Topic Filter:" />
+                        <Label text="Topic Filter:" textFill="WHITE" />
                         <VBox fx:id="topicFilterList">
                            <children>
                               <ToggleButton mnemonicParsing="false" text="Topic 1" />
@@ -30,10 +30,10 @@
                         </VBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="msgprodVbox" prefHeight="200.0" prefWidth="100.0">
+                  <VBox fx:id="msgprodVbox">
                      <children>
-                        <Label text="Message Producer:" />
-                        <HBox prefHeight="100.0" prefWidth="200.0">
+                        <Label text="Message Producer:" textFill="WHITE" />
+                        <HBox>
                            <children>
                               <Button fx:id="msgprodBtn" mnemonicParsing="false" text="Create Message" />
                            </children>

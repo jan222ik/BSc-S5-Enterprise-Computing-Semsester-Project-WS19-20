@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.msgcon.msg.MsgPresenter">
+<AnchorPane style="-fx-background-color: #2F2F2F; -fx-background-radius: 4;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.itb17.s5.teamb.fxapp.views.content.msgcon.msg.MsgPresenter">
    <children>
-      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="topicL" text="#placeholderTopic" />
-            <Label fx:id="headerL" text="#placeholderHeader" />
-            <Label fx:id="bodyL" layoutX="10.0" layoutY="27.0" text="#placeholderBody" />
-            <Button fx:id="ackBtn" mnemonicParsing="false" text="Acknowledge" />
+            <HBox>
+               <children>
+                  <Label fx:id="topicL" text="#placeholderTopic" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label fx:id="headerL" text="#placeholderHeader" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label fx:id="bodyL" text="#placeholderBody" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <Button fx:id="ackBtn" mnemonicParsing="false" text="Acknowledge" />
+               </children>
+            </HBox>
          </children>
+         <padding>
+            <Insets left="5.0" right="5.0" top="5.0" />
+         </padding>
       </VBox>
    </children>
 </AnchorPane>
