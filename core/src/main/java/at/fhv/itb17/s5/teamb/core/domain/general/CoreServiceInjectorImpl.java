@@ -8,22 +8,8 @@ import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImpl;
-import at.fhv.itb17.s5.teamb.persistence.entities.Address;
-import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
-import at.fhv.itb17.s5.teamb.persistence.entities.Client;
-import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
-import at.fhv.itb17.s5.teamb.persistence.entities.Event;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
-import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
-import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
-import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
-import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
-import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
-import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
-import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
-import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
+import at.fhv.itb17.s5.teamb.persistence.entities.*;
+import at.fhv.itb17.s5.teamb.persistence.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -165,13 +151,22 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         events.forEach(entityRepository::saveOrUpdate);
 
-        for (int i = 0; i < 10; i++) {
-            MsgTopic msgTopic = new MsgTopic("Topic " + i, false);
-            entityRepository.save(msgTopic);
-        }
+
+        List<MsgTopic> topics = new LinkedList<>();
+        MsgTopic system = new MsgTopic("System", false);
+        MsgTopic rock = new MsgTopic("Rock", false);
+        MsgTopic opera = new MsgTopic("Opera", false);
+        MsgTopic theater = new MsgTopic("Theater", false);
+        topics.add(system);
+        topics.add(rock);
+        topics.add(opera);
+        topics.add(theater);
+        topics.forEach(entityRepository::saveOrUpdate);
+        topics.remove(theater);
+
         ClientRole admin = new ClientRole("ADMIN", true, true, 10);
         entityRepository.saveOrUpdate(admin);
-        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<>(), new Address("Country", "zip", "city", "street", "house")));
+        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<MsgTopic>(topics), new Address("Country", "zip", "city", "street", "house")));
 
     }
 

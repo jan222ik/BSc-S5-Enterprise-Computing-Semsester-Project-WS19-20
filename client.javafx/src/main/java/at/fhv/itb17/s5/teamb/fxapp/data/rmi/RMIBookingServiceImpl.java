@@ -4,7 +4,6 @@ import at.fhv.itb17.s5.teamb.core.controllers.general.FrontEndClient;
 import at.fhv.itb17.s5.teamb.core.controllers.general.IFrontEndClient;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
-import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;

@@ -1,40 +1,41 @@
 package at.fhv.itb17.s5.teamb.core.domain.msg;
 
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
+
+import javax.jms.JMSException;
+import java.util.LinkedList;
+import java.util.List;
+
+@Deprecated
 public class MsgTestMain {
+    private static final String VM_LOCALHOST = "vm://localhost";
 
-    public static void main(String[] args) throws Exception{
-        thread(new MsgProducer(), false);
-        thread(new MsgProducer(), false);
-        thread(new MsgConsumer(), false);
-        Thread.sleep(1000);
-        thread(new MsgConsumer(), false);
-        thread(new MsgProducer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgProducer(), false);
-        Thread.sleep(1000);
-        thread(new MsgConsumer(), false);
-        thread(new MsgProducer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgProducer(), false);
-        thread(new MsgProducer(), false);
-        Thread.sleep(1000);
-        thread(new MsgProducer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgProducer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgProducer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgProducer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgConsumer(), false);
-        thread(new MsgProducer(), false);
-    }
+    public static void main(String[] args) {
+        MsgTopic system = new MsgTopic("SYSTEM", false);
+        MsgTopic rock = new MsgTopic("ROCK", false);
+        MsgTopic opera = new MsgTopic("OPERA", false);
 
-    public static void thread(Runnable runnable, boolean daemon) {
-        Thread brokerThread = new Thread(runnable);
-        brokerThread.setDaemon(daemon);
-        brokerThread.start();
+        List<MsgTopic> sysRock = new LinkedList<>();
+        List<MsgTopic> sysOpera = new LinkedList<>();
+        sysRock.add(system);
+        sysRock.add(rock);
+        sysOpera.add(system);
+        sysOpera.add(opera);
+
+        MsgProducer prod = new MsgProducer();
+       /* MsgConsumer cons = new MsgConsumer(sysRock);
+        MsgConsumer consumer = new MsgConsumer(sysOpera);*/
+
+        try {
+            //consumer.init(VM_LOCALHOST);
+            prod.init(VM_LOCALHOST);
+            //cons.init(VM_LOCALHOST);
+            prod.sendCreatedMessages();
+            prod.close();
+            //cons.close();
+            //consumer.close();
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
     }
 }

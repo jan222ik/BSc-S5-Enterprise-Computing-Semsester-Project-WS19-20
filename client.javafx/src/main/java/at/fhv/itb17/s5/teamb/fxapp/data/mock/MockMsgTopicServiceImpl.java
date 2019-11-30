@@ -2,6 +2,7 @@ package at.fhv.itb17.s5.teamb.fxapp.data.mock;
 
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
 import java.util.List;
 
@@ -29,5 +30,10 @@ public class MockMsgTopicServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data
     @Override
     public boolean mayPublish() {
         return false;
+    }
+
+    @Override
+    public List<MsgTopic> getSubscribedTopics() {
+        return null;
     }
 }

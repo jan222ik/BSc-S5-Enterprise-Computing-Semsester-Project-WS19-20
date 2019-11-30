@@ -7,6 +7,6 @@ import java.util.List;
 public interface MsgServiceCore {
     //List<MsgTopic> getSubscribedTopics(); TODO is needed ?
     List<MsgTopic> getAllTopics();
-    boolean createMessage(MsgTopic topic, String messageHeader, String messageBody);
 
+    boolean createMessage(MsgTopic topic, String messageHeader, String messageBody);
 }
