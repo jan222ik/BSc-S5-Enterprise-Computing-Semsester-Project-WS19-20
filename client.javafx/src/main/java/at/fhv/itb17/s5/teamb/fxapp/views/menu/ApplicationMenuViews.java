@@ -7,5 +7,6 @@ public enum ApplicationMenuViews {
     MSG_PROD_VIEW,
     MSG_CONSUMER_VIEW,
     DEMO_VIEW,
-    USER_VIEW, NOT_EXISTING //Test only !
+    USER_VIEW,
+    NOT_EXISTING //Test only !
 }

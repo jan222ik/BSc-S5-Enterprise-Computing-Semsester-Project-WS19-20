@@ -2,15 +2,21 @@ package at.fhv.itb17.s5.teamb.fxapp.data.msg;
 
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MsgConsumer implements ExceptionListener, MessageListener {
+
+    private static final Logger logger = LogManager.getLogger(MsgConsumer.class);
+
     private List<MsgTopic> topics;
     private Session session;
     private Connection connection;
+    @SuppressWarnings({"FieldCanBeLocal", "squid:1450", "MismatchedQueryAndUpdateOfCollection"})
     private List<MessageConsumer> msgConsumers;
     private List<TextMessage> messages;
 
@@ -64,37 +70,37 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
     }
 
     public synchronized void onException(JMSException ex) {
-        System.out.println("JMS Exception occured.  Shutting down client.");
+        logger.debug("JMS Exception occured.  Shutting down client.");
     }
 
     @Override
     public void onMessage(Message message) {
         if (message instanceof TextMessage) {
             TextMessage textMessage = (TextMessage) message;
-            System.out.println("textMessage = " + textMessage);
+            logger.debug("textMessage = {}", textMessage);
             addMessage(textMessage);
             String text;
             try {
                 text = textMessage.getText();
-                System.out.println(this.hashCode() + "Received Topic: " + textMessage.getStringProperty("topic"));
-                System.out.println("Received header: " + textMessage.getStringProperty("header"));
-                System.out.println("Received text: " + text);
+                logger.debug("{} Received Topic: {}", this.hashCode(), textMessage.getStringProperty("topic"));
+                logger.debug("Received header: {}", textMessage.getStringProperty("header"));
+                logger.debug("Received text: {}", text);
             } catch (JMSException e) {
                 e.printStackTrace();
             }
 
         } else {
-            System.out.println("Received message: " + message);
+            logger.debug("Received message: {}", message);
         }
     }
 
     private void addMessage(TextMessage textMessage) {
-        System.out.println("messagesadd = " + messages.size());
+        logger.debug("messagesadd = {}", messages.size());
         messages.add(textMessage);
     }
 
     public List<TextMessage> getMessages() {
-        System.out.println("messagesget = " + messages.size());
+        logger.debug("messagesget = {}", messages.size());
         return messages;
     }
 }

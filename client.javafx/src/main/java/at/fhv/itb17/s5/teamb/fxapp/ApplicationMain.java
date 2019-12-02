@@ -2,7 +2,6 @@ package at.fhv.itb17.s5.teamb.fxapp;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
-import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
@@ -10,6 +9,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgTopicServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
@@ -32,7 +32,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -95,9 +94,6 @@ public class ApplicationMain extends Application {
             searchService.init();
             bookingService.doLoginBooking(backdoorUsername, "backdoorPWD");
             topicService.doLoginMsgTopic(backdoorUsername, "backdoorPWD");
-            msgAsyncService.setNotification(msg -> {
-                NotificationsHelper.inform("New Message", "Message in topic " + msg.getTopicName());
-            });
             msgAsyncService.setPresenter(this);
             createMenu.accept(backdoorUsername);
         }
@@ -158,6 +154,5 @@ public class ApplicationMain extends Application {
 
     public void showNewMsg(MsgWrapper msg) {
         NotificationsHelper.inform("New Message", "Message in topic " + msg.getTopicName());
-        //Toolkit.getDefaultToolkit().beep();
     }
 }

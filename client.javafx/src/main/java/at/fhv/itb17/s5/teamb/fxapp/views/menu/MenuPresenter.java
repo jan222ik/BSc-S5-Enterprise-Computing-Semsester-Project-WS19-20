@@ -2,10 +2,8 @@ package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
-import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
-import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.CartVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.MsgTopicVM;
@@ -62,9 +60,6 @@ public class MenuPresenter implements Initializable {
     @Inject
     private MsgTopicService msgTopicService;
 
-    private static Background background;
-    private static Background backgroundError;
-    private static Background backgroundSurf;
 
     @FXML
     private Button closeBtn;
@@ -94,7 +89,13 @@ public class MenuPresenter implements Initializable {
     @FXML
     private FontAwesomeIconView hamburgerIcon;
 
+    private static Background background;
+    private static Background backgroundError;
+    private static Background backgroundSurf;
+
+    @SuppressWarnings("rawtypes")
     private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> applicationViews;
+    @SuppressWarnings("rawtypes")
     private MenuContentfulViewWrapper current;
     private boolean isMenuDrawerOpen = true;
     private SimpleBooleanProperty userViewOpen = new SimpleBooleanProperty(false);
@@ -103,7 +104,7 @@ public class MenuPresenter implements Initializable {
 
 
     @Override
-    @SuppressWarnings("squid:S2696")
+    @SuppressWarnings({"squid:S2696", "squid:S5411"})
     public void initialize(URL location, ResourceBundle resources) {
         if (background == null) {
             background = style.BACKGROUND().asBackground();
@@ -157,7 +158,7 @@ public class MenuPresenter implements Initializable {
         contentPlane.getChildren().add(viewRootElement);
     }
 
-    private void setMenuItems(@NotNull final LinkedList<MenuContentfulViewWrapper> views) {
+    private void setMenuItems(@SuppressWarnings("rawtypes") @NotNull final LinkedList<MenuContentfulViewWrapper> views) {
         views.forEach(view -> {
             menuVBox.getChildren().add(view.createMenuItemView(() -> {
                 logger.debug(LogMarkers.UI_EVENT, "MenuItem clicked");
@@ -171,7 +172,7 @@ public class MenuPresenter implements Initializable {
         this.switchMenuContentfulViewView(this.getMenuViews().get(viewIdf), pop2root);
     }
 
-    private void switchMenuContentfulViewView(MenuContentfulViewWrapper view, boolean pop2root) {
+    private void switchMenuContentfulViewView(@SuppressWarnings("rawtypes") MenuContentfulViewWrapper view, boolean pop2root) {
         if (current != null) {
             current.beforeMenuSwitch();
             current.isCurrentMenuItem(false);
@@ -193,6 +194,7 @@ public class MenuPresenter implements Initializable {
         menubarTitle.setText(title);
     }
 
+    @SuppressWarnings("rawtypes")
     private EnumMap<ApplicationMenuViews, MenuContentfulViewWrapper> getMenuViews() {
         if (applicationViews == null) {
             applicationViews = new EnumMap<>(ApplicationMenuViews.class);

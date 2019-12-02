@@ -4,12 +4,16 @@ import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MsgTopicVM implements ViewModel {
+
+    private static final Logger logger = LogManager.getLogger(MsgTopicVM.class);
 
     private MsgTopicService msgTopicService;
 
@@ -30,7 +34,8 @@ public class MsgTopicVM implements ViewModel {
     }
 
     public void ack(MsgWrapper msg) {
-        System.out.println("acked " + msg.toString()); //TODO impl
+        String s = msg.toString();
+        logger.debug("acked {}", s); //TODO impl
     }
 
     public List<MsgWrapper> getAllMsgs() {

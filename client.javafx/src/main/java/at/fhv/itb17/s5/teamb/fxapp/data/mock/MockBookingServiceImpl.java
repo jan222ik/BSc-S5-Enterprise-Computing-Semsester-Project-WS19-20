@@ -13,7 +13,7 @@ public class MockBookingServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data.
 
     @Override
     public void logout() {
-
+        //May be empty because no teardown needed
     }
 
     @Override

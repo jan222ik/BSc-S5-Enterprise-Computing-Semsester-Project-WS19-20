@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MsgConPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
+
     @FXML
     private JFXListView<Parent> notificationLV;
     @FXML

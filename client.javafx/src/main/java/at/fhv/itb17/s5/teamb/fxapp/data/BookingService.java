@@ -2,7 +2,6 @@ package at.fhv.itb17.s5.teamb.fxapp.data;
 
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
-import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 
 import java.util.List;
 

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-@SuppressWarnings("squid:S2068")
 public class LoginPresenter implements Initializable {
 
     private static final List<String> servers = Arrays.asList("localhost", "10.0.51.91");
@@ -86,6 +85,7 @@ public class LoginPresenter implements Initializable {
         this.callback = callback;
     }
 
+    @SuppressWarnings("squid:S2068") //Suppress hardcoded password
     private void checkPWUsernameCombination() {
         String username = usernameTextField.getText();
         String password = passwordField.getText();

@@ -11,11 +11,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class MsgProdPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
+
+    private static final Logger logger = LogManager.getLogger(MsgProdPresenter.class);
+
     @FXML
     private Button backBtn;
     @FXML
@@ -39,13 +44,13 @@ public class MsgProdPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
     }
 
     private void publish(MsgTopicVM viewModel) {
-        System.out.println("Publish item:");
+        logger.debug("Publish item:");
         String header = msgHeaderTE.getText();
         String body = msgBodyTE.getText();
         String topic = topicCB.getValue();
-        System.out.println("topic = " + topic);
-        System.out.println("header = " + header);
-        System.out.println("body = " + body);
+        logger.debug("topic = {}", topic);
+        logger.debug("header = {}", header);
+        logger.debug("body = {}", body);
         boolean succ = viewModel.publishMsg(topicChoices.get(topic), header, body);
         if (!succ) {
             NotificationsHelper.inform("Message", "Could not publish message");

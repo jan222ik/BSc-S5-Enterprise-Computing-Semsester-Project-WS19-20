@@ -14,10 +14,11 @@ public class MockMsgTopicServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data
 
     @Override
     public void logout() {
-
+        //May be empty because no teardown needed
     }
 
     @Override
+    @SuppressWarnings("squid:S1168") //Null return
     public List<MsgTopicDTO> getAll() {
         return null;
     }
@@ -33,6 +34,7 @@ public class MockMsgTopicServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data
     }
 
     @Override
+    @SuppressWarnings("squid:S1168") //Null return
     public List<MsgTopic> getSubscribedTopics() {
         return null;
     }

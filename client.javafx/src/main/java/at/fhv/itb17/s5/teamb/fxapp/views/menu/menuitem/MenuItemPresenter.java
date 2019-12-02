@@ -25,8 +25,6 @@ public class MenuItemPresenter implements Initializable {
     private Paint selectedPaint;
     private Background unselected;
     private Paint unselectedPaint;
-    private Background hover;
-    private Paint hoverPaint;
 
 
     @FXML
@@ -70,9 +68,9 @@ public class MenuItemPresenter implements Initializable {
     }
 
     public void setParentWidthProperty(ReadOnlyDoubleProperty parentWidthProperty) {
-        parentWidthProperty.addListener((observable, oldValue, newValue) -> {
-            menuItem.setPrefWidth((Double) newValue - 2.0);
-        });
+        parentWidthProperty.addListener((observable, oldValue, newValue) ->
+                menuItem.setPrefWidth((Double) newValue - 2.0)
+        );
     }
 
     public void setIcon(FontAwesomeIcon icon) {
@@ -85,8 +83,8 @@ public class MenuItemPresenter implements Initializable {
         selectedPaint = style.ON_PRIMARY().asPaint();
         unselected = style.BACKGROUND().asBackground();
         unselectedPaint = style.ON_BACKGROUND().asPaint();
-        hover = style.SURFACE().asBackground();
-        hoverPaint = style.ON_SURFACE().asPaint();
+        Background hover = style.SURFACE().asBackground();
+        Paint hoverPaint = style.ON_SURFACE().asPaint();
         style.hoverBtn(menuIconGlyphHolder, unselected, unselectedPaint, hover, hoverPaint, isSelected);
         style.hoverBtn(menuItem, unselected, unselectedPaint, hover, hoverPaint, isSelected);
     }
