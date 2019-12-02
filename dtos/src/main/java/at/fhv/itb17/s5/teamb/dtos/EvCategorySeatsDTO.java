@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class EvCategorySeatsDTO implements EvCategoryInterfaceDTO, Serializable {
+
     private Long eventCategoryId;
     private String categoryName;
     private int priceInCent;
