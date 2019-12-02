@@ -7,6 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Artist {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long artistId;

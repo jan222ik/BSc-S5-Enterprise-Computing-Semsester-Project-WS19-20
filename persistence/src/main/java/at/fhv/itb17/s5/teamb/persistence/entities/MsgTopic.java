@@ -7,6 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 public class MsgTopic {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long topicId;

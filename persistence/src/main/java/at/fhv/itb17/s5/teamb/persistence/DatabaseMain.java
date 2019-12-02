@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-@SuppressWarnings("squid:S106")
+@SuppressWarnings({"squid:S106", "squid:S00117", "ArraysAsListWithZeroOrOneArgument", "OctalInteger", "DuplicatedCode", "squid:CommentedOutCodeLine", "squid:UnusedPrivateMethod", "squid:S1854", "squid:S1481"})
 public class DatabaseMain {
 
     private static EntityRepository repository = new EntityRepository();

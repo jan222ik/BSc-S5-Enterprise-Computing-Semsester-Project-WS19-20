@@ -2,16 +2,12 @@ package at.fhv.itb17.s5.teamb.persistence.repository
 
 import at.fhv.itb17.s5.teamb.persistence.entities.Event
 import at.fhv.itb17.s5.teamb.persistence.provider.EventProvider
-import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories
-import at.fhv.itb17.s5.teamb.persistence.search.SearchPair
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
 
 class EventSearchTest {
+
     private var entityRepository: EntityRepository = EntityRepository()
     private var eventRepository: EventRepository = EventRepository(entityRepository)
     private var e1: Event = EventProvider.getNewEventAndAddDB(entityRepository, "e1")
@@ -33,11 +29,12 @@ class EventSearchTest {
     }
 
     @Test
-    fun a(): Unit {
+    fun a() {
 
     }
+
     @Test
-    fun a2(): Unit {
+    fun a2() {
 
     }
 

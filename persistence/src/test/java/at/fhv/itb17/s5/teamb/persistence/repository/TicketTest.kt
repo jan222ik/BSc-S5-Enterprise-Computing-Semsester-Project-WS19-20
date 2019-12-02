@@ -3,8 +3,6 @@ package at.fhv.itb17.s5.teamb.persistence.repository
 import at.fhv.itb17.s5.teamb.persistence.entities.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.junit.After
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalTime

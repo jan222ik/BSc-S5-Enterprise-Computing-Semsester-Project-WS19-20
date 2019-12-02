@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 public class Client {
+
     @Id
     private String username;
     private String name;

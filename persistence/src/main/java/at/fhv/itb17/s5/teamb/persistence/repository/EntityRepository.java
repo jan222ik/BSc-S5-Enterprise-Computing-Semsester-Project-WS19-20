@@ -127,6 +127,7 @@ public class EntityRepository {
         return sessionFactory.getCurrentSession().createQuery(criteriaQuery).getResultList();
     }
 
+    @SuppressWarnings("squid:S1181") //To be able to catch Throwable
     private <T> T doInTransaction(Function<Session, T> supplier) {
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();

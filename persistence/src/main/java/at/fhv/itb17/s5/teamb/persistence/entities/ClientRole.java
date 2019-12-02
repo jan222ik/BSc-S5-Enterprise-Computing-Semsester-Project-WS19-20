@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Entity
 public class ClientRole {
+
     @Id
     private String roleName;
     private Boolean mayReadMsg;
@@ -85,7 +86,7 @@ public class ClientRole {
 
     public static ClientRole calcEffectiveRole(List<ClientRole> roles) {
         roles.sort(Comparator.comparingInt(o -> -1 * o.priority));
-        Integer prio = 0;
+        int prio = 0;
         Boolean read = null;
         Boolean write = null;
         StringBuilder sb = new StringBuilder();
