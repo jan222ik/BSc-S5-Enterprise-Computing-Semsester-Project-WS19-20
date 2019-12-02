@@ -22,16 +22,18 @@ public class RMIController {
     private IConnectionFactoryRMI stub = null;
     private Registry registry = null;
 
+    @SuppressWarnings("RedundantThrows")
     public RMIController() throws RemoteException {
         System.setSecurityManager(new SecManager());
     }
 
-    public boolean connect(String host, int port) throws RemoteException{
+    @SuppressWarnings({"UnusedReturnValue", "RedundantThrows"})
+    public boolean connect(String host, int port) throws RemoteException {
         try {
             registry = LocateRegistry.getRegistry(host, port);
 
             stub = (IConnectionFactoryRMI) registry.lookup(EntryPointRMI.FACTORY_BIND_NAME);
-            System.out.println("stub = " + stub);
+            logger.debug("stub = {}", stub);
 
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -57,7 +59,7 @@ public class RMIController {
         logger.info("RMI: Creating BookingService");
         if (stub == null) return null;
         BookingService bookingService = stub.createBookingService(frontEndClient, username, password);
-        System.out.println("Created bookingService = " + bookingService);
+        logger.debug("Created bookingService = {}", bookingService);
         return bookingService;
     }
 
@@ -69,7 +71,7 @@ public class RMIController {
         logger.info("RMI: Creating MsgTopicService");
         if (stub == null) return null;
         MsgTopicService topicService = stub.createTopicService(username, password);
-        System.out.println("Created topicService = " + topicService);
+        logger.debug("Created topicService = {}", topicService);
         return topicService;
     }
 

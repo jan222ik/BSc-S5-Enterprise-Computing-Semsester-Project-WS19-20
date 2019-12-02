@@ -5,6 +5,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import java.rmi.RemoteException;
 import java.util.LinkedList;
@@ -13,9 +14,11 @@ import java.util.List;
 public class RMITopicServiceImpl implements MsgTopicService {
 
     private static final Logger logger = LogManager.getLogger(RMITopicServiceImpl.class);
+    private static final String RMI_ERROR_MSG = "RMI Remote Exception";
     private RMIController rmi;
     private at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService msgTopicService;
 
+    @SuppressWarnings({"RedundantThrows", "squid:RedundantThrowsDeclarationCheck"})
     public RMITopicServiceImpl(RMIController rmi) throws RemoteException {
         this.rmi = rmi;
     }
@@ -32,7 +35,7 @@ public class RMITopicServiceImpl implements MsgTopicService {
             }
         } catch (RemoteException e) {
             e.printStackTrace();
-            logger.error("RMI Remote Exception");
+            logger.error(RMI_ERROR_MSG);
         }
         return RMIConnectionStatus.NO_CONNECTION;
     }
@@ -43,6 +46,8 @@ public class RMITopicServiceImpl implements MsgTopicService {
     }
 
     @Override
+    @Nullable
+    @SuppressWarnings("squid:S1168")
     public List<MsgTopicDTO> getAll() {
         logger.info("Get all Topics");
         if (msgTopicService != null) {
@@ -50,7 +55,7 @@ public class RMITopicServiceImpl implements MsgTopicService {
                 return msgTopicService.getAllTopics();
             } catch (RemoteException e) {
                 e.printStackTrace();
-                logger.error("RMI Remote Exception");
+                logger.error(RMI_ERROR_MSG);
                 return new LinkedList<>();
             }
         } else {
@@ -66,7 +71,7 @@ public class RMITopicServiceImpl implements MsgTopicService {
                 return msgTopicService.publishMsg(msgTopicDTO, header, body);
             } catch (RemoteException e) {
                 e.printStackTrace();
-                logger.error("RMI Remote Exception");
+                logger.error(RMI_ERROR_MSG);
             }
         }
         return false;
@@ -79,7 +84,7 @@ public class RMITopicServiceImpl implements MsgTopicService {
                 return msgTopicService.mayPublish();
             } catch (RemoteException e) {
                 e.printStackTrace();
-                logger.error("RMI Remote Exception");
+                logger.error(RMI_ERROR_MSG);
             }
         }
         return false;

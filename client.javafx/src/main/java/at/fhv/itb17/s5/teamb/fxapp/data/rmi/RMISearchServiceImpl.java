@@ -14,6 +14,7 @@ public class RMISearchServiceImpl implements SearchService {
     private RMIController rmi;
     private at.fhv.itb17.s5.teamb.core.controllers.general.SearchService remoteSearchService;
 
+    @SuppressWarnings({"RedundantThrows", "squid:RedundantThrowsDeclarationCheck"})
     public RMISearchServiceImpl(RMIController rmi) throws RemoteException {
         this.rmi = rmi;
     }

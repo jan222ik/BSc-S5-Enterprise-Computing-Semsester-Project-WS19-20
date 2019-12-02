@@ -21,6 +21,7 @@ public class RMIBookingServiceImpl implements BookingService {
     private IFrontEndClient client;
     private at.fhv.itb17.s5.teamb.core.controllers.general.BookingService remoteBookingService;
 
+    @SuppressWarnings({"RedundantThrows", "squid:RedundantThrowsDeclarationCheck"})
     public RMIBookingServiceImpl(RMIController rmi) throws RemoteException {
         this.rmi = rmi;
     }
@@ -55,6 +56,7 @@ public class RMIBookingServiceImpl implements BookingService {
 
     @Override
     @Nullable
+    @SuppressWarnings("squid:S1168") //Null instead of empty list
     public List<TicketDTO> book(List<TicketDTO> ticketDTOs) {
         logger.info("Booking {} tickets", ticketDTOs.size());
         if (remoteBookingService != null) {
@@ -72,6 +74,8 @@ public class RMIBookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Nullable
+    @SuppressWarnings("squid:S1168") //Null instead of empty list
     public List<TicketDTO> reserve(List<TicketDTO> ticketDTOs) {
         logger.info("Reserve {} tickets", ticketDTOs.size());
         if (remoteBookingService != null) {
