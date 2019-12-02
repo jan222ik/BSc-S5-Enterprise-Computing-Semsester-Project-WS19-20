@@ -32,7 +32,7 @@ public class MsgServiceCoreImpl implements MsgServiceCore {
     public boolean createMessage(MsgTopic topic, String messageHeader, String messageBody) {
         boolean created = false;
         try {
-            msgProducer.init("vm://localhost");
+            msgProducer.init(VM_LOCALHOST);
             created = msgProducer.createMessagePub(messageHeader, messageBody, topic);
             msgProducer.close();
         } catch (JMSException e) {

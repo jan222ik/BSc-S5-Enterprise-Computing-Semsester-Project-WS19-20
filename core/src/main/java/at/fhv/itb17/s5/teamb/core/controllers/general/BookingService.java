@@ -1,7 +1,6 @@
 package at.fhv.itb17.s5.teamb.core.controllers.general;
 
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
-import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

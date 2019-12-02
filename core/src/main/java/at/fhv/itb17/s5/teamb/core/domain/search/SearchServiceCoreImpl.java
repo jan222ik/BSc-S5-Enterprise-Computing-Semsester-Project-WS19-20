@@ -6,6 +6,8 @@ import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
 import at.fhv.itb17.s5.teamb.persistence.search.Search;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SearchServiceCoreImpl implements SearchServiceCore {
+
+    private static final Logger logger = LogManager.getLogger(SearchServiceCoreImpl.class);
 
     private EventRepository eventRepository;
     private SearchParser searchParser = SearchParser.INSTANCE;
@@ -29,7 +33,7 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
         Search search = searchParser.parseString(queryString);
         List<SearchPair> searchPairs = (search != null) ? search.retrieveSearchPairs().stream().filter(sp -> sp.getKey() == SearchCategories.EVENT_NAME || sp.getKey() == SearchCategories.GENRE || sp.getKey() == SearchCategories.ARTIST_NAME || sp.getKey() == SearchCategories.LOCATION).collect(Collectors.toList()) : new LinkedList<>();
         List<Event> result = eventRepository.search(searchPairs);
-        System.out.println("result = " + result.size());
+        logger.info("result = {}", result.size());
         LinkedList<SearchPair> searchPairs1 = (search != null) ? search.retrieveSearchPairs() : new LinkedList<>();
         return filter(result, searchPairs1);
     }

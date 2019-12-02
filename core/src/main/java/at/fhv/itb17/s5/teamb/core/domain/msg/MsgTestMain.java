@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Deprecated
+@SuppressWarnings({"squid:MissingDeprecatedCheck", "squid:CommentedOutCodeLine"})
 public class MsgTestMain {
     private static final String VM_LOCALHOST = "vm://localhost";
 

@@ -28,9 +28,10 @@ public interface EntityDTORepo {
     List<Ticket> toTickets(List<TicketDTO> ticketDTOs, Client client);
 
     List<MsgTopicDTO> toMsgTopicDTOs(List<MsgTopic> topics);
+
     MsgTopicDTO toMsgTopicDTO(MsgTopic topic);
 
     List<MsgTopic> toMsgTopics(List<MsgTopicDTO> topicDTOs);
-    MsgTopic toMsgTopic(MsgTopicDTO topicDTO);
 
+    MsgTopic toMsgTopic(MsgTopicDTO topicDTO);
 }

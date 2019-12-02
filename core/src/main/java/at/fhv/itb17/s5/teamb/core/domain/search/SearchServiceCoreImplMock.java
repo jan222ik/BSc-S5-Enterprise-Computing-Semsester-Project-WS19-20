@@ -6,8 +6,9 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -16,10 +17,12 @@ import java.util.List;
 
 public class SearchServiceCoreImplMock implements SearchServiceCore {
 
+    private static final Logger logger = LogManager.getLogger(SearchServiceCoreImplMock.class);
+
     @SuppressWarnings("DuplicatedCode")
     @Override
     public List<Event> searchFor(String queryString) {
-        System.out.println("USING SearchServiceCoreImplMock");
+        logger.info("USING SearchServiceCoreImplMock");
         EventCategory evCat0 = new EventCategory("cat_name_ev0", 99 * 100, 5000, 4711);
         EventCategory evCat1 = new EventCategory("cat_name_ev1", 20 * 100, 800, 11);
         LinkedList<EventCategory> cats = new LinkedList<>(Arrays.asList(evCat0, evCat1));

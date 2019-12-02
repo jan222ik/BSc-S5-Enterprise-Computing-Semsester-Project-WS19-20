@@ -4,7 +4,13 @@ import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,16 +24,15 @@ public class MsgProducer {
     private HashMap<Destination, MessageProducer> msgProducers = new HashMap<>();
 
     public MsgProducer() {
-        List<MsgTopic> topics = new LinkedList<>();
         MsgTopic system = new MsgTopic("System", false);
         MsgTopic rock = new MsgTopic("Rock", false);
         MsgTopic opera = new MsgTopic("Opera", false);
         MsgTopic theater = new MsgTopic("Theater", false);
+        this.topics = new LinkedList<>();
         topics.add(system);
         topics.add(rock);
         topics.add(opera);
         topics.add(theater);
-        this.topics = topics;
     }
 
     public MsgProducer(MsgRepository repo) {

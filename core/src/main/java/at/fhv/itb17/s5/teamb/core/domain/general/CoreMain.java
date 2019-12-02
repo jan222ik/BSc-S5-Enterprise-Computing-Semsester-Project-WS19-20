@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class CoreMain {
@@ -31,7 +32,7 @@ public class CoreMain {
         EntryPointRMI entryPointRMI;
         try {
             entryPointRMI = new EntryPointRMI(rmiPort, new CoreServiceInjectorImpl(!noLDAP));
-            LinkedList<EntryPoint> entryPoints = new LinkedList<>(Arrays.asList(entryPointRMI));
+            LinkedList<EntryPoint> entryPoints = new LinkedList<>(Collections.singletonList(entryPointRMI));
             coreMain.start(entryPoints);
         } catch (RemoteException e) {
             e.printStackTrace();

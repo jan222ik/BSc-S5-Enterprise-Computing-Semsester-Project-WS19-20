@@ -8,6 +8,8 @@ import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @SuppressWarnings("RedundantThrows")
 public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicService {
+
+    private static final Logger logger = LogManager.getLogger(MsgTopicServiceRMI.class);
 
     private final ClientSessionRMI client;
     private final MsgServiceCore topicService;
@@ -43,7 +47,7 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
         Client role = client.getClient();
         if (role != null) {
             ClientRole clientRole = ClientRole.calcEffectiveRole(role.getRole());
-            System.out.println("clientRole = " + clientRole);
+            logger.info("clientRole = {}", clientRole);
             return clientRole.getMayWriteMsg();
         } else {
             return false;

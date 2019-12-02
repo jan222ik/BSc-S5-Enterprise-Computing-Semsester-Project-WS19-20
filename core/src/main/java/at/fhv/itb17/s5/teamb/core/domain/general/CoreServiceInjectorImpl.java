@@ -8,8 +8,22 @@ import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImpl;
-import at.fhv.itb17.s5.teamb.persistence.entities.*;
-import at.fhv.itb17.s5.teamb.persistence.repository.*;
+import at.fhv.itb17.s5.teamb.persistence.entities.Address;
+import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
+import at.fhv.itb17.s5.teamb.persistence.entities.Client;
+import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
+import at.fhv.itb17.s5.teamb.persistence.entities.Event;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
+import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
+import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
+import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
+import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,6 +32,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings({"squid:S1192", "squid:CommentedOutCodeLine", "FieldCanBeLocal"})
 public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final EntityRepository entityRepository = new EntityRepository();
     private final EventRepository eventRepository = new EventRepository(entityRepository);
@@ -36,6 +51,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         addDBDATA();
     }
 
+    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     private void addDBDATA() {
         /*
         EventCategory evCat0 = new EventCategory("cat_name_ev0", 99 * 100, 5000, 4711);
@@ -63,7 +79,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         List<EventOccurrence> sceneOccurrences = new ArrayList<>();
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2020, 06, 12),
+                new EventOccurrence(LocalDate.of(2020, 6, 12),
                         LocalTime.of(12, 30, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 5000, 30, 0),
@@ -72,7 +88,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
                         new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
                 ));
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2021, 06, 10),
+                new EventOccurrence(LocalDate.of(2021, 6, 10),
                         LocalTime.of(13, 0, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 5500, 40, 0),
@@ -81,7 +97,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
                         new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
                 ));
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2020, 06, 15),
+                new EventOccurrence(LocalDate.of(2020, 6, 15),
                         LocalTime.of(12, 0, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 6000, 50, 0),
