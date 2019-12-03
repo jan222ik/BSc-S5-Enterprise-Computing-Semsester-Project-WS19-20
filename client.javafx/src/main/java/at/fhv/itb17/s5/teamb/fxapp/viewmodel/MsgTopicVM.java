@@ -49,4 +49,11 @@ public class MsgTopicVM implements ViewModel {
         return msgTopicService.getSubscribedTopics();
     }
 
+    public boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) {
+        return msgTopicService.publishFromFeed(msgTopicDTO, feedURL);
+    }
+
+    public List<String> getRSSFeedURLs() {
+        return msgTopicService.getRSSFeedURLs();
+    }
 }

@@ -16,6 +16,7 @@ import at.fhv.itb17.s5.teamb.fxapp.views.content.browser.BrowserView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.cart.CartView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.msgcon.MsgConView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.msgprod.MsgProdView;
+import at.fhv.itb17.s5.teamb.fxapp.views.content.msgprod.msgconrss.MsgProdRssView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.user.UserView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
@@ -238,6 +239,11 @@ public class MenuPresenter implements Initializable {
                     new MenuContentfulViewWrapper<>(
                             new MsgConView(), rootVM.getMsgTopicVM(), "Message Consumer",
                             "MSG. Consumer", FontAwesomeIcon.ENVELOPE, true, this)
+            );
+            applicationViews.put(ApplicationMenuViews.MSG_PROD_RSS_VIEW,
+                    new MenuContentfulViewWrapper<>(
+                            new MsgProdRssView(), rootVM.getMsgTopicVM(), "Message Producer",
+                            "MSG. Prod.", FontAwesomeIcon.ENVELOPE, false, this)
             );
         }
         return applicationViews;

@@ -18,4 +18,8 @@ public interface MsgTopicService {
     boolean mayPublish();
 
     List<MsgTopic> getSubscribedTopics();
+
+    boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL);
+
+    List<String> getRSSFeedURLs();
 }

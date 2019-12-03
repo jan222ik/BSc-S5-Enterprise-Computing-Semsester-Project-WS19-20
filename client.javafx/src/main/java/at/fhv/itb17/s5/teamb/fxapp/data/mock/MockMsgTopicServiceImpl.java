@@ -4,6 +4,7 @@ import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class MockMsgTopicServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService {
@@ -37,5 +38,15 @@ public class MockMsgTopicServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data
     @SuppressWarnings("squid:S1168") //Null return
     public List<MsgTopic> getSubscribedTopics() {
         return null;
+    }
+
+    @Override
+    public boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) {
+        return true;
+    }
+
+    @Override
+    public List<String> getRSSFeedURLs() {
+        return new LinkedList<>();
     }
 }

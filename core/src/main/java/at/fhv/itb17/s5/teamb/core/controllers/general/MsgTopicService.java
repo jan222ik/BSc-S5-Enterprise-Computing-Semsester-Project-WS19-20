@@ -15,4 +15,8 @@ public interface MsgTopicService extends Remote {
     boolean mayPublish() throws RemoteException;
 
     List<MsgTopic> getSubscribedTopics() throws RemoteException;
+
+    boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) throws RemoteException;
+
+    List<String> getRSSFeedURLs() throws RemoteException;
 }

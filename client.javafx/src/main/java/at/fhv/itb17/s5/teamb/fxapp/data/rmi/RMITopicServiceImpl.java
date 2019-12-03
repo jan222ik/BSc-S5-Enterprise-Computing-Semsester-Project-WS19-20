@@ -101,4 +101,28 @@ public class RMITopicServiceImpl implements MsgTopicService {
         }
         return new LinkedList<>();
     }
+
+    @Override
+    public boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) {
+        if (msgTopicService != null) {
+            try {
+                return msgTopicService.publishFromFeed(msgTopicDTO, feedURL);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public List<String> getRSSFeedURLs() {
+        try {
+            return msgTopicService.getRSSFeedURLs();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return new LinkedList<>();
+        }
+    }
 }

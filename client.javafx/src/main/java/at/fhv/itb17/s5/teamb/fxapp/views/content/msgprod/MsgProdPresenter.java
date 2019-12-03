@@ -24,6 +24,8 @@ public class MsgProdPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
     @FXML
     private Button backBtn;
     @FXML
+    private Button impRss;
+    @FXML
     private ChoiceBox<String> topicCB;
     @FXML
     private TextField msgHeaderTE;
@@ -39,6 +41,7 @@ public class MsgProdPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
     @Override
     public void onCreate(MsgTopicVM viewModel, NavigationStackActions<MsgTopicVM> navActions) {
         backBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.MSG_CONSUMER_VIEW, true));
+        impRss.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.MSG_PROD_RSS_VIEW, true));
         discardBtn.setOnAction(e -> this.clear());
         publishBtn.setOnAction(e -> this.publish(viewModel));
     }

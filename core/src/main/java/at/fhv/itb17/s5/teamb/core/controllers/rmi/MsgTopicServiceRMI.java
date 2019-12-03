@@ -13,8 +13,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("RedundantThrows")
 public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicService {
@@ -24,6 +26,8 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
     private final ClientSessionRMI client;
     private final MsgServiceCore topicService;
     private final EntityDTORepo entityDTORepo;
+
+    List<String> feeds = new LinkedList<>(Collections.singletonList("https://www.ots.at/rss/kultur"));
 
     public MsgTopicServiceRMI(MsgServiceCore topicService, ClientSessionRMI client, EntityDTORepo entityDTORepo) throws RemoteException {
         this.topicService = topicService;
@@ -61,5 +65,16 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
             topics = client.getClient().getSubscribedTopics();
         }
         return topics;
+    }
+
+    @Override
+    public boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) throws RemoteException {
+        //TODO Implement
+        return true;
+    }
+
+    @Override
+    public List<String> getRSSFeedURLs() throws RemoteException {
+        return feeds.stream().map(s -> new String(s)).collect(Collectors.toList());
     }
 }
