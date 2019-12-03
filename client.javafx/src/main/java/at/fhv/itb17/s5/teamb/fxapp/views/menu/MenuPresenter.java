@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.menu;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
@@ -18,6 +19,7 @@ import at.fhv.itb17.s5.teamb.fxapp.views.content.msgprod.MsgProdView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.user.UserView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
+import com.google.inject.Injector;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
@@ -59,6 +61,8 @@ public class MenuPresenter implements Initializable {
     private BookingService bookingService;
     @Inject
     private MsgTopicService msgTopicService;
+    @Inject
+    private MsgAsyncService msgAsyncService;
 
 
     @FXML
@@ -203,7 +207,7 @@ public class MenuPresenter implements Initializable {
             rootVM.setSearchVM(new SearchVM());
             rootVM.setCartVM(new CartVM(bookingService));
             rootVM.setResultVM(new ResultVM(searchService, rootVM));
-            rootVM.setMsgTopicVM(new MsgTopicVM(msgTopicService));
+            rootVM.setMsgTopicVM(new MsgTopicVM(msgTopicService, msgAsyncService));
             applicationViews.put(ApplicationMenuViews.SEARCH_VIEW,
                     new MenuContentfulViewWrapper<>(
                             new SearchView(), rootVM.getSearchVM(),

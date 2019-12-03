@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
+import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
@@ -14,6 +15,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.SecManager;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
@@ -32,6 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.jms.JMSException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,6 +47,7 @@ public class ApplicationMain extends Application {
 
     private Consumer<String> createMenu;
     private RMIController rmiController;
+    private MsgAsyncService msgAsyncService;
 
     @Override
     public void init() throws Exception {
@@ -54,11 +58,11 @@ public class ApplicationMain extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         Thread.currentThread().setName("FX Main");
+        System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
         SearchService searchService;
         BookingService bookingService;
         MsgTopicService topicService;
-        MsgAsyncService msgAsyncService;
         if (args.containsKeyword("-mock")) {
             searchService = new MockSearchServiceImpl();
             bookingService = new MockBookingServiceImpl();
@@ -73,6 +77,13 @@ public class ApplicationMain extends Application {
                 msgAsyncService = new MockMsgAsyncServiceImpl();
             } else {
                 msgAsyncService = new MsgAsyncServiceImpl();
+                new Thread(() -> {
+                    try {
+                        msgAsyncService.init(MsgServiceCoreImpl.VM_LOCALHOST);
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
             }
         }
         Injector.setModelOrService(SearchService.class, searchService);
@@ -149,6 +160,7 @@ public class ApplicationMain extends Application {
         if (rmiController != null) {
             rmiController.stopRMI();
         }
+        msgAsyncService.close();
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 

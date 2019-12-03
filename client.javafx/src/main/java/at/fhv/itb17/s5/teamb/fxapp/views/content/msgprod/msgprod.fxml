@@ -29,11 +29,11 @@
             </HBox>
             <VBox VBox.vgrow="ALWAYS">
                <children>
-                  <Label text="Select topic:" />
+                  <Label text="Select topic:" textFill="WHITE"/>
                   <ChoiceBox fx:id="topicCB" prefWidth="150.0" />
-                  <Label text="Enter Message Header" />
+                  <Label text="Enter Message Header:" textFill="WHITE"/>
                   <TextField fx:id="msgHeaderTE" />
-                  <Label text="Enter Message Body" />
+                  <Label text="Enter Message Body:" textFill="WHITE"/>
                   <TextArea fx:id="msgBodyTE" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
                </children>
                <VBox.margin>

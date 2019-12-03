@@ -1,14 +1,14 @@
 package at.fhv.itb17.s5.teamb.fxapp.viewmodel;
 
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDateTime;
-import java.util.LinkedList;
+import javax.jms.JMSException;
 import java.util.List;
 
 public class MsgTopicVM implements ViewModel {
@@ -16,9 +16,11 @@ public class MsgTopicVM implements ViewModel {
     private static final Logger logger = LogManager.getLogger(MsgTopicVM.class);
 
     private MsgTopicService msgTopicService;
+    private MsgAsyncService msgAsyncService;
 
-    public MsgTopicVM(MsgTopicService msgTopicService) {
+    public MsgTopicVM(MsgTopicService msgTopicService, MsgAsyncService msgAsyncService) {
         this.msgTopicService = msgTopicService;
+        this.msgAsyncService = msgAsyncService;
     }
 
     public List<MsgTopicDTO> getAllTopics() {
@@ -33,17 +35,14 @@ public class MsgTopicVM implements ViewModel {
         return msgTopicService.mayPublish();
     }
 
-    public void ack(MsgWrapper msg) {
+    public void ack(MsgWrapper msg) throws JMSException {
         String s = msg.toString();
-        logger.debug("acked {}", s); //TODO impl
+        logger.debug("acking {}", s);
+        msg.getTextMessage().acknowledge();
     }
 
     public List<MsgWrapper> getAllMsgs() {
-        LinkedList<MsgWrapper> msgWrappers = new LinkedList<>();
-        for (int i = 0; i < 10; i++) {
-            msgWrappers.add(new MsgWrapper("Topic " + i, "msg " + i, null, LocalDateTime.now(), false, "header " + i));
-        }
-        return new LinkedList<>(msgWrappers); //TODO impl*/
+        return msgAsyncService.getAllMsgs();
     }
 
     public List<MsgTopic> getSubscribedTopics() {

@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
+import javax.jms.JMSException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,13 @@ public class MsgConPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
         //TODO Load & display Messages and the existing topics
         notificationLV.getItems().clear();
         List<MsgWrapper> msgs = viewModel.getAllMsgs();
-        List<Parent> collect = msgs.stream().map(msg -> createView(msg, () -> viewModel.ack(msg)).getView()).collect(Collectors.toList());
+        List<Parent> collect = msgs.stream().map(msg -> createView(msg, () -> {
+            try {
+                viewModel.ack(msg);
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        }).getView()).collect(Collectors.toList());
         notificationLV.getItems().addAll(collect);
     }
 

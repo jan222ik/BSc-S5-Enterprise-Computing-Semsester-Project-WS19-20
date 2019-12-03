@@ -40,25 +40,11 @@
             <artifactId>rxjavafx</artifactId>
             <version>2.2.2</version>
         </dependency>
-
-
-        <dependency>
-            <groupId>advanceticketsale.persistence</groupId>
-            <artifactId>persistence</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>advanceticketsale.util</groupId>
             <artifactId>util</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>advanceticketsale.parent</groupId>
-            <artifactId>advanceticketsale</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>advanceticketsale.core</groupId>
@@ -73,5 +59,4 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
 </project>

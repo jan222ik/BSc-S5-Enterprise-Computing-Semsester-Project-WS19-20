@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MsgServiceCoreImpl implements MsgServiceCore {
 
-    private static final String VM_LOCALHOST = "vm://localhost";
+    public static final String VM_LOCALHOST = "vm://localhost";
     private MsgRepository msgRepository;
     private MsgProducer msgProducer;
 

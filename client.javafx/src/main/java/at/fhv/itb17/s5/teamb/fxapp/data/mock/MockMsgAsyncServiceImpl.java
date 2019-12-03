@@ -9,6 +9,7 @@ import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.jms.JMSException;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,16 +47,21 @@ public class MockMsgAsyncServiceImpl implements MsgAsyncService {
     }
 
     @Override
+    public void init(String brokerUrl) throws JMSException {
+
+    }
+
+    @Override
     public List<MsgWrapper> getAllMsgs() {
         return msgWrappers;
     }
 
-    @Override
-    public boolean hasNewMessages() {
-        return false;
-    }
-
     public void setPresenter(ApplicationMain presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void close() throws JMSException {
+
     }
 }
