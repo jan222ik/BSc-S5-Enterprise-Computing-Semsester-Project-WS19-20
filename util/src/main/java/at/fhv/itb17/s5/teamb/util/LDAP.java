@@ -1,5 +1,7 @@
 package at.fhv.itb17.s5.teamb.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.naming.AuthenticationException;
@@ -14,6 +16,8 @@ import javax.naming.directory.SearchResult;
 import java.util.Hashtable;
 
 public class LDAP {
+
+    Logger logger = LogManager.getLogger(LDAP.class);
 
     DirContext getLDAPConnection(String commonName, String organisationUnit, String password) throws NamingException {
         Hashtable<String, String> env = new Hashtable<>();
@@ -31,16 +35,21 @@ public class LDAP {
         boolean validUser = true;
         try {
             getLDAPConnection(commonName, "fhusers", password);
+            logger.info("Login FhUsers success");
         } catch (AuthenticationException e) {
             validUser = false;
+            logger.info("Login FhUsers failed");
         }
         //e.g. if user is tf-test
         if (!validUser) {
             try {
                 getLDAPConnection(username, "SpecialUsers", password);
                 validUser = true;
+                logger.info("Login Specialusers success");
             } catch (AuthenticationException e) {
-                e.printStackTrace();
+                validUser = false;
+                logger.info("Login SpecialUsers failed");
+
             }
         }
         return validUser;
