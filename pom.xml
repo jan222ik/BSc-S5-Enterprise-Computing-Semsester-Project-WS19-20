@@ -15,6 +15,7 @@
         <module>client.apis</module>
         <module>client.javafx</module>
         <module>dtos</module>
+        <module>core-beans</module>
     </modules>
     <packaging>pom</packaging>
 
