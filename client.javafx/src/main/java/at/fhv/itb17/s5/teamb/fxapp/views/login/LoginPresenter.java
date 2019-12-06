@@ -1,14 +1,15 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.login;
 
-import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
-import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
-import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.SetupManager;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
+import at.fhv.itb17.s5.teamb.fxapp.util.PopupHelper;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
+import at.fhv.itb17.s5.teamb.fxapp.views.load.LoadPresenter;
+import at.fhv.itb17.s5.teamb.fxapp.views.load.LoadView;
+import io.reactivex.Observable;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -19,10 +20,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -91,16 +93,23 @@ public class LoginPresenter implements Initializable {
             username = "backdoor";
             password = "backdoorPWD";
         }
-        RMIConnectionStatus status = checkPasswordRemote(username, password);
-        if (status == RMIConnectionStatus.CONNECTED) {
-            callback.accept(username);
-        } else {
-            if (status == RMIConnectionStatus.CREDENTIALS_INVALID) {
-                NotificationsHelper.error("Invalid Input", "Username or Password wrong!", NotificationsHelper.DisplayDuration.SHORT);
-            } else {
-                NotificationsHelper.error("Connection Refused", "No RMI Connection to host possible", NotificationsHelper.DisplayDuration.SHORT);
-            }
-        }
+        LoadView loadView = createLoadView(username);
+        Stage setup = PopupHelper.create(loadView, "Setup", ((Stage) usernameTextField.getScene().getWindow()).getIcons().get(0), usernameTextField.getScene().getWindow(), Modality.APPLICATION_MODAL);
+        setup.show();
+        String finalUsername = username;
+        String finalPassword = password;
+
+        new Thread(() -> {
+            RMIConnectionStatus status = checkPasswordRemote(finalUsername, finalPassword);
+            Observable.just(new Object()).subscribeOn(JavaFxScheduler.platform()).subscribe(o -> {
+                if (status == RMIConnectionStatus.CREDENTIALS_INVALID) {
+                    NotificationsHelper.error("Invalid Input", "Username or Password wrong!", NotificationsHelper.DisplayDuration.SHORT);
+                } else {
+                    NotificationsHelper.error("Connection Refused", "No RMI Connection to host possible", NotificationsHelper.DisplayDuration.SHORT);
+                }
+                setup.close();
+            });//.dispose(); TODO Dispose after inner code was executed.
+        }).start();
     }
 
     private RMIConnectionStatus checkPasswordRemote(String user, String pwd) {
@@ -112,5 +121,13 @@ public class LoginPresenter implements Initializable {
             }
         }
         return status;
+    }
+
+    private LoadView createLoadView(String username) {
+        LoadView loadView = new LoadView();
+        LoadPresenter presenter = (LoadPresenter) loadView.getPresenter();
+        presenter.setNextSceneCallback(callback, username);
+        setupManager.setCallbackConsumer(presenter);
+        return loadView;
     }
 }

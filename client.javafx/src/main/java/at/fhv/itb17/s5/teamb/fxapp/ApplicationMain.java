@@ -18,6 +18,7 @@ import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuView;
 import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import com.airhacks.afterburner.injection.Injector;
+import io.reactivex.disposables.Disposable;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -31,6 +32,7 @@ import javax.jms.JMSException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class ApplicationMain extends Application implements SetupCallback {
@@ -140,10 +142,11 @@ public class ApplicationMain extends Application implements SetupCallback {
     @Override
     public void onNextSetup(String name, int currentStep, int totalSteps) {
         logger.info("Setup Step {} of {}: {}", currentStep, totalSteps, name);
+        NotificationsHelper.inform("Setup", "Step " + currentStep + " of " + totalSteps + ": " + name );
     }
 
     @Override
-    public void setupFinished() {
-        //Ignored
+    public void setupFinished(List<Disposable> disposables) {
+        disposables.forEach(Disposable::dispose);
     }
 }

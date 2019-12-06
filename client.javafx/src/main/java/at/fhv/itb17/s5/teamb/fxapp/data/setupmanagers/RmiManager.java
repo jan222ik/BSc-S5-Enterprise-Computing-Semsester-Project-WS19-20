@@ -9,8 +9,14 @@ import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
 import com.airhacks.afterburner.injection.Injector;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RmiManager implements SetupManager {
 
@@ -23,9 +29,12 @@ public class RmiManager implements SetupManager {
     private MsgTopicService msgTopicService;
     private SetupCallback callbackConsumer;
 
+    private List<Disposable> disposables;
+
     @Override
     public boolean create() {
         try {
+            disposables = new LinkedList<>();
             controller = new RMIController();
             searchService = new RMISearchServiceImpl(controller);
             bookingService = new RMIBookingServiceImpl(controller);
@@ -79,7 +88,7 @@ public class RmiManager implements SetupManager {
                     if (status == RMIConnectionStatus.CONNECTED) {
                         notifyCallbackConsumer("Successfully initialized Booking Component (RMI)", 8, totalSteps);
                         notifyCallbackConsumer("Opening Application", 9, totalSteps);
-                        if (callbackConsumer != null) callbackConsumer.setupFinished();
+                        if (callbackConsumer != null) executeOnFX(o -> callbackConsumer.setupFinished(disposables));
                     }
                 }
             }
@@ -103,7 +112,11 @@ public class RmiManager implements SetupManager {
     
     public void notifyCallbackConsumer(String text, int current, int total) {
         if (callbackConsumer != null) {
-            callbackConsumer.onNextSetup(text, current, total);
+            executeOnFX(o -> callbackConsumer.onNextSetup(text, current, total));
         }
+    }
+
+    public void executeOnFX(Consumer<Object> consumer) {
+        disposables.add(Observable.just(new Object()).subscribeOn(JavaFxScheduler.platform()).subscribe(consumer));
     }
 }
