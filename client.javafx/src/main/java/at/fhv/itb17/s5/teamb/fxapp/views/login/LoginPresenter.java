@@ -5,6 +5,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
+import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.SetupManager;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.util.WindowEventHelper;
@@ -34,13 +35,7 @@ public class LoginPresenter implements Initializable {
     @Inject
     private Style style;
     @Inject
-    private SearchService searchService;
-    @Inject
-    private BookingService bookingService;
-    @Inject
-    private MsgTopicService msgTopicService;
-    @Inject
-    private RMIController rmiController;
+    private SetupManager setupManager;
 
     @FXML
     private StackPane stackPlane;
@@ -109,30 +104,11 @@ public class LoginPresenter implements Initializable {
     }
 
     private RMIConnectionStatus checkPasswordRemote(String user, String pwd) {
-        RMIConnectionStatus status;
-        if (rmiController != null) {
-            try {
-                System.out.println("serverCB.getValue() = " + serverCB.getValue());
-                boolean connect = rmiController.connect(serverCB.getValue(), 2345);
-                System.out.println("connect = " + connect);
-                status = searchService.init();
-                if (status == RMIConnectionStatus.CONNECTED) {
-                    status = msgTopicService.doLoginMsgTopic(user, pwd);
-                    if (status == RMIConnectionStatus.CONNECTED) {
-                        status = bookingService.doLoginBooking(user, pwd);
-                    }
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                return RMIConnectionStatus.NO_CONNECTION;
-            }
-        } else {
-            status = searchService.init();
+        RMIConnectionStatus status = RMIConnectionStatus.NO_CONNECTION;
+        if (setupManager != null) {
+            status = setupManager.connect(serverCB.getValue(), 2345);
             if (status == RMIConnectionStatus.CONNECTED) {
-                status = msgTopicService.doLoginMsgTopic(user, pwd);
-                if (status == RMIConnectionStatus.CONNECTED) {
-                    status = bookingService.doLoginBooking(user, pwd);
-                }
+                status = setupManager.authenticate(user, pwd);
             }
         }
         return status;

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -31,6 +32,18 @@ public class LDAPTest {
         LDAP ldap = new LDAP();
         try {
             ldap.getLDAPConnection(INVALID_USER, "SpecialUsers", VALID_PWD);
+            Assertions.fail();
+        } catch (Exception e) {
+            assertThat(e instanceof AuthenticationException, Matchers.is(true));
+        }
+    }
+
+    @Test
+    @DisplayName("LDAP - Connection: Fail - Empty Password")
+    public void testLDAPConnectio4711() throws NamingException {
+        LDAP ldap = new LDAP();
+        try {
+            ldap.getLDAPConnection(INVALID_USER, "SpecialUsers", "");
             Assertions.fail();
         } catch (Exception e) {
             assertThat(e instanceof AuthenticationException, Matchers.is(true));

@@ -1,21 +1,14 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
-import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
-import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
-import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockBookingServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgAsyncServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgTopicServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.SecManager;
+import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.RmiManager;
+import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.SetupCallback;
+import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.SetupManager;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
@@ -40,7 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.function.Consumer;
 
-public class ApplicationMain extends Application {
+public class ApplicationMain extends Application implements SetupCallback {
 
     private static final Logger logger = LogManager.getLogger(ApplicationMain.class);
     private ArgumentParser args;
@@ -48,6 +41,7 @@ public class ApplicationMain extends Application {
     private Consumer<String> createMenu;
     private RMIController rmiController;
     private MsgAsyncService msgAsyncService;
+    private SetupManager setupManager;
 
     @Override
     public void init() throws Exception {
@@ -60,55 +54,31 @@ public class ApplicationMain extends Application {
         Thread.currentThread().setName("FX Main");
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
-        SearchService searchService;
-        BookingService bookingService;
-        MsgTopicService topicService;
-        if (args.containsKeyword("-mock")) {
-            searchService = new MockSearchServiceImpl();
-            bookingService = new MockBookingServiceImpl();
-            topicService = new MockMsgTopicServiceImpl();
-            msgAsyncService = new MockMsgAsyncServiceImpl();
-        } else {
-            rmiController = new RMIController();
-            searchService = new RMISearchServiceImpl(rmiController);
-            bookingService = new RMIBookingServiceImpl(rmiController);
-            topicService = new RMITopicServiceImpl(rmiController);
-            if (args.containsKeyword("-mockMsg")) {
-                msgAsyncService = new MockMsgAsyncServiceImpl();
-            } else {
-                msgAsyncService = new MsgAsyncServiceImpl();
-                new Thread(() -> {
-                    try {
-                        msgAsyncService.init(MsgServiceCoreImpl.VM_LOCALHOST);
-                    } catch (JMSException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+
+        msgAsyncService = new MsgAsyncServiceImpl();
+        new Thread(() -> {
+            try {
+                msgAsyncService.init(MsgServiceCoreImpl.VM_LOCALHOST);
+            } catch (JMSException e) {
+                e.printStackTrace();
             }
+        }).start();
+        setupManager = new RmiManager();
+        boolean b = setupManager.create();
+        if (!b) {
+            throw new RuntimeException("Error in manager.create");
         }
-        Injector.setModelOrService(SearchService.class, searchService);
-        Injector.setModelOrService(BookingService.class, bookingService);
-        Injector.setModelOrService(MsgTopicService.class, topicService);
+        setupManager.setCallbackConsumer(this);
+
+        Injector.setModelOrService(SetupManager.class, setupManager);
         Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
         Injector.setModelOrService(RMIController.class, rmiController);
-        boolean withLogin = args.containsKeyword("-login");
 
         Runnable createLogin = () -> generateLogin(primaryStage);
         createMenu = (String name) -> generateMenu(primaryStage, name);
 
-        if (withLogin) {
-            createLogin.run();
-        } else {
-            final String backdoorUsername = "backdoor";
-            if (rmiController != null) {
-                rmiController.connect("localhost", 2345);
-            }
-            searchService.init();
-            bookingService.doLoginBooking(backdoorUsername, "backdoorPWD");
-            topicService.doLoginMsgTopic(backdoorUsername, "backdoorPWD");
-            msgAsyncService.setPresenter(this);
-            createMenu.accept(backdoorUsername);
-        }
+        createLogin.run();
+
         showStage(primaryStage);
         logger.info(LogMarkers.APPLICATION, "Application Started");
     }
@@ -158,14 +128,22 @@ public class ApplicationMain extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        if (rmiController != null) {
-            rmiController.stopRMI();
-        }
+        setupManager.close();
         msgAsyncService.close();
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 
     public void showNewMsg(MsgWrapper msg) {
         NotificationsHelper.inform("New Message", "Message in topic " + msg.getTopicName());
+    }
+
+    @Override
+    public void onNextSetup(String name, int currentStep, int totalSteps) {
+        logger.info("Setup Step {} of {}: {}", currentStep, totalSteps, name);
+    }
+
+    @Override
+    public void setupFinished() {
+        //Ignored
     }
 }
