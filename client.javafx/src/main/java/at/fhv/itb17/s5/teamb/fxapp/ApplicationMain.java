@@ -53,7 +53,7 @@ public class ApplicationMain extends Application implements SetupCallback {
     }
 
     public void start(Stage primaryStage) throws Exception {
-        Thread.currentThread().setName("FX Main");
+        Thread.currentThread().setName("Fred");
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
 
@@ -64,7 +64,7 @@ public class ApplicationMain extends Application implements SetupCallback {
             } catch (JMSException e) {
                 e.printStackTrace();
             }
-        }).start();
+        }, "Hedwig").start();
         setupManager = new RmiManager();
         boolean b = setupManager.create();
         if (!b) {

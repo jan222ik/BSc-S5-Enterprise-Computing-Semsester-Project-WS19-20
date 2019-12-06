@@ -109,7 +109,7 @@ public class LoginPresenter implements Initializable {
                 }
                 setup.close();
             });//.dispose(); TODO Dispose after inner code was executed.
-        }).start();
+        }, "Setup").start();
     }
 
     private RMIConnectionStatus checkPasswordRemote(String user, String pwd) {
