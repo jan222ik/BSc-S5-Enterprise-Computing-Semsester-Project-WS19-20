@@ -96,9 +96,7 @@ public class LoginPresenter implements Initializable {
             username = "backdoor";
             password = "backdoorPWD";
         }
-        stackPlane.getChildren().add(stackPlane.getChildren().size(), msgPlane);
         RMIConnectionStatus status = checkPasswordRemote(username, password);
-        stackPlane.getChildren().remove(msgPlane);
         if (status == RMIConnectionStatus.CONNECTED) {
             callback.accept(username);
         } else {
@@ -114,17 +112,27 @@ public class LoginPresenter implements Initializable {
         RMIConnectionStatus status;
         if (rmiController != null) {
             try {
-                rmiController.connect(serverCB.getValue(), 2345);
+                System.out.println("serverCB.getValue() = " + serverCB.getValue());
+                boolean connect = rmiController.connect(serverCB.getValue(), 2345);
+                System.out.println("connect = " + connect);
+                status = searchService.init();
+                if (status == RMIConnectionStatus.CONNECTED) {
+                    status = msgTopicService.doLoginMsgTopic(user, pwd);
+                    if (status == RMIConnectionStatus.CONNECTED) {
+                        status = bookingService.doLoginBooking(user, pwd);
+                    }
+                }
             } catch (RemoteException e) {
                 e.printStackTrace();
                 return RMIConnectionStatus.NO_CONNECTION;
             }
-        }
-        status = searchService.init();
-        if (status == RMIConnectionStatus.CONNECTED) {
-            status = msgTopicService.doLoginMsgTopic(user, pwd);
+        } else {
+            status = searchService.init();
             if (status == RMIConnectionStatus.CONNECTED) {
-                status = bookingService.doLoginBooking(user, pwd);
+                status = msgTopicService.doLoginMsgTopic(user, pwd);
+                if (status == RMIConnectionStatus.CONNECTED) {
+                    status = bookingService.doLoginBooking(user, pwd);
+                }
             }
         }
         return status;

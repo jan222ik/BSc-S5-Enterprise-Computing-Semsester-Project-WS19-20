@@ -63,7 +63,8 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
 
     private void buyOrReserve(CartVM viewModel, boolean doBuy, NavigationStackActions<CartVM> navActions) {
         logger.debug("doBuy = {}", doBuy);
-        boolean successful = Optional.ofNullable(viewModel.book()).orElseGet(() -> {
+        Boolean book = (doBuy) ? viewModel.book() : viewModel.reserve();
+        boolean successful = Optional.ofNullable(book).orElseGet(() -> {
             NotificationsHelper.error("Error", "Error during Booking");
             return false;
         });
@@ -83,7 +84,7 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
     private void render(CartVM viewModel) {
         AtomicInteger totalPrice = new AtomicInteger();
         AtomicInteger totalAmount = new AtomicInteger();
-        List<Parent> collect = viewModel.getTicketsSortedAfterEventAndOcc().stream().map(tick -> {
+        List<Parent> collect = viewModel.getTicketsSortedAfterEventAndOcc().stream().filter(l -> !l.isEmpty()).map(tick -> {
             CartItemView cartItemView = new CartItemView();
             CartItemPresenter presenter = (CartItemPresenter) cartItemView.getPresenter();
             presenter.setData(tick);

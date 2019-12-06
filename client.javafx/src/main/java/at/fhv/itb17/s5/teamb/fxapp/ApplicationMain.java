@@ -90,6 +90,7 @@ public class ApplicationMain extends Application {
         Injector.setModelOrService(BookingService.class, bookingService);
         Injector.setModelOrService(MsgTopicService.class, topicService);
         Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
+        Injector.setModelOrService(RMIController.class, rmiController);
         boolean withLogin = args.containsKeyword("-login");
 
         Runnable createLogin = () -> generateLogin(primaryStage);
