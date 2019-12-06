@@ -38,6 +38,7 @@ public class LocationSeat {
         this.seatIdentifier = seatIdentifier;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isTaken() {
         return isTaken;
     }

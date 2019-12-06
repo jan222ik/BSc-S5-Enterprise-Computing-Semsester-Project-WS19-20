@@ -21,10 +21,8 @@ public class CartItemPresenter {
     private Label catPriceL;
     @FXML
     private Label catSpaceL;
-    private List<TicketDTO> ticks;
 
     public void setData(List<TicketDTO> ticks) {
-        this.ticks = ticks;
         ticketAmountL.setText(String.valueOf(ticks.size()));
         evNameL.setText(ticks.get(0).getEventDTO().getTitle());
         occDateTimeL.setText(LocalDateTime.of(ticks.get(0).getOcc().getDate(), ticks.get(0).getOcc().getTime()).format(DateTimeFormatter.ofPattern("dd.MM.yy::hh:mm")));

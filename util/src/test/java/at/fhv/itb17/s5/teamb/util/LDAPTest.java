@@ -77,5 +77,12 @@ public class LDAPTest {
         assertThat(ldap.areCredentialsCorrect(fhvUser, fhvUserPWD), Matchers.is(true));
     }
 
+    @Test
+    @DisplayName("LDAP - SpecialUser Credentials: Success - Valid User")
+    public void checkSpecialUserCred() throws NamingException {
+        LDAP ldap = testLDAPConnection();
+        assertThat(ldap.areCredentialsCorrect(VALID_USER, VALID_PWD), Matchers.is(true));
+    }
+
 
 }

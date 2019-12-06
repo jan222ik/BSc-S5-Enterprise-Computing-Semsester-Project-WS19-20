@@ -1,9 +1,15 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Organizer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long organizerId;

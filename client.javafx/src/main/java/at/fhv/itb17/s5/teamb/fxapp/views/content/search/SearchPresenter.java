@@ -2,8 +2,8 @@ package at.fhv.itb17.s5.teamb.fxapp.views.content.search;
 
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
-import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.SearchVM;
+import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 import javafx.fxml.FXML;
@@ -17,8 +17,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -27,8 +25,6 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class SearchPresenter implements ContentfulViewLifeCycle<SearchVM>, Initializable {
-
-    private static final Logger logger = LogManager.getLogger(SearchPresenter.class);
 
     @Inject
     Style style;

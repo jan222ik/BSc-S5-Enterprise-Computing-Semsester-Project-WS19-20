@@ -1,13 +1,23 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
+import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockBookingServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgAsyncServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockMsgTopicServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.mock.MockSearchServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.SecManager;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
+import at.fhv.itb17.s5.teamb.fxapp.util.NotificationsHelper;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginPresenter;
 import at.fhv.itb17.s5.teamb.fxapp.views.login.LoginView;
 import at.fhv.itb17.s5.teamb.fxapp.views.menu.MenuPresenter;
@@ -24,6 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.jms.JMSException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +47,7 @@ public class ApplicationMain extends Application {
 
     private Consumer<String> createMenu;
     private RMIController rmiController;
+    private MsgAsyncService msgAsyncService;
 
     @Override
     public void init() throws Exception {
@@ -46,20 +58,39 @@ public class ApplicationMain extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         Thread.currentThread().setName("FX Main");
+        System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
         SearchService searchService;
         BookingService bookingService;
+        MsgTopicService topicService;
         if (args.containsKeyword("-mock")) {
             searchService = new MockSearchServiceImpl();
             bookingService = new MockBookingServiceImpl();
+            topicService = new MockMsgTopicServiceImpl();
+            msgAsyncService = new MockMsgAsyncServiceImpl();
         } else {
-            rmiController = new RMIController("localhost", 2345);
+            rmiController = new RMIController();
             searchService = new RMISearchServiceImpl(rmiController);
             bookingService = new RMIBookingServiceImpl(rmiController);
-
+            topicService = new RMITopicServiceImpl(rmiController);
+            if (args.containsKeyword("-mockMsg")) {
+                msgAsyncService = new MockMsgAsyncServiceImpl();
+            } else {
+                msgAsyncService = new MsgAsyncServiceImpl();
+                new Thread(() -> {
+                    try {
+                        msgAsyncService.init(MsgServiceCoreImpl.VM_LOCALHOST);
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
         }
         Injector.setModelOrService(SearchService.class, searchService);
         Injector.setModelOrService(BookingService.class, bookingService);
+        Injector.setModelOrService(MsgTopicService.class, topicService);
+        Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
+        Injector.setModelOrService(RMIController.class, rmiController);
         boolean withLogin = args.containsKeyword("-login");
 
         Runnable createLogin = () -> generateLogin(primaryStage);
@@ -68,8 +99,15 @@ public class ApplicationMain extends Application {
         if (withLogin) {
             createLogin.run();
         } else {
-            bookingService.doLoginBooking("backdoor", "backdoorPWD");
-            createMenu.accept("backdoor");
+            final String backdoorUsername = "backdoor";
+            if (rmiController != null) {
+                rmiController.connect("localhost", 2345);
+            }
+            searchService.init();
+            bookingService.doLoginBooking(backdoorUsername, "backdoorPWD");
+            topicService.doLoginMsgTopic(backdoorUsername, "backdoorPWD");
+            msgAsyncService.setPresenter(this);
+            createMenu.accept(backdoorUsername);
         }
         showStage(primaryStage);
         logger.info(LogMarkers.APPLICATION, "Application Started");
@@ -123,6 +161,11 @@ public class ApplicationMain extends Application {
         if (rmiController != null) {
             rmiController.stopRMI();
         }
+        msgAsyncService.close();
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
+    }
+
+    public void showNewMsg(MsgWrapper msg) {
+        NotificationsHelper.inform("New Message", "Message in topic " + msg.getTopicName());
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public final class LocationRowMapper {
+
     private LocationRowMapper() {
     }
 
@@ -16,6 +17,7 @@ public final class LocationRowMapper {
     }
 
     public static LocationRowDTO toDTO(LocationRow row) {
+        if (row == null) return null;
         List<LocationSeatDTO> seats = LocationSeatMapper.toDTOs(row.getSeats());
         return new LocationRowDTO(row.getRowId(), row.getRowIdentifier(), seats);
     }

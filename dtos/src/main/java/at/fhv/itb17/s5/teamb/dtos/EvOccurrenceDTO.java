@@ -19,6 +19,7 @@ public class EvOccurrenceDTO implements Serializable {
     private String house;
     private CategoryCalcDataDTO categoryCalcDataDTO;
 
+    @SuppressWarnings("squid:S00107") //Size of param list
     public EvOccurrenceDTO(Long occurrenceId, LocalDate date, LocalTime time, List<EvCategoryInterfaceDTO> priceCategories, Long addressId, String country, String zip, String city, String street, String house, CategoryCalcDataDTO categoryCalcDataDTO) {
         this.occurrenceId = occurrenceId;
         this.date = date;

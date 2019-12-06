@@ -13,6 +13,7 @@ import java.util.List;
 
 @Entity
 public class EventOccurrence {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long occurrenceId;

@@ -30,8 +30,8 @@ public final class PopupHelper {
      */
     @SafeVarargs
     public static Stage create(@NotNull FXMLView view, @NotNull String title,
-                                     @NotNull Image icon, @NotNull Window owner,
-                                     @NotNull Modality initModality, @NotNull Consumer<Stage>... functions) {
+                               @NotNull Image icon, @NotNull Window owner,
+                               @NotNull Modality initModality, @NotNull Consumer<Stage>... functions) {
         Stage popupWindow = new Stage();
         popupWindow.setScene(new Scene(view.getView()));
         popupWindow.setTitle(title);

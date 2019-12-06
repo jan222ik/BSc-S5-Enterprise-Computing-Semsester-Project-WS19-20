@@ -33,5 +33,7 @@
         <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Address"/>
         <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.TicketStates"/>
         <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.Artist"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.ClientRole"/>
+        <mapping class="at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic"/>
     </session-factory>
 </hibernate-configuration>

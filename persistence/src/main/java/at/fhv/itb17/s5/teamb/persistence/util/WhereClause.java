@@ -2,15 +2,17 @@ package at.fhv.itb17.s5.teamb.persistence.util;
 
 public class WhereClause {
 
+    @SuppressWarnings("squid:S00115")
     public enum WhereOperator{
         equals, greater, greaterThan, smaller, smallerThan, notEquals, like
     }
 
     private String attributeName;
     private WhereOperator operator;
+    @SuppressWarnings("rawtypes")
     private Comparable value;
 
-    public WhereClause(String attributeName, WhereOperator operator, Comparable value) {
+    public WhereClause(String attributeName, WhereOperator operator, @SuppressWarnings("rawtypes") Comparable value) {
         this.attributeName = attributeName;
         this.operator = operator;
         this.value = value;
@@ -32,11 +34,12 @@ public class WhereClause {
         this.operator = operator;
     }
 
+    @SuppressWarnings("rawtypes")
     public Comparable getValue() {
         return value;
     }
 
-    public void setValue(Comparable value) {
+    public void setValue(@SuppressWarnings("rawtypes") Comparable value) {
         this.value = value;
     }
 }

@@ -9,8 +9,6 @@ import at.fhv.itb17.s5.teamb.dtos.LocationSeatDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.fxapp.style.Style;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.booking.bookingitem.CatItemView;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -18,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -25,9 +25,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Observable;
 
 public class CatSeatPresenter implements CatItemView {
+
+    private static final Logger logger = LogManager.getLogger(CatSeatPresenter.class);
 
     @Inject
     private Style style;
@@ -54,7 +55,7 @@ public class CatSeatPresenter implements CatItemView {
         ticketAmountProp = new TicketNumber();
 
         ticketAmountProp.sub((observable, oldValue, newValue) -> {
-            System.out.println("Updated val=" + newValue);
+            logger.debug("Updated val= {}", newValue);
             changeListener.changed(null, oldValue, newValue);
         });
         catNameL.setText(cat.getCategoryName());

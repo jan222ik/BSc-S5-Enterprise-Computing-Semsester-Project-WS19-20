@@ -53,7 +53,7 @@ public class CatFreePresenter implements CatItemView {
 
     @Override
     public List<TicketDTO> getTickets(EventDTO eventDTO, EvOccurrenceDTO occ) {
-        Integer ticketCount = Optional.ofNullable(ticketBookAmountSpinner.getValue()).orElse(0);
+        int ticketCount = Optional.ofNullable(ticketBookAmountSpinner.getValue()).orElse(0);
         LinkedList<TicketDTO> ticketDTOS = new LinkedList<>();
         for (int i = 0; i < ticketCount; i++) {
             ticketDTOS.add(new TicketDTO(eventDTO, occ, (EvCategoryFreeDTO) cat));

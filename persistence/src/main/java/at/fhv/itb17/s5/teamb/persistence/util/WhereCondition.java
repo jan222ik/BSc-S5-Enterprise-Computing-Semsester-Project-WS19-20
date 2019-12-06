@@ -4,7 +4,6 @@ import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
 
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +15,8 @@ public class WhereCondition {
         this.clauses = clauses;
     }
 
-    public Predicate[] createPredicate(Root root) {
+    @SuppressWarnings("unchecked")
+    public Predicate[] createPredicate(@SuppressWarnings("rawtypes") Root root) {
         CriteriaBuilderImpl criteriaBuilder = new CriteriaBuilderImpl(null);
         List<Predicate> predicates = new LinkedList<>();
         for (WhereClause clause : clauses) {
@@ -41,7 +41,7 @@ public class WhereCondition {
                     break;
                 case like:
                     predicates.add(criteriaBuilder.like(criteriaBuilder.upper(
-                            root.get(clause.getAttributeName())),((String)clause.getValue()).toUpperCase()+"%"));
+                            root.get(clause.getAttributeName())), ((String) clause.getValue()).toUpperCase() + "%"));
                     break;
             }
         }

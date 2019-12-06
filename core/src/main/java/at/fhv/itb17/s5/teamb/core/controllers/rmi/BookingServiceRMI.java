@@ -17,6 +17,7 @@ import java.util.List;
 public class BookingServiceRMI extends UnicastRemoteObject implements BookingService {
 
     private static final Logger logger = LogManager.getLogger(BookingServiceRMI.class);
+
     private BookingServiceCore bookingServiceCore;
     private ClientSessionRMI clientSessionRMI;
     private EntityDTORepo entityDTORepo;
@@ -28,17 +29,23 @@ public class BookingServiceRMI extends UnicastRemoteObject implements BookingSer
     }
 
     @Override
-    public boolean bookTickets(List<TicketDTO> ticketDTOs) {
+    public List<TicketDTO> bookTickets(List<TicketDTO> ticketDTOs) {
         logger.info(LogMarkers.RMI_CONTROLLER, "Invoked Booking: Size:{} for the client {}", ticketDTOs.size(), clientSessionRMI);
-        //TODO BOOK FWD
-        // 1. Convert to correct Entities.
-        // 2. FWD Tickets.
-        // 3, return successState
         List<Ticket> tickets = entityDTORepo.toTickets(ticketDTOs, clientSessionRMI.getClient());
+        return entityDTORepo.toTicketDTOs(bookingServiceCore.bookTickets(tickets));
+    }
+
+    @Override
+    public List<TicketDTO> reserveTickets(List<TicketDTO> ticketDTOs) throws RemoteException {
+        logger.info(LogMarkers.RMI_CONTROLLER, "Invoked Reserve: Size:{} for the client {}", ticketDTOs.size(), clientSessionRMI);
+        List<Ticket> tickets = entityDTORepo.toTickets(ticketDTOs, clientSessionRMI.getClient());
+        return entityDTORepo.toTicketDTOs(bookingServiceCore.reserveTickets(tickets));
+    }
+
+    @SuppressWarnings("squid:UnusedPrivateMethod") //Used to debug stuff
+    private void logTicketsDiffs(List<TicketDTO> ticketDTOs, List<Ticket> tickets) {
         for (int i = 0; i < tickets.size(); i++) {
-            System.out.println(ticketDTOs.get(0) + " -> " + tickets.get(i));
+            logger.info("{} -> {}", ticketDTOs.get(i), tickets.get(i));
         }
-        List<Ticket> tickets1 = bookingServiceCore.bookTickets(tickets);
-        return tickets1 != null; //TODO Returning Tickets would be better
     }
 }

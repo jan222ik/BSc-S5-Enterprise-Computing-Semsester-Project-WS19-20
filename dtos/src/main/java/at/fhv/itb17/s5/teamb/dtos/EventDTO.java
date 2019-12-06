@@ -3,7 +3,9 @@ package at.fhv.itb17.s5.teamb.dtos;
 import java.io.Serializable;
 import java.util.List;
 
+@SuppressWarnings({"squid:S00116", "squid:S00100", "squid:S00117"}) // Underscore in naming of field, setter, constructor
 public class EventDTO implements Serializable {
+
     private Long eventId;
     private String title;
     private String description;
@@ -24,6 +26,7 @@ public class EventDTO implements Serializable {
     private String org_street;
     private String org_house;
 
+    @SuppressWarnings("squid:S00107") //Size of param list
     public EventDTO(Long eventId, String title, String description, String genre, List<String> artistNames, List<EvOccurrenceDTO> occurrences, Long organizerId, String org_name, String org_email, Long org_addressId, String org_country, String org_zip, String org_city, String org_street, String org_house) {
         this.eventId = eventId;
         this.title = title;

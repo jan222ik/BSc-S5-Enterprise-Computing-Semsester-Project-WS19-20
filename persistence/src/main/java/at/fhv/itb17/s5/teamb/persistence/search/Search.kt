@@ -11,7 +11,7 @@ class Search(private val queryString: String) {
         }
     }
 
-    private var cache: LinkedList<SearchPair>? = null;
+    private var cache: LinkedList<SearchPair>? = null
     fun retrieveSearchPairs(): LinkedList<SearchPair> {
         return cache ?: queryString
                 .split('-').drop(1) //Drop first empty element
@@ -45,13 +45,13 @@ enum class SearchCategories(private val catIdf: String) {
         }
 
         fun matchCat(s: String): SearchCategories {
-            return map[s] ?: throw SearchException("Invalid type identifier: $s");
+            return map[s] ?: throw SearchException("Invalid type identifier: $s")
         }
     }
 
     fun getIdf(): String {
         return catIdf
-    };
+    }
 }
 
 class SearchException(msg: String) : Exception(msg)

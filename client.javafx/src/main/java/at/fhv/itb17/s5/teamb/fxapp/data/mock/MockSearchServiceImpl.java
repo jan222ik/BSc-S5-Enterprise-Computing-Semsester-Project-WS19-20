@@ -3,6 +3,7 @@ package at.fhv.itb17.s5.teamb.fxapp.data.mock;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.mapper.EventMapper;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
 import at.fhv.itb17.s5.teamb.persistence.entities.Address;
 import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
@@ -41,5 +42,10 @@ public class MockSearchServiceImpl implements SearchService {
         Event eventDTO1 = new Event("Demo Concert1", "A very descriptive description1", "08/15 1", occurrences, org1, artistNames);
         LinkedList<Event> events = new LinkedList<>(Arrays.asList(eventDTO0, eventDTO1));
         return new LinkedList<>(EventMapper.toDTOs(events));
+    }
+
+    @Override
+    public RMIConnectionStatus init() {
+        return RMIConnectionStatus.CONNECTED;
     }
 }
