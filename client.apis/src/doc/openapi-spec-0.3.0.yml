@@ -1,0 +1,198 @@
+openapi: 3.0.1
+info:
+  title: Advance Ticket Sale
+  description: Advance Ticket Sale is a mandatory project from uni.
+  version: 0.3.0
+externalDocs:
+  description: External Doku
+  url: https://github.com/jan222ik/Semester5---Project-Enterprise-Computing
+servers:
+  - url: https://localhost:8080
+tags:
+  - name: events
+    description: Everything about the existing events
+paths:
+  /events/findByQueryString:
+    get:
+      tags:
+        - events
+      summary: Query a list of events based on a search string
+      parameters:
+        - name: queryString
+          in: query
+          description: QueryString used as a filter
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Request was successful, returns not empty result set found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        204:
+          description: Request was successful but resultset is empty
+          content: {}
+        400:
+          description: Invalid QueryString
+          content: {}
+        500:
+          description: Unexpected server exception
+          content: {}
+
+  /events/{eventID}/occurrences/{occID}/categories/{catID}/book:
+    post:
+      tags:
+        - events
+      summary: Book tickets for a specific category of an event's occurrence
+      description: Multiple status values can be provided with comma separated strings
+      operationId: bookTicket
+      parameters:
+        - name: eventID
+          in: path
+          description: ID of the event to book
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: occID
+          in: path
+          description: ID of the occurence to book
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: catID
+          in: path
+          description: ID of the category to book
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketOrder'
+      responses:
+        200:
+          description: successful operation, but tickets may have not been booked, check payload errMsg for info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingResponse'
+        400:
+          description: Invalid status value
+          content: {}
+
+
+
+components:
+  schemas:
+    PaymentInfo:
+      required:
+        - nameF
+        - nameL
+        - country
+        - city
+        - zip
+        - street
+        - house
+        - cardNr
+      type: object
+      properties:
+        nameF:
+          type: string
+        nameL:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+        zip:
+          type: string
+        street:
+          type: string
+        house:
+          type: string
+        cardNr:
+          type: integer
+          format: int64
+    TicketOrder:
+      required:
+        - amount
+        - rowseats
+        - bookinginfo
+      type: object
+      properties:
+        amount:
+          type: integer
+          format: int64
+        rowseats:
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/RowSeat'
+        bookingInfo:
+          $ref: '#/components/schemas/PaymentInfo'
+    RowSeat:
+      required:
+        - rowID
+        - seatID
+      type: object
+      properties:
+        rowID:
+          type: integer
+          format: int64
+        seatID:
+          type: integer
+          format: int64
+    BookingResponse:
+      required:
+        - transactionId
+        - errMsg
+      type: object
+      properties:
+        tranactionId:
+          type: integer
+          format: int64
+        errMsg:
+          nullable: true
+          type: string
+    Event:
+      required:
+        - todo
+      type: object
+      properties:
+        todo:
+          type: integer
+          format: int64
+    EventOcc:
+      required:
+        - todo
+      type: object
+      properties:
+        todo:
+          type: integer
+          format: int64
+    OccCat:
+      required:
+        - eventCategoryId
+        - categoryName
+        - totalTickets
+        - usedTickets
+        - priceInCents
+        - rows
+      type: object
+      properties:
+        eventCategoryId:
+          type: integer
+          format: int64
+        categoryName:
+
+
