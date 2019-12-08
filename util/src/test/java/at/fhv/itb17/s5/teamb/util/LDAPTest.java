@@ -40,7 +40,7 @@ public class LDAPTest {
 
     @Test
     @DisplayName("LDAP - Connection: Fail - Empty Password")
-    public void testLDAPConnectio4711() throws NamingException {
+    public void testLDAPConnectio4711() {
         LDAP ldap = new LDAP();
         try {
             ldap.getLDAPConnection(INVALID_USER, "SpecialUsers", "");
