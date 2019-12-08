@@ -31,6 +31,7 @@ public abstract class ContentView<T extends ViewModel> extends FXMLView {
         getCastedPresenter().beforeMenuSwitch(viewModel);
     }
 
+    @SuppressWarnings("squid:S00112")
     private ContentfulViewLifeCycle<T> getCastedPresenter() {
         Object presenter = super.getPresenter();
         if (!(presenter instanceof ContentfulViewLifeCycle)) {

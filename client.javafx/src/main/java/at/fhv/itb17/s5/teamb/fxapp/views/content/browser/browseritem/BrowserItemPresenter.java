@@ -99,7 +99,7 @@ public class BrowserItemPresenter implements Initializable {
         }
     }
 
-
+    @SuppressWarnings("squid:MaximumInheritanceDepth")
     public static class ActionButtonTableCell<S> extends TableCell<S, Button> {
 
         private final Button actionButton;
@@ -113,7 +113,7 @@ public class BrowserItemPresenter implements Initializable {
         }
 
         public S getCurrentItem() {
-            return (S) getTableView().getItems().get(getIndex());
+            return getTableView().getItems().get(getIndex());
         }
 
         public static <S> Callback<TableColumn<S, Button>, TableCell<S, Button>> forTableColumn(String label, Consumer<S> consumer) {

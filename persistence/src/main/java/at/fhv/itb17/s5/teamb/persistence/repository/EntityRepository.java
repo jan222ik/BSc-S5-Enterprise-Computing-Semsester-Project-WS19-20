@@ -5,7 +5,6 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
-import at.fhv.itb17.s5.teamb.persistence.util.WhereCondition;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +14,11 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.util.List;
 import java.util.function.Function;
 
@@ -45,6 +48,10 @@ public class EntityRepository {
     }
 
     public <T> T get(final Class<T> type, final Long id) {
+        return this.doInTransaction(session -> session.get(type, id));
+    }
+
+    public <T> T get(final Class<T> type, final String id) {
         return this.doInTransaction(session -> session.get(type, id));
 
     }
@@ -117,10 +124,10 @@ public class EntityRepository {
             }
         }
 
-        List<T> resultList = sessionFactory.getCurrentSession().createQuery(criteriaQuery).getResultList();
-        return resultList;
+        return sessionFactory.getCurrentSession().createQuery(criteriaQuery).getResultList();
     }
 
+    @SuppressWarnings("squid:S1181") //To be able to catch Throwable
     private <T> T doInTransaction(Function<Session, T> supplier) {
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();

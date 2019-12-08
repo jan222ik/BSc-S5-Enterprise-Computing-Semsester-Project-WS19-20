@@ -4,18 +4,25 @@ import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepoImpl;
 import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCoreImpl;
+import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
+import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.persistence.entities.Address;
 import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
+import at.fhv.itb17.s5.teamb.persistence.entities.Client;
+import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
 import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
+import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 
 import java.time.LocalDate;
@@ -25,20 +32,27 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings({"squid:S1192", "squid:CommentedOutCodeLine", "FieldCanBeLocal"})
 public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final EntityRepository entityRepository = new EntityRepository();
+
     private final EventRepository eventRepository = new EventRepository(entityRepository);
     private final SearchServiceCore searchServiceCore = new SearchServiceCoreImpl(eventRepository);
     private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
     private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
+    private final ClientRepository clientRepository = new ClientRepository(entityRepository);
 
-    private final AuthManagerCore authManagerCore = new AuthManagerCore(true);
+    private final AuthManagerCore authManagerCore;
     private final EntityDTORepo entityDTORepo = new EntityDTORepoImpl();
+    private final MsgRepository msgRepository = new MsgRepository(entityRepository);
+    private final MsgServiceCore msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);
 
-    public CoreServiceInjectorImpl() {
+    public CoreServiceInjectorImpl(boolean withLDAP) {
+        authManagerCore = new AuthManagerCore(true, withLDAP, clientRepository);
         addDBDATA();
     }
 
+    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     private void addDBDATA() {
         /*
         EventCategory evCat0 = new EventCategory("cat_name_ev0", 99 * 100, 5000, 4711);
@@ -66,7 +80,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         List<EventOccurrence> sceneOccurrences = new ArrayList<>();
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2020, 06, 12),
+                new EventOccurrence(LocalDate.of(2020, 6, 12),
                         LocalTime.of(12, 30, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 5000, 30, 0),
@@ -75,7 +89,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
                         new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
                 ));
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2021, 06, 10),
+                new EventOccurrence(LocalDate.of(2021, 6, 10),
                         LocalTime.of(13, 0, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 5500, 40, 0),
@@ -84,7 +98,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
                         new Address("Österreich", "6830", "Lustenau", "Hohegasse", "12b")
                 ));
         sceneOccurrences.add(
-                new EventOccurrence(LocalDate.of(2020, 06, 15),
+                new EventOccurrence(LocalDate.of(2020, 6, 15),
                         LocalTime.of(12, 0, 0),
                         Arrays.asList(
                                 new EventCategory("VIP", 6000, 50, 0),
@@ -149,10 +163,27 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         events.add(new Event("Scene-Openair Lustenau", "Openair Festival in Lustenau", "Festival", sceneOccurrences, new Organizer("Lustenau Festivalverband", "scene@lustenau.at", new Address("Österreich", "6830", "Lustenau", "Langegasse", "23")), sceneArtists));
         events.add(new Event("Scene-Writing", "Scene Writing für Amateure", "Vortrag", sceneWritingOccurence, new Organizer("Amateurtheater Hohenems", "info@hohenems-play.at", new Address("Österreich", "6870", "Hohenems", "Bergreuthe", "5")), Arrays.asList(new Artist("Markus Riedmann"))));
         events.add(new Event("Sponsion der FHV", "Abschlussfeier für Bachelor und Master", "Kulturveranstaltung", sponsionOccurences, new Organizer("FH Vorarlberg", "info@fhv.at", new Address("Österreich", "6850", "Dornbirn", "Hochschulstraße", "1")), Arrays.asList(new Artist("2nd Dimension"))));
-        events.add(new Event("Latenight Berlin", "Klaas hat Spaas", "Comedy", klaasOccurence, new Organizer("Pro 7", "redaktion@prosieben.de", new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")), Arrays.asList(new Artist("Klaas Heufer-Umlauf"))));
+        events.add(new Event("Latenight Berlin", "Klaas hat Spaas", "Unterhaltung", klaasOccurence, new Organizer("Pro 7", "redaktion@prosieben.de", new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")), Arrays.asList(new Artist("Klaas Heufer-Umlauf"))));
         events.add(new Event("Kochshow", "Kochshow mit Janik Mayr", "Unterhaltung", kochshowOccurence, new Organizer("Satteins", "janik.mayr@satteins.de", new Address("Deutschland", "10115", "Berlin", "Kölschwasser", "4711")), Arrays.asList(new Artist("Dr. Janik Mayr"))));
 
         events.forEach(entityRepository::saveOrUpdate);
+
+
+        List<MsgTopic> topics = new LinkedList<>();
+        MsgTopic system = new MsgTopic("System", false);
+        MsgTopic rock = new MsgTopic("Rock", false);
+        MsgTopic opera = new MsgTopic("Opera", false);
+        MsgTopic theater = new MsgTopic("Theater", false);
+        topics.add(system);
+        topics.add(rock);
+        topics.add(opera);
+        topics.add(theater);
+        topics.forEach(entityRepository::saveOrUpdate);
+        topics.remove(theater);
+
+        ClientRole admin = new ClientRole("ADMIN", true, true, 10);
+        entityRepository.saveOrUpdate(admin);
+        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<MsgTopic>(topics), new Address("Country", "zip", "city", "street", "house")));
 
     }
 
@@ -174,5 +205,14 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     @Override
     public EntityDTORepo getEntityRepo() {
         return entityDTORepo;
+    }
+
+    @Override
+    public MsgServiceCore getMsgTopicServiceCore() {
+        return msgTopicServiceCore;
+    }
+
+    public EntityRepository getEntityRepository() {
+        return entityRepository;
     }
 }

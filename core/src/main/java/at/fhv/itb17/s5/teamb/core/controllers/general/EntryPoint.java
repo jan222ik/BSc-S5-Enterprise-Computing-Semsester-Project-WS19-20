@@ -11,5 +11,6 @@ public abstract class EntryPoint {
     }
 
     public abstract void start() throws RemoteException;
+
     public abstract void destroy();
 }

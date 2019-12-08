@@ -1,12 +1,9 @@
 package at.fhv.itb17.s5.teamb.fxapp.style;
 
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.control.Labeled;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 
 @SuppressWarnings({"squid:S1192", "squid:ClassVariableVisibilityCheck", "squid:S00116", "squid:S00100", "WeakerAccess"})
@@ -77,7 +74,7 @@ public class Style {
             }
         });
         btn.setOnMouseExited(e -> {
-            if (temporalImmutable == null ||!temporalImmutable.get()) {
+            if (temporalImmutable == null || !temporalImmutable.get()) {
                 btn.setBackground(defaultB);
                 btn.setTextFill(onDefaultB);
             }
@@ -88,7 +85,7 @@ public class Style {
         private Paint paint;
         private BackgroundFill backgroundFill = null;
         private Background background = null;
-        
+
         private String rgb;
 
         public StyleBlock(String rgb) {
@@ -108,14 +105,14 @@ public class Style {
             }
             return backgroundFill;
         }
-        
+
         public Paint asPaint() {
             if (paint == null) {
                 paint = Paint.valueOf(this.asRGB());
             }
             return paint;
         }
-        
+
         public String asRGB() {
             return rgb;
         }

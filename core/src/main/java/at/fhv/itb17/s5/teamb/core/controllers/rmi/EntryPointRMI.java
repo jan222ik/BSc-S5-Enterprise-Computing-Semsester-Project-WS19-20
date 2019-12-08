@@ -3,6 +3,8 @@ package at.fhv.itb17.s5.teamb.core.controllers.rmi;
 import at.fhv.itb17.s5.teamb.core.controllers.general.ClientSessionRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntryPoint;
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -11,6 +13,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class EntryPointRMI extends EntryPoint {
 
+    private static final Logger logger = LogManager.getLogger(EntryPointRMI.class);
     public static final String FACTORY_BIND_NAME = "factory";
 
     private ConnectionFactoryRMI factoryRMI;
@@ -34,11 +37,18 @@ public class EntryPointRMI extends EntryPoint {
                 e.printStackTrace();
                 return null;
             }
+        }, (ClientSessionRMI client) -> {
+            try {
+                return new MsgTopicServiceRMI(coreImpl.getMsgTopicServiceCore(), client, coreImpl.getEntityRepo());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return null;
+            }
         }, coreImpl.getAuthManagerCore());
     }
 
     @Override
-    public void start() throws RemoteException {
+    public void start() {
         System.setProperty("java.rmi.server.codebaseOnly", String.valueOf(false));
         System.setProperty("javax.management.MBeanTrustPermission", "register");
         System.setProperty("java.security.policy", "./client.policy");
@@ -54,11 +64,10 @@ public class EntryPointRMI extends EntryPoint {
         } catch (RemoteException e1) {
             e1.printStackTrace();
         }
-        System.out.println("Started RMI");
+        logger.info("Started RMI");
     }
 
     @Override
     public void destroy() {
-
     }
 }

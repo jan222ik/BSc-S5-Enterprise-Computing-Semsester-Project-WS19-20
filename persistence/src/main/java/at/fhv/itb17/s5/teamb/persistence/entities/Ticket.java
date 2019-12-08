@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Ticket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long ticketId;

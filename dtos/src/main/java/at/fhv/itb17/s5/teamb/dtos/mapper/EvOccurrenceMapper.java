@@ -39,8 +39,7 @@ public final class EvOccurrenceMapper {
             d.setMaxPrice(curPrice);
             if (!occs[0] && cat.isFreeSeating()) {
                 occs[0] = true;
-            } else
-            if (!occs[1] && !cat.isFreeSeating()) {
+            } else if (!occs[1] && !cat.isFreeSeating()) {
                 occs[1] = true;
             }
         }

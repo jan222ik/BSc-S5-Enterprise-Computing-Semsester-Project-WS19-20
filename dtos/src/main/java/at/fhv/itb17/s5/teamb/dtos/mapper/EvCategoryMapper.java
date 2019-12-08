@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public final class EvCategoryMapper {
+
     private EvCategoryMapper() {
     }
 
