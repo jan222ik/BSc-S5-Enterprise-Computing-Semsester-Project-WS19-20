@@ -166,20 +166,74 @@ components:
           type: string
     Event:
       required:
-        - todo
+        - eventId
+        - title
+        - description
+        - genre
+        - artistNames
+        - occurrences
       type: object
       properties:
-        todo:
+        eventId:
           type: integer
           format: int64
+        title:
+          type: string
+        description:
+          type: string
+        genere:
+          type: string
+        artistNames:
+          type: array
+          items:
+            type: string
+        occurrences:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventOcc'
     EventOcc:
       required:
-        - todo
+        - occurrenceId
+        - date
+        - time
+        - priceCategories
+        - addressId
+        - country
+        - zip
+        - city
+        - street
+        - house
+        - categoryCalcDataDTO
       type: object
       properties:
-        todo:
+        occurrenceId:
           type: integer
           format: int64
+        date:
+          type: integer
+          format: int64
+        time:
+          type: integer
+          format: int64
+        priceCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/OccCat'
+        addressId:
+          type: integer
+          format: int64
+        country:
+          type: string
+        zip:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        house:
+          type: string
+        categoryCalcDataDTO:
+          $ref: '#/components/schemas/categoryCalcDataDto'
     OccCat:
       required:
         - eventCategoryId
@@ -194,5 +248,58 @@ components:
           type: integer
           format: int64
         categoryName:
-
+          type: string
+        totalTickets:
+          type: integer
+          format: int64
+        usedTickets:
+          type: integer
+          format: int64
+        priceInCents:
+          type: integer
+          format: int64
+        rows:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/Row'
+    Row:
+      required:
+        - rowId
+        - rowIdf
+        - seats
+      type: object
+      properties:
+        rowId:
+          type: integer
+          format: int64
+        rowIdf:
+          type: string
+        seats:
+          $ref: '#/components/schemas/Seat'
+    Seat:
+      required:
+        - seatId
+        - seatIdf
+        - isFree
+      properties:
+        seatId:
+          type: integer
+          format: int64
+        seatIdf:
+          type: string
+        isFree:
+          type:  boolean
+    categoryCalcDataDto:
+      required:
+        - minPrice
+        - maxPrice
+        - ticketTypes
+      properties:
+        minPrice:
+          type: integer
+        maxPrice:
+          type: integer
+        ticketTypes:
+          type: string
 
