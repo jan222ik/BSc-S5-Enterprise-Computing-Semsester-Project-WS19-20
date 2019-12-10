@@ -8,6 +8,4 @@ import java.util.LinkedList;
 
 public interface SearchService extends Remote {
     LinkedList<EventDTO> searchFor(String queryString) throws RemoteException;
-
-    Object updateTicketAvailability(Object ticket) throws RemoteException;
 }

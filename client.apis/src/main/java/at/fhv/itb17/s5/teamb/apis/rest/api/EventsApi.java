@@ -30,7 +30,10 @@ public interface EventsApi {
     @ApiOperation(value = "Book tickets for a specific category of an event's occurrence", nickname = "bookTicket", notes = "Multiple status values can be provided with comma separated strings", response = BookingResponse.class, responseContainer = "List", tags = {"events",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "successful operation, but tickets may have not been booked, check payload errMsg for info", response = BookingResponse.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Invalid status value")})
+            @ApiResponse(code = 400, message = "Invalid status value"),
+            @ApiResponse(code = 404, message = "Data in path or Body not linkable to entity"),
+            @ApiResponse(code = 409, message = "If not enough tickets are avariable"),
+            @ApiResponse(code = 500, message = "Unexpected server exception")})
     @RequestMapping(value = "/events/{eventID}/occurrences/{occID}/categories/{catID}/book",
             produces = {"application/json"},
             consumes = {"application/json"},

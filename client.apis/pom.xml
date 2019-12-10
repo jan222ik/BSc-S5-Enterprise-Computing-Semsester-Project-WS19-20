@@ -102,5 +102,11 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>advanceticketsale.core</groupId>
+            <version>1.0</version>
+            <artifactId>core</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

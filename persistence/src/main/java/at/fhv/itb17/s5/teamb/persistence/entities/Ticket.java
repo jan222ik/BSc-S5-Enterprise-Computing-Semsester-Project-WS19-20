@@ -129,4 +129,15 @@ public class Ticket {
                 ", bookedSeat=" + bookedSeat +
                 '}';
     }
+
+    public boolean isSame(Ticket that) {
+        boolean b = (client == that.client) && (bookedEvent.getEventId().equals(that.bookedEvent.getEventId()))
+                && (bookedOccurrence.getOccurrenceId().equals(that.getBookedOccurrence().getOccurrenceId()))
+                && (bookedCategory.getEventCategoryId().equals(that.getBookedCategory().getEventCategoryId()));
+        if (bookedRow != null && that.bookedRow != null && bookedSeat != null && that.bookedSeat != null) {
+            b = b && (bookedRow.getRowId().equals(that.bookedRow.getRowId())) && (bookedSeat.getSeatId().equals(that.bookedSeat.getSeatId()));
+        }
+        return b;
+
+    }
 }

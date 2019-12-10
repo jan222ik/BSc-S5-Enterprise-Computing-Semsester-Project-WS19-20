@@ -1,17 +1,21 @@
 package at.fhv.itb17.s5.teamb.apis.rest.api;
 
 import at.fhv.itb17.s5.teamb.apis.rest.model.BookingResponse;
+import at.fhv.itb17.s5.teamb.apis.rest.model.RowSeat;
 import at.fhv.itb17.s5.teamb.apis.rest.model.TicketOrder;
+import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
+import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
+import at.fhv.itb17.s5.teamb.core.controllers.rest.SearchServiceREST;
+import at.fhv.itb17.s5.teamb.dtos.EvCategoryFreeDTO;
+import at.fhv.itb17.s5.teamb.dtos.EvCategoryInterfaceDTO;
+import at.fhv.itb17.s5.teamb.dtos.EvCategorySeatsDTO;
+import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
-import at.fhv.itb17.s5.teamb.dtos.mapper.EventMapper;
-import at.fhv.itb17.s5.teamb.persistence.entities.Address;
-import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
-import at.fhv.itb17.s5.teamb.persistence.entities.Event;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
-import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
-import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
-import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
+import at.fhv.itb17.s5.teamb.dtos.LocationRowDTO;
+import at.fhv.itb17.s5.teamb.dtos.LocationSeatDTO;
+import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
+import at.fhv.itb17.s5.teamb.persistence.entities.Client;
+import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -25,11 +29,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-12-09T21:29:17.187Z[GMT]")
 @Controller
@@ -47,26 +50,97 @@ public class EventsApiController implements EventsApi {
         this.request = request;
     }
 
-    public ResponseEntity<List<BookingResponse>> bookTicket(@ApiParam(value = "ID of the event to book", required = true) @PathVariable("eventID") Long eventID, @ApiParam(value = "ID of the occurence to book", required = true) @PathVariable("occID") Long occID, @ApiParam(value = "ID of the category to book", required = true) @PathVariable("catID") Long catID, @ApiParam(value = "") @Valid @RequestBody TicketOrder body) {
+    public ResponseEntity<List<BookingResponse>> bookTicket(
+            @ApiParam(value = "ID of the event to book", required = true)
+            @PathVariable("eventID") Long eventID,
+            @ApiParam(value = "ID of the occurence to book", required = true)
+            @PathVariable("occID") Long occID,
+            @ApiParam(value = "ID of the category to book", required = true)
+            @PathVariable("catID") Long catID,
+            @ApiParam(value = "")
+            @Valid @RequestBody TicketOrder body) {
         String accept = request.getHeader("Accept");
-        log.debug("Accept is json: {}", (accept != null && accept.contains("application/json")));
+        log.info("Accept is json: {}", (accept != null && accept.contains("application/json")));
+        System.out.println("eventID = [" + eventID + "], occID = [" + occID + "], catID = [" + catID + "], body = [" + body + "]");
         try {
+            EntityDTORepo entityRepo = InjectHolder.injector.getEntityRepo();
+            LinkedList<TicketDTO> ticketDTOS = new LinkedList<>();
+            EventDTO evt = entityRepo.getEventDTOByID(eventID);
+            EvOccurrenceDTO occ = evt.getOccurrences().stream().filter(e -> e.getOccurrenceId() == occID).findFirst().orElseThrow(() -> new NotFoundException("OCCId not found"));
+            EvCategoryInterfaceDTO cat = occ.getPriceCategories().stream().filter(e -> e.getEventCategoryId() == catID).findFirst().orElseThrow(() -> new NotFoundException("CatId not found"));
+            boolean isSeat = false;
+            if (body.getRowseats() != null && !body.getRowseats().isEmpty()) {
+                isSeat = true;
+                EvCategorySeatsDTO castCat = (EvCategorySeatsDTO) cat;
+                for (RowSeat rowSeat : body.getRowseats()) {
+                    LocationRowDTO row = castCat.getSeatingRows().stream().filter(e -> e.getRowId() == rowSeat.getRowID()).findFirst().orElseThrow(() -> new NotFoundException("RowId not found"));
+                    LocationSeatDTO seat = row.getSeats().stream().filter(e -> e.getSeatId() == rowSeat.getSeatID()).findFirst().orElseThrow(() -> new NotFoundException("SeatId not found"));
+                    ticketDTOS.add(new TicketDTO(evt, occ, castCat, row, seat));
+                }
+            } else {
+                for (int i = 0; i < body.getAmount(); i++) {
+                    ticketDTOS.add(new TicketDTO(evt, occ, (EvCategoryFreeDTO) cat));
+                }
+            }
+            Client client = new Client(); //TODO GET CLIENT DATA
+            List<Ticket> ticket2Book = entityRepo.toTickets(ticketDTOS, client);
+            log.info("Size of Tickets to book: {}", ticket2Book.size());
+            List<Ticket> bookedTickets = InjectHolder.injector.getBookingServiceCore().bookTickets(ticket2Book);
+            if (bookedTickets.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            } else if (isSeat) {
+                ticket2Book.stream().map(t2b -> {
+                    BookingResponse response = new BookingResponse();
+                    Optional<Ticket> first = bookedTickets.stream().filter(t -> t.isSame(t2b)).findFirst();
+                    if (first.isPresent()) {
+                        response.tranactionId(first.get().getTicketId());
+                    } else {
+                        response.errMsg("Could not be booked INFO:" + t2b);
+                    }
+                    return response;
+                });
+            } else {
+                if (bookedTickets.size() == ticket2Book.size()) {
+                    ticket2Book.stream().map(t2b -> {
+                        BookingResponse response = new BookingResponse();
+                        Optional<Ticket> first = bookedTickets.stream().filter(t -> t.isSame(t2b)).findFirst();
+                        if (first.isPresent()) {
+                            response.tranactionId(first.get().getTicketId());
+                        } else {
+                            response.errMsg("Could not be booked INFO:" + t2b);
+                        }
+                        return response;
+                    });
+                } else {
+                    throw new RuntimeException("Unexpected Error - No tickets should have been booked");
+                }
+            }
             List<BookingResponse> bookingResponses = Arrays.asList(new BookingResponse().tranactionId(50L), new BookingResponse().tranactionId(51L));
             return new ResponseEntity<List<BookingResponse>>(bookingResponses, HttpStatus.OK);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            log.error("Did not found parts of input", e);
+            return new ResponseEntity<List<BookingResponse>>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             log.error("Couldn't serialize response for content type application/json", e);
             return new ResponseEntity<List<BookingResponse>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<List<EventDTO>> eventsFindByQueryStringGet(@ApiParam(value = "QueryString used as a filter") @RequestParam(value = "queryString", required = false) String queryString) {
+    class NotFoundException extends Exception {
+        public NotFoundException(String message) {
+            super(message);
+        }
+    }
+
+
+    public ResponseEntity<List<EventDTO>> eventsFindByQueryStringGet(@ApiParam(value = "QueryString used as a filter") @RequestParam(value = "queryString", required = false, defaultValue = "") String queryString) {
         String accept = request.getHeader("Accept");
         log.debug("Accept is json: {}", (accept != null && accept.contains("application/json")));
         try {
-            List<EventDTO> events = getEvents();
-
+            SearchService searchService = new SearchServiceREST(InjectHolder.injector.getSearchServiceCore(), InjectHolder.injector.getEntityRepo());
+            List<EventDTO> events = searchService.searchFor(queryString);
             if (events.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.valueOf(204));
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<List<EventDTO>>(events, HttpStatus.OK);
             }
@@ -75,27 +149,6 @@ public class EventsApiController implements EventsApi {
             return new ResponseEntity<List<EventDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-    }
-
-    public LinkedList<EventDTO> getEvents() {
-        EventCategory evCat0 = new EventCategory("cat_name_ev0", 99 * 100, 5000, 4711);
-        LinkedList<LocationRow> locationRows = new LinkedList<>(Arrays.asList(new LocationRow("A", Arrays.asList(new LocationSeat("1", true), new LocationSeat("2", false), new LocationSeat("3", false))), new LocationRow("B", Arrays.asList(new LocationSeat("45", true), new LocationSeat("46", true)))));
-        EventCategory evCat1 = new EventCategory("cat_name_ev1", 20 * 100, locationRows);
-        LinkedList<EventCategory> cats = new LinkedList<>(Arrays.asList(evCat0, evCat1));
-        Address addressEvOc0 = new Address("evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
-        Address addressEvOc1 = new Address("evt_country", "evt_zip", "evt_city", "evt_street", "evt_house");
-        EventOccurrence evOccurrenceDTO0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), cats, addressEvOc0);
-        EventOccurrence evOccurrenceDTO1 = new EventOccurrence(LocalDate.now().plusDays(3), LocalTime.now(), cats, addressEvOc1);
-        LinkedList<EventOccurrence> occurrences = new LinkedList<>(Arrays.asList(evOccurrenceDTO0, evOccurrenceDTO1));
-        LinkedList<Artist> artistNames = new LinkedList<>(Arrays.asList(new Artist("Hugo Hugo"), new Artist("Franz Peter Werner")));
-        Address addressOrg0 = new Address("org0_country", "org0_zip", "org0_city", "org0_street", "org0_house");
-        Address addressOrg1 = new Address("org1_country", "org1_zip", "org1_city", "org1_street", "org1_house");
-        Organizer org0 = new Organizer("org0_name", "org0_email", addressOrg0);
-        Organizer org1 = new Organizer("org1_name", "org1_email", addressOrg1);
-        Event eventDTO0 = new Event("Demo Concert0", "A very descriptive description0", "08/15 0", occurrences, org0, artistNames);
-        Event eventDTO1 = new Event("Demo Concert1", "A very descriptive description1", "08/15 1", occurrences, org1, artistNames);
-        LinkedList<Event> events = new LinkedList<>(Arrays.asList(eventDTO0, eventDTO1));
-        return new LinkedList<>(EventMapper.toDTOs(events));
     }
 
 }
