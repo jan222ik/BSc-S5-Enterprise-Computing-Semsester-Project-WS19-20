@@ -17,5 +17,66 @@
             <version>1.0</version>
             <artifactId>core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-ejb-client-bom</artifactId>
+            <version>17.0.1.Final</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.6.1</version>
+                <configuration>
+                    <container>
+                        <containerId>wildfly17x</containerId>
+                        <zipUrlInstaller>
+                            <url>
+                                http://download.jboss.org/wildfly/17.1.0.Final/wildfly-17.1.0.Final.zip
+                            </url>
+                        </zipUrlInstaller>
+                    </container>
+                    <configuration>
+                        <properties>
+                            <cargo.hostname>127.0.0.1</cargo.hostname>
+                            <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
+                            <cargo.jboss.management-http.port>9990</cargo.jboss.management-http.port>
+                            <cargo.servlet.users>testUser:admin1234!</cargo.servlet.users>
+                        </properties>
+                    </configuration>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>2.0.1.Final</version>
+<!--                <configuration>-->
+<!--                    <hostname>localhost</hostname>-->
+<!--                    <port>8080</port>-->
+<!--                    <username>test</username>-->
+<!--                    <password>test</password>-->
+<!--                    <name>beans.jar</name>-->
+<!--                </configuration>-->
+
+            </plugin>
+        </plugins>
+    </build>
+
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>wildfly-server</id>-->
+<!--            <url>http://localhost:8080/</url>-->
+<!--        </repository>-->
+
+<!--    </distributionManagement>-->
+
 </project>
