@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Advance Ticket Sale
   description: Advance Ticket Sale is a mandatory project from uni.
-  version: 0.3.0
+  version: 1.0.0
 externalDocs:
   description: External Doku
   url: https://github.com/jan222ik/Semester5---Project-Enterprise-Computing
@@ -79,7 +79,7 @@ paths:
               $ref: '#/components/schemas/TicketOrder'
       responses:
         200:
-          description: successful operation, but tickets may have not been booked, check payload errMsg for info
+          description: Successful operation, but tickets may have not been booked, check payload errMsg for info
           content:
             application/json:
               schema:
@@ -87,7 +87,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/BookingResponse'
         400:
-          description: Invalid status value
+          description: Unpareable data and types
+          content: {}
+        404:
+          description: Data in path or Body not linkable to entity
+          content: {}
+        406:
+          description: Content-Type Header missing or does not conatin application/json
+          content: {}
+        409:
+          description: If not enough tickets are avariable
+          content: {}
+        500:
+          description: Unexpected server exception
           content: {}
 
 
