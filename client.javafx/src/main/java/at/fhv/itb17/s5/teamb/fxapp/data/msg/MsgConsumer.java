@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,9 +17,11 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
     private List<MsgTopic> topics;
     private Session session;
     private Connection connection;
-    @SuppressWarnings({"FieldCanBeLocal", "squid:1450", "MismatchedQueryAndUpdateOfCollection"})
-    private List<MessageConsumer> msgConsumers;
+    private HashMap<String, Destination> destinations = new HashMap<>();
+    private HashMap<Destination, TopicSubscriber> msgConsumers = new HashMap<>();
+    private HashMap<Topic, String> subNames = new HashMap<>();
     private List<TextMessage> messages;
+
 
     public MsgConsumer() {
         this.topics = new LinkedList<>();
@@ -36,35 +39,49 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
         this.messages = new LinkedList<>();
     }
 
-    public void init(String brokerUrl) throws JMSException {
+    public void init(String brokerUrl, String clientId) throws JMSException {
+        //"vm:(broker:(tcp://localhost:6001)?persistent=true)"
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
 
         // Create a Connection
         connection = connectionFactory.createConnection();
-        connection.start();
 
+        connection.setClientID(clientId);
         connection.setExceptionListener(this);
 
         // Create a Session
         session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-
         // Create the destination (Topic or Queue)
-        List<Destination> destinations = new LinkedList<>();
         for (MsgTopic msgTopic : topics) {
-            Queue queue = session.createQueue("Consumer." + this.hashCode() + ".VirtualTopic." + msgTopic.getName());
-            destinations.add(queue);
+            Topic topic = session.createTopic("VirtualTopic." + msgTopic.getName());
+            //Topic topic = session.createTopic("Consumer." + this.hashCode() + ".VirtualTopic." + msgTopic.getName());
+            destinations.put(msgTopic.getName(), topic);
+            subNames.put(topic, msgTopic.getName());
         }
 
         // Create a MessageConsumer from the Session to the Topic or Queue
-        msgConsumers = new LinkedList<>();
-        for (Destination destination1 : destinations) {
-            MessageConsumer consumer = session.createConsumer(destination1);
-            consumer.setMessageListener(this);
-            msgConsumers.add(consumer);
-        }
+        destinations.forEach((topic, destination) -> {
+            TopicSubscriber consumer = null;
+            try {
+                consumer = session.createDurableSubscriber((Topic) destination, subNames.get(destination));
+                consumer.setMessageListener(this);
+                msgConsumers.put(destination, consumer);
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        });
+
+        connection.start();
     }
 
     public void close() throws JMSException {
+        topics.forEach((msgTopic -> {
+            try {
+                session.unsubscribe(msgTopic.getName());
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        }));
         session.close();
         connection.close();
     }
@@ -81,6 +98,7 @@ public class MsgConsumer implements ExceptionListener, MessageListener {
             addMessage(textMessage);
             String text;
             try {
+                //textMessage.acknowledge();
                 text = textMessage.getText();
                 logger.debug("{} Received Topic: {}", this.hashCode(), textMessage.getStringProperty("topic"));
                 logger.debug("Received header: {}", textMessage.getStringProperty("header"));

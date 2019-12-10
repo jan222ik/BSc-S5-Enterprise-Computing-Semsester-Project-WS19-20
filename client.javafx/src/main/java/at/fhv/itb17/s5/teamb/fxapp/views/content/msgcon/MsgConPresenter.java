@@ -1,6 +1,8 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.msgcon;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
+import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgConsumer;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.MsgTopicVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
@@ -14,6 +16,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +35,9 @@ public class MsgConPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
     @FXML
     private Button msgprodBtn;
 
+    //private MsgAsyncServiceImpl consumer = new MsgAsyncServiceImpl();
+   //private static final String VM_LOCALHOST = "vm://localhost";
+    private static final String TCP = "tcp://localhost:61616";
     @Override
     public void onCreate(MsgTopicVM viewModel, NavigationStackActions<MsgTopicVM> navActions) {
         boolean publish = viewModel.mayPublish();
@@ -39,6 +47,14 @@ public class MsgConPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
             msgprodBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.MSG_PROD_VIEW, true));
         }
     }
+    /*
+    this.topicName = topicName;
+        this.msgText = msgText;
+        this.textMessage = textMessage;
+        this.timestamp = timestamp;
+        this.ack = ack;
+        this.header = header;
+     */
 
     @Override
     public void onReturned(MsgTopicVM viewModel) {

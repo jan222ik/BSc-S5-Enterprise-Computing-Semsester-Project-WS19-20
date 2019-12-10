@@ -3,6 +3,10 @@ package at.fhv.itb17.s5.teamb.core.domain.msg;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.broker.Broker;
+import org.apache.activemq.broker.BrokerFactory;
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.TransportConnector;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
@@ -11,6 +15,8 @@ import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,10 +30,10 @@ public class MsgProducer {
     private HashMap<Destination, MessageProducer> msgProducers = new HashMap<>();
 
     public MsgProducer() {
-        MsgTopic system = new MsgTopic("System", false);
-        MsgTopic rock = new MsgTopic("Rock", false);
-        MsgTopic opera = new MsgTopic("Opera", false);
-        MsgTopic theater = new MsgTopic("Theater", false);
+        MsgTopic system = new MsgTopic("SYSTEM", false);
+        MsgTopic rock = new MsgTopic("ROCK", false);
+        MsgTopic opera = new MsgTopic("OPERA", false);
+        MsgTopic theater = new MsgTopic("THEATER", false);
         this.topics = new LinkedList<>();
         topics.add(system);
         topics.add(rock);
@@ -39,18 +45,18 @@ public class MsgProducer {
         topics = repo.getAllTopics();
     }
 
-    public void init(String brokerUrl) throws JMSException {
+    public void init(String brokerUrl, String clientId) throws Exception {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
 
         // Create a Connection
         connection = connectionFactory.createConnection();
-        connection.start();
+        connection.setClientID(clientId);
 
         // Create a Session
         session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
         // Create the destination (Topic or Queue)
-        for (MsgTopic msgTopic : topics) {
+        for (MsgTopic msgTopic : topics) { //TODO filter topic names to prevent doublettes
             destinations.put(msgTopic.getName(), session.createTopic("VirtualTopic." + msgTopic.getName()));
         }
 
@@ -65,10 +71,11 @@ public class MsgProducer {
                 e.printStackTrace();
             }
         });
+
+        connection.start();
     }
 
     public void sendCreatedMessages() throws JMSException {
-
         // Create a messages
         List<TextMessage> createdMessages = new LinkedList<>();
         for (MsgTopic topic : topics) {
@@ -77,7 +84,6 @@ public class MsgProducer {
                         + topic.getName(), topic));
             }
         }
-
         //Send messages
         for (TextMessage createdMessage : createdMessages) {
             sendMessage(createdMessage);
@@ -90,9 +96,11 @@ public class MsgProducer {
     }
 
     private TextMessage createMessage(String header, String content, MsgTopic topic) throws JMSException {
+        System.out.println("creating Message");
         TextMessage message = session.createTextMessage(content);
         message.setStringProperty("header", header);
         message.setStringProperty("topic", topic.getName());
+        System.out.println("message = " + message);
         return message;
     }
 
@@ -103,14 +111,17 @@ public class MsgProducer {
             sendMessage(message);
         } catch (JMSException e) {
             e.printStackTrace();
+            return false;
         }
         return message != null;
     }
 
     private void sendMessage(TextMessage message) throws JMSException {
+        System.out.println("Sending message");
         MessageProducer producer = msgProducers.get(destinations.get(message.getStringProperty("topic")));
         if (producer != null) {
             producer.send(message);
+            System.out.println("Sent message " + message);
         }
     }
 }

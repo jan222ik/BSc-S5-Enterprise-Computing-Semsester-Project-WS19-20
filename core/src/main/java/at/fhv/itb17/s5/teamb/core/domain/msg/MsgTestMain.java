@@ -10,6 +10,7 @@ import java.util.List;
 @SuppressWarnings({"squid:MissingDeprecatedCheck", "squid:CommentedOutCodeLine"})
 public class MsgTestMain {
     private static final String VM_LOCALHOST = "vm://localhost";
+    public static final String TCP = "tcp://localhost:61616";
 
     public static void main(String[] args) {
         MsgTopic system = new MsgTopic("SYSTEM", false);
@@ -29,13 +30,13 @@ public class MsgTestMain {
 
         try {
             //consumer.init(VM_LOCALHOST);
-            prod.init(VM_LOCALHOST);
+            prod.init(TCP, "TestTest");
             //cons.init(VM_LOCALHOST);
             prod.sendCreatedMessages();
             prod.close();
             //cons.close();
             //consumer.close();
-        } catch (JMSException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

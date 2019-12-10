@@ -57,21 +57,22 @@ public class ApplicationMain extends Application implements SetupCallback {
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
 
-        msgAsyncService = new MsgAsyncServiceImpl();
-        new Thread(() -> {
-            try {
-                msgAsyncService.init(MsgServiceCoreImpl.VM_LOCALHOST);
-            } catch (JMSException e) {
-                e.printStackTrace();
-            }
-        }, "Hedwig").start();
+
         setupManager = new RmiManager();
         boolean b = setupManager.create();
         if (!b) {
             throw new RuntimeException("Error in manager.create");
         }
         setupManager.setCallbackConsumer(this);
-
+        //msgAsyncService = new MsgAsyncServiceImpl(setupManager.getSubscribedTopics()); //TODO move after login to get subscribed topics
+       msgAsyncService = new MsgAsyncServiceImpl();
+        new Thread(() -> {
+            try {
+                msgAsyncService.init(MsgServiceCoreImpl.TCP, "Consumer"); //TODO use username as clientID
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        }, "Hedwig").start();
         Injector.setModelOrService(SetupManager.class, setupManager);
         Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
         Injector.setModelOrService(RMIController.class, rmiController);

@@ -170,10 +170,10 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
 
         List<MsgTopic> topics = new LinkedList<>();
-        MsgTopic system = new MsgTopic("System", false);
-        MsgTopic rock = new MsgTopic("Rock", false);
-        MsgTopic opera = new MsgTopic("Opera", false);
-        MsgTopic theater = new MsgTopic("Theater", false);
+        MsgTopic system = new MsgTopic("SYSTEM", false);
+        MsgTopic rock = new MsgTopic("ROCK", false);
+        MsgTopic opera = new MsgTopic("OPERA", false);
+        MsgTopic theater = new MsgTopic("THEATER", false);
         topics.add(system);
         topics.add(rock);
         topics.add(opera);
