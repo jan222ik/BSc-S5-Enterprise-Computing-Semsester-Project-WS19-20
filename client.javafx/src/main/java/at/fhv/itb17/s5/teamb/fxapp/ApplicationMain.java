@@ -64,7 +64,7 @@ public class ApplicationMain extends Application implements SetupCallback {
             } catch (JMSException e) {
                 e.printStackTrace();
             }
-        }, "Hedwig");//.start();
+        }, "Hedwig").start();
         setupManager = new RmiManager();
         boolean b = setupManager.create();
         if (!b) {
