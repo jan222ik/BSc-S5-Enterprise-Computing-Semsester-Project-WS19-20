@@ -14,15 +14,15 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long ticketId;
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     private Client client;
     @Enumerated
     private TicketStates state;
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private Event bookedEvent;
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private EventOccurrence bookedOccurrence;
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private EventCategory bookedCategory;
     @ManyToOne(cascade = {CascadeType.ALL})
     private LocationRow bookedRow;

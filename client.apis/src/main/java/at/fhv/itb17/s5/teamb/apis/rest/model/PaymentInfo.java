@@ -1,6 +1,8 @@
 package at.fhv.itb17.s5.teamb.apis.rest.model;
 
 import java.util.Objects;
+
+import at.fhv.itb17.s5.teamb.persistence.entities.Address;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
@@ -248,5 +250,9 @@ public class PaymentInfo   {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
+  }
+
+  public Address toAddressEntity() {
+    return new Address(country, zip, city, street, house);
   }
 }

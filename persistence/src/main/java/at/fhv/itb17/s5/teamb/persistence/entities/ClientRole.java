@@ -105,4 +105,8 @@ public class ClientRole {
         }
         return new ClientRole("Effective of [" + sb.toString().substring(0, sb.length() - 1) + "]", read, write, prio);
     }
+
+    public ClientRole cloneObj() {
+        return new ClientRole(roleName, mayReadMsg, mayWriteMsg, priority);
+    }
 }

@@ -182,7 +182,9 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         topics.remove(theater);
 
         ClientRole admin = new ClientRole("ADMIN", true, true, 10);
+        ClientRole web = new ClientRole("WEB", false, false, 0);
         entityRepository.saveOrUpdate(admin);
+        entityRepository.saveOrUpdate(web);
         entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<MsgTopic>(topics), new Address("Country", "zip", "city", "street", "house")));
 
     }
@@ -214,5 +216,10 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
     public EntityRepository getEntityRepository() {
         return entityRepository;
+    }
+
+    @Override
+    public ClientRepository getClientRepo() {
+        return clientRepository;
     }
 }

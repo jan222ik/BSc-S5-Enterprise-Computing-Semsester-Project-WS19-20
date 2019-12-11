@@ -1,6 +1,9 @@
 package at.fhv.itb17.s5.teamb.apis.rest.api;
 
 import at.fhv.itb17.s5.teamb.apis.rest.model.BookingResponse;
+import at.fhv.itb17.s5.teamb.apis.rest.model.PaymentInfo;
+import at.fhv.itb17.s5.teamb.apis.rest.model.PaymentProcessor;
+import at.fhv.itb17.s5.teamb.apis.rest.model.PaymentProcessorMock;
 import at.fhv.itb17.s5.teamb.apis.rest.model.RowSeat;
 import at.fhv.itb17.s5.teamb.apis.rest.model.TicketOrder;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
@@ -14,10 +17,14 @@ import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.LocationRowDTO;
 import at.fhv.itb17.s5.teamb.dtos.LocationSeatDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
+import at.fhv.itb17.s5.teamb.persistence.entities.Address;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
+import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
+import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Supplier;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +39,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-12-09T21:29:17.187Z[GMT]")
 @Controller
@@ -46,10 +59,13 @@ public class EventsApiController implements EventsApi {
 
     private final HttpServletRequest request;
 
+    private final PaymentProcessor paymentProcessor;
+
     @org.springframework.beans.factory.annotation.Autowired
     public EventsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
+        paymentProcessor = new PaymentProcessorMock();
     }
 
     public ResponseEntity<List<BookingResponse>> bookTicket(
@@ -66,6 +82,7 @@ public class EventsApiController implements EventsApi {
         System.out.println("eventID = [" + eventID + "], occID = [" + occID + "], catID = [" + catID + "], body = [" + body + "]");
         try {
             EntityDTORepo entityRepo = InjectHolder.injector.getEntityRepo();
+            ClientRepository clientRepo = InjectHolder.injector.getClientRepo();
             LinkedList<TicketDTO> ticketDTOS = new LinkedList<>();
             EventDTO evt = entityRepo.getEventDTOByID(eventID);
             EvOccurrenceDTO occ = evt.getOccurrences().stream().filter(e -> e.getOccurrenceId() == occID).findFirst().orElseThrow(() -> new NotFoundException("OCCId not found"));
@@ -84,26 +101,19 @@ public class EventsApiController implements EventsApi {
                     ticketDTOS.add(new TicketDTO(evt, occ, (EvCategoryFreeDTO) cat));
                 }
             }
-            Client client = new Client(); //TODO GET CLIENT DATA
+            PaymentInfo bookingInfo = body.getBookingInfo();
+            Client client = new Client(bookingInfo.getNameL() + bookingInfo.getNameF() + System.currentTimeMillis(), bookingInfo.getNameL() + ", " + bookingInfo.getNameF(), Arrays.asList(clientRepo.getWebRole()),new LinkedList<>(), bookingInfo.toAddressEntity());
+            System.out.println(client + " => " + client.getUsername());
+            clientRepo.addClient(client);
             List<Ticket> ticket2Book = entityRepo.toTickets(ticketDTOS, client);
-            log.info("Size of Tickets to book: {}", ticket2Book.size());
-            List<Ticket> bookedTickets = InjectHolder.injector.getBookingServiceCore().bookTickets(ticket2Book);
-            if (bookedTickets.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            } else if (isSeat) {
-                ticket2Book.stream().map(t2b -> {
-                    BookingResponse response = new BookingResponse();
-                    Optional<Ticket> first = bookedTickets.stream().filter(t -> t.isSame(t2b)).findFirst();
-                    if (first.isPresent()) {
-                        response.tranactionId(first.get().getTicketId());
-                    } else {
-                        response.errMsg("Could not be booked INFO:" + t2b);
-                    }
-                    return response;
-                });
-            } else {
-                if (bookedTickets.size() == ticket2Book.size()) {
-                    ticket2Book.stream().map(t2b -> {
+            if (paymentProcessor.buy(ticket2Book, bookingInfo)) {
+                log.info("Size of Tickets to book: {}", ticket2Book.size());
+                List<Ticket> bookedTickets = InjectHolder.injector.getBookingServiceCore().bookTickets(ticket2Book);
+                List<BookingResponse> bookingResponses;
+                if (bookedTickets.isEmpty()) {
+                    return new ResponseEntity<List<BookingResponse>>(Arrays.asList(new BookingResponse().errMsg("Tickets could not be booked")), HttpStatus.CONFLICT);
+                } else if (isSeat) {
+                    bookingResponses = ticket2Book.stream().map(t2b -> {
                         BookingResponse response = new BookingResponse();
                         Optional<Ticket> first = bookedTickets.stream().filter(t -> t.isSame(t2b)).findFirst();
                         if (first.isPresent()) {
@@ -112,13 +122,28 @@ public class EventsApiController implements EventsApi {
                             response.errMsg("Could not be booked INFO:" + t2b);
                         }
                         return response;
-                    });
+                    }).collect(Collectors.toList());
                 } else {
-                    throw new RuntimeException("Unexpected Error - No tickets should have been booked");
+                    if (bookedTickets.size() == ticket2Book.size()) {
+                        Set<Long> used = new HashSet<>();
+                        bookingResponses = ticket2Book.stream().map(t2b -> {
+                            BookingResponse response = new BookingResponse();
+                            Optional<Ticket> first = bookedTickets.stream().filter(t -> (t.isSame(t2b)) ? used.contains(t.getTicketId()) ? false : used.add(t.getTicketId()) : false).findFirst();
+                            if (first.isPresent()) {
+                                response.tranactionId(first.get().getTicketId());
+                            } else {
+                                response.errMsg("Could not be booked INFO:" + t2b);
+                            }
+                            return response;
+                        }).collect(Collectors.toList());
+                    } else {
+                        throw new RuntimeException("Unexpected Error - No tickets should have been booked");
+                    }
                 }
+                return new ResponseEntity<List<BookingResponse>>(bookingResponses, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<List<BookingResponse>>(Arrays.asList(new BookingResponse().errMsg("Payment was not successful")), HttpStatus.CONFLICT);
             }
-            List<BookingResponse> bookingResponses = Arrays.asList(new BookingResponse().tranactionId(50L), new BookingResponse().tranactionId(51L));
-            return new ResponseEntity<List<BookingResponse>>(bookingResponses, HttpStatus.OK);
         } catch (NotFoundException | IllegalArgumentException e) {
             log.error("Did not found parts of input", e);
             return new ResponseEntity<List<BookingResponse>>(HttpStatus.NOT_FOUND);

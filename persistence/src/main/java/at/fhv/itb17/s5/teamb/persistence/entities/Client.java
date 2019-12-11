@@ -4,6 +4,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.List;
@@ -14,7 +15,7 @@ public class Client {
     @Id
     private String username;
     private String name;
-    @OneToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<ClientRole> role;
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
