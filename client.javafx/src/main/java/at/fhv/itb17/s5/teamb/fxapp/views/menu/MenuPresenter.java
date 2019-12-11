@@ -235,16 +235,6 @@ public class MenuPresenter implements Initializable {
                             new MsgProdView(), rootVM.getMsgTopicVM(), "Message Producer",
                             "MSG. Prod.", FontAwesomeIcon.ENVELOPE, false, this)
             );
-            applicationViews.put(ApplicationMenuViews.MSG_CONSUMER_VIEW,
-                    new MenuContentfulViewWrapper<>(
-                            new MsgConView(), rootVM.getMsgTopicVM(), "Message Consumer",
-                            "MSG. Consumer", FontAwesomeIcon.ENVELOPE, true, this)
-            );
-            applicationViews.put(ApplicationMenuViews.MSG_PROD_RSS_VIEW,
-                    new MenuContentfulViewWrapper<>(
-                            new MsgProdRssView(), rootVM.getMsgTopicVM(), "Message Producer",
-                            "MSG. Prod.", FontAwesomeIcon.ENVELOPE, false, this)
-            );
         }
         return applicationViews;
     }
