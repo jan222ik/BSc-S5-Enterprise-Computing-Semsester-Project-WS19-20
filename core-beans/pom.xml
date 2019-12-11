@@ -17,5 +17,11 @@
             <version>1.0</version>
             <artifactId>core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>advanceticketsale.parent</groupId>
+            <artifactId>CoreStarter</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
