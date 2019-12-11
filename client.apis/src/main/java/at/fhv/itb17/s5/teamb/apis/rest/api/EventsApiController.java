@@ -16,6 +16,7 @@ import at.fhv.itb17.s5.teamb.dtos.LocationSeatDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
+import at.fhv.itb17.s5.teamb.persistence.search.SearchException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -145,7 +147,12 @@ public class EventsApiController implements EventsApi {
                 return new ResponseEntity<List<EventDTO>>(events, HttpStatus.OK);
             }
         } catch (Exception e) {
+            if (e instanceof SearchException) {
+                log.error("Couldn't parse search string", e);
+                return new ResponseEntity<List<EventDTO>>(HttpStatus.BAD_REQUEST);
+            }
             log.error("Couldn't serialize response for content type application/json", e);
+            log.error("" + e.getClass());
             return new ResponseEntity<List<EventDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
