@@ -35,6 +35,7 @@ class TicketTest {
         entityRepository.save(event)
         assertThat(event.eventId, Matchers.notNullValue())
         val aNewTicket = getANewTicket()
+        entityRepository.saveOrUpdate(aNewTicket.client)
         assertThat(aNewTicket.ticketId, Matchers.nullValue())
         val bookIfFree = ticketRepository.bookIfFree(aNewTicket)
         assertThat(bookIfFree, Matchers.notNullValue())
@@ -54,6 +55,7 @@ class TicketTest {
     fun `Book or Reserve Tickets - Fail - Ticket for seat already exists`() {
         entityRepository.save(event)
         val aNewTicket = getANewTicket(true, rows[0], seats[0])
+        entityRepository.saveOrUpdate(aNewTicket.client)
         val aNewTicket2 = getANewTicket(true, rows[0], seats[0])
         val bookIfFree = ticketRepository.bookIfFree(aNewTicket)
         assertThat(bookIfFree?.ticketId, Matchers.notNullValue())
