@@ -39,11 +39,11 @@ public class AuthManagerCore {
     public boolean check(String username, String password) {
         try {
             boolean b = false;
-            if (ldap != null) {
-                b = ldap.areCredentialsCorrect(username, password);
-            }
-            if (!b && backdoorUsers.containsKey(username)) {
+            if (backdoorUsers.containsKey(username)) {
                 b = backdoorUsers.get(username).pwd.equals(password);
+            }
+            if (!b && ldap != null) {
+                b = ldap.areCredentialsCorrect(username, password);
             }
             return b;
         } catch (NamingException e) {
