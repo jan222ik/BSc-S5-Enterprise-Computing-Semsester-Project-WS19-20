@@ -13,12 +13,16 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class RmiManager implements SetupManager {
+
+    private static final Logger logger = LogManager.getLogger(RmiManager.class);
 
     private static final int totalSteps = 9;
 
@@ -111,6 +115,7 @@ public class RmiManager implements SetupManager {
     }
     
     public void notifyCallbackConsumer(String text, int current, int total) {
+        logger.info("Setup Step {} of {}: {}", current, total, text);
         if (callbackConsumer != null) {
             executeOnFX(o -> callbackConsumer.onNextSetup(text, current, total));
         }
