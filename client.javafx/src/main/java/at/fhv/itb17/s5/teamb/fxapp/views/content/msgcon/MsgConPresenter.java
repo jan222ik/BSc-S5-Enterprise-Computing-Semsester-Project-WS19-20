@@ -1,8 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.views.content.msgcon;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
-import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgConsumer;
 import at.fhv.itb17.s5.teamb.fxapp.viewmodel.MsgTopicVM;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.ContentfulViewLifeCycle;
 import at.fhv.itb17.s5.teamb.fxapp.viewnavigation.NavigationStackActions;
@@ -16,9 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 

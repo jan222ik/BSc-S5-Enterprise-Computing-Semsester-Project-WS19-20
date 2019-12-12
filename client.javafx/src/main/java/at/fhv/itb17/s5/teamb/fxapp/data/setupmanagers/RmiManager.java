@@ -5,11 +5,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.rmi.*;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import com.airhacks.afterburner.injection.Injector;
 import io.reactivex.Observable;
@@ -25,6 +21,7 @@ import java.util.List;
 public class RmiManager implements SetupManager {
 
     private static final int totalSteps = 9;
+    public static final String TCP = "tcp://localhost:61616";
 
     private RMIController controller;
     private boolean isConnected = false;
@@ -32,6 +29,7 @@ public class RmiManager implements SetupManager {
     private BookingService bookingService;
     private MsgTopicService msgTopicService;
     private SetupCallback callbackConsumer;
+    private MsgAsyncService msgAsyncService;
 
     private List<Disposable> disposables;
 
@@ -43,10 +41,12 @@ public class RmiManager implements SetupManager {
             searchService = new RMISearchServiceImpl(controller);
             bookingService = new RMIBookingServiceImpl(controller);
             msgTopicService = new RMITopicServiceImpl(controller);
+            msgAsyncService = new MsgAsyncServiceImpl();
             Injector.setModelOrService(SearchService.class, searchService);
             Injector.setModelOrService(BookingService.class, bookingService);
             Injector.setModelOrService(MsgTopicService.class, msgTopicService);
             Injector.setModelOrService(RMIController.class, controller);
+            Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
             return true;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -113,7 +113,12 @@ public class RmiManager implements SetupManager {
     public void setCallbackConsumer(SetupCallback callbackConsumer) {
         this.callbackConsumer = callbackConsumer;
     }
-    
+
+    @Override
+    public void setMsgTopics() {
+        msgAsyncService.setTopics(getSubscribedTopics());
+    }
+
     public void notifyCallbackConsumer(String text, int current, int total) {
         if (callbackConsumer != null) {
             executeOnFX(o -> callbackConsumer.onNextSetup(text, current, total));
@@ -124,8 +129,18 @@ public class RmiManager implements SetupManager {
         disposables.add(Observable.just(new Object()).subscribeOn(JavaFxScheduler.platform()).subscribe(consumer));
     }
 
-    @Override
-    public List<MsgTopic> getSubscribedTopics() {
+    private List<MsgTopic> getSubscribedTopics() {
         return msgTopicService.getSubscribedTopics();
+    }
+
+    @Override
+    public void initMsgAsync(String clientId) {
+        new Thread(() -> {
+            try {
+                msgAsyncService.init(TCP, clientId);
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        }, "Hedwig").start();
     }
 }

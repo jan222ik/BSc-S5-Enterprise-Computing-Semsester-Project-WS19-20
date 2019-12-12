@@ -1,7 +1,5 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.msg;
 
-import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
-import at.fhv.itb17.s5.teamb.dtos.mapper.MsgTopicMapper;
 import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
@@ -24,6 +22,7 @@ import java.util.List;
 public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, MsgAsyncService {
 
     private static final Logger logger = LogManager.getLogger(MsgAsyncServiceImpl.class);
+
     private Disposable dispose;
     private List<MsgTopic> topics;
     private Session session;
@@ -31,17 +30,14 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     private HashMap<String, Destination> destinations = new HashMap<>();
     private HashMap<Destination, TopicSubscriber> msgConsumers = new HashMap<>();
     private HashMap<Topic, String> subNames = new HashMap<>();
-    private List<TextMessage> messages;
     private ObservableList<MsgWrapper> outList = new ObservableList<>();
 
     public MsgAsyncServiceImpl(List<MsgTopic> topics) {
         this.topics = topics;
-        this.messages = new LinkedList<>();
     }
 
     public MsgAsyncServiceImpl() {
         this.topics = new LinkedList<>();
-        this.messages = new LinkedList<>();
         MsgTopic system = new MsgTopic("SYSTEM", false);
         MsgTopic rock = new MsgTopic("ROCK", false);
         MsgTopic opera = new MsgTopic("OPERA", false);
@@ -58,30 +54,28 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
         connection = connectionFactory.createConnection();
         connection.setClientID(clientId);
         connection.setExceptionListener(this);
+        connection.start();
 
         // Create a Session
         session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
         for (MsgTopic msgTopic : topics) {
             Topic topic = session.createTopic("VirtualTopic." + msgTopic.getName());
-            //Topic topic = session.createTopic("Consumer." + this.hashCode() + ".VirtualTopic." + msgTopic.getName());
             destinations.put(msgTopic.getName(), topic);
             subNames.put(topic, msgTopic.getName());
         }
 
         // Create a MessageConsumer from the Session to the Topic or Queue
         destinations.forEach((topic, destination) -> {
-            TopicSubscriber consumer = null;
+            TopicSubscriber consumer;
             try {
                 consumer = session.createDurableSubscriber((Topic) destination, subNames.get(destination));
                 consumer.setMessageListener(this);
                 msgConsumers.put(destination, consumer);
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.catching(e);
             }
         });
-
-        connection.start();
     }
 
     @Override
@@ -96,7 +90,7 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
 
     @Override
     public synchronized void onException(JMSException exception) {
-        exception.printStackTrace();
+        logger.catching(exception);
     }
 
     @Override
@@ -112,10 +106,9 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
                 logger.debug("{} Received Topic: {}", this.hashCode(), topic);
                 logger.debug("Received header: {}", header);
                 logger.debug("Received text: {}", text);
-                //Maybe textMessage.getJMSTimestamp() instead of time stamp //TODO
-                outList.add(new MsgWrapper(topic, text, textMessage, LocalDateTime.now(), false, header)); //ack = false TODO CHECK IF THIS COULD BE AN ERROR
+                outList.add(new MsgWrapper(topic, text, textMessage, LocalDateTime.now(), false, header));
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.catching(e);
             }
         } else {
             logger.debug("Received message: {}", message);
@@ -125,13 +118,15 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     @Override
     public void close() throws JMSException {
         if (session != null) {
-            topics.forEach((msgTopic -> {
-                try {
-                    session.unsubscribe(msgTopic.getName());
-                } catch (JMSException e) {
-                    e.printStackTrace();
-                }
-            }));
+            if (topics != null) {
+                topics.forEach((msgTopic -> {
+                    try {
+                        session.unsubscribe(msgTopic.getName());
+                    } catch (JMSException e) {
+                        logger.catching(e);
+                    }
+                }));
+            }
             session.close();
         }
         if (connection != null) {
@@ -144,7 +139,7 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
 
     @Override
     public void setTopics(List<MsgTopic> topics) {
-
+        this.topics = topics;
     }
 
     public static class ObservableList<T> {

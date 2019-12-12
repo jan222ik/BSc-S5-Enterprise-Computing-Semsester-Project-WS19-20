@@ -1,9 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
-import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
-import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.SecManager;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.RmiManager;
@@ -28,7 +25,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import javax.jms.JMSException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,7 +38,6 @@ public class ApplicationMain extends Application implements SetupCallback {
 
     private Consumer<String> createMenu;
     private RMIController rmiController;
-    private MsgAsyncService msgAsyncService;
     private SetupManager setupManager;
 
     @Override
@@ -64,17 +59,8 @@ public class ApplicationMain extends Application implements SetupCallback {
             throw new RuntimeException("Error in manager.create");
         }
         setupManager.setCallbackConsumer(this);
-        //msgAsyncService = new MsgAsyncServiceImpl(setupManager.getSubscribedTopics()); //TODO move after login to get subscribed topics
-       msgAsyncService = new MsgAsyncServiceImpl();
-        new Thread(() -> {
-            try {
-                msgAsyncService.init(MsgServiceCoreImpl.TCP, "Consumer"); //TODO use username as clientID
-            } catch (JMSException e) {
-                e.printStackTrace();
-            }
-        }, "Hedwig").start();
+
         Injector.setModelOrService(SetupManager.class, setupManager);
-        Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
         Injector.setModelOrService(RMIController.class, rmiController);
 
         Runnable createLogin = () -> generateLogin(primaryStage);
@@ -132,7 +118,6 @@ public class ApplicationMain extends Application implements SetupCallback {
     public void stop() throws Exception {
         super.stop();
         setupManager.close();
-        msgAsyncService.close();
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 
@@ -143,11 +128,12 @@ public class ApplicationMain extends Application implements SetupCallback {
     @Override
     public void onNextSetup(String name, int currentStep, int totalSteps) {
         logger.info("Setup Step {} of {}: {}", currentStep, totalSteps, name);
-        NotificationsHelper.inform("Setup", "Step " + currentStep + " of " + totalSteps + ": " + name );
+        NotificationsHelper.inform("Setup", "Step " + currentStep + " of " + totalSteps + ": " + name);
     }
 
     @Override
     public void setupFinished(List<Disposable> disposables) {
         disposables.forEach(Disposable::dispose);
     }
+
 }

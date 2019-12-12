@@ -183,7 +183,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         ClientRole admin = new ClientRole("ADMIN", true, true, 10);
         entityRepository.saveOrUpdate(admin);
-        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<MsgTopic>(topics), new Address("Country", "zip", "city", "street", "house")));
+        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<>(topics), new Address("Country", "zip", "city", "street", "house")));
 
     }
 

@@ -17,5 +17,7 @@ public interface SetupManager {
 
     void setCallbackConsumer(SetupCallback callbackConsumer);
 
-    List<MsgTopic> getSubscribedTopics();
+    void setMsgTopics();
+
+    void initMsgAsync(String clientId);
 }
