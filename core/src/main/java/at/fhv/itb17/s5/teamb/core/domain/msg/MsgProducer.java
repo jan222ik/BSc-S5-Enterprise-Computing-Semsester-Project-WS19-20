@@ -6,13 +6,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.jms.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,11 +22,11 @@ public class MsgProducer {
     private HashMap<Destination, MessageProducer> msgProducers = new HashMap<>();
 
     public MsgProducer() {
+        topics = new LinkedList<>();
         MsgTopic system = new MsgTopic("SYSTEM", false);
         MsgTopic rock = new MsgTopic("ROCK", false);
         MsgTopic opera = new MsgTopic("OPERA", false);
         MsgTopic theater = new MsgTopic("THEATER", false);
-        this.topics = new LinkedList<>();
         topics.add(system);
         topics.add(rock);
         topics.add(opera);
@@ -56,6 +50,7 @@ public class MsgProducer {
 
         // Create the destination (Topic or Queue)
         for (MsgTopic msgTopic : topics) { //TODO filter topic names to prevent doublettes -> doesn't hahsmap put just overwrite?
+            logger.info("Topic is {}", msgTopic.getName());
             destinations.put(msgTopic.getName(), session.createTopic("VirtualTopic." + msgTopic.getName()));
         }
 
@@ -67,7 +62,8 @@ public class MsgProducer {
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
                 msgProducers.put(destination1, producer);
             } catch (JMSException e) {
-                logger.catching(e);
+                logger.debug("Stacktrace: {}", e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -105,7 +101,8 @@ public class MsgProducer {
             message = this.createMessage(header, content, topic);
             sendMessage(message);
         } catch (JMSException e) {
-            logger.catching(e);
+            logger.info(e.toString());
+            e.printStackTrace();
             return false;
         }
         //noinspection ConstantConditions

@@ -30,9 +30,6 @@ public class MsgConPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
     @FXML
     private Button msgprodBtn;
 
-    //private MsgAsyncServiceImpl consumer = new MsgAsyncServiceImpl();
-   //private static final String VM_LOCALHOST = "vm://localhost";
-    private static final String TCP = "tcp://localhost:61616";
     @Override
     public void onCreate(MsgTopicVM viewModel, NavigationStackActions<MsgTopicVM> navActions) {
         boolean publish = viewModel.mayPublish();
@@ -42,18 +39,10 @@ public class MsgConPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
             msgprodBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.MSG_PROD_VIEW, true));
         }
     }
-    /*
-    this.topicName = topicName;
-        this.msgText = msgText;
-        this.textMessage = textMessage;
-        this.timestamp = timestamp;
-        this.ack = ack;
-        this.header = header;
-     */
 
     @Override
     public void onReturned(MsgTopicVM viewModel) {
-        //TODO Load & display Messages and the existing topics
+        //TODO Display the existing topics
         notificationLV.getItems().clear();
         List<MsgWrapper> msgs = viewModel.getAllMsgs();
         List<Parent> collect = msgs.stream().map(msg -> createView(msg, () -> {

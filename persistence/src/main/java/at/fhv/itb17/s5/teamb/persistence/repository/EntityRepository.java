@@ -30,7 +30,7 @@ public class EntityRepository {
 
     public EntityRepository() {
         logger.info(LogMarkers.DB, "Start Session Factory");
-        sessionFactory = new Configuration().configure().buildSessionFactory();
+        sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
     }
 
     public void save(final Object o) {

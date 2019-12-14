@@ -93,10 +93,13 @@ public class RMITopicServiceImpl implements MsgTopicService {
     @Override
     public List<MsgTopic> getSubscribedTopics() {
         if (msgTopicService != null) {
+            logger.info("Trying to get SubscribedTopics...");
             try {
-                return msgTopicService.getSubscribedTopics();
+                List<MsgTopic> subscribedTopics = msgTopicService.getSubscribedTopics();
+                logger.info("SubscribedTopics size is {}", subscribedTopics.size());
+                return subscribedTopics;
             } catch (RemoteException e) {
-                e.printStackTrace();
+                logger.catching(e);
             }
         }
         return new LinkedList<>();
