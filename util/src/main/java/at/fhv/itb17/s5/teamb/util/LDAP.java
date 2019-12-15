@@ -8,11 +8,7 @@ import javax.naming.AuthenticationException;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchResult;
+import javax.naming.directory.*;
 import java.util.Hashtable;
 
 public class LDAP {
@@ -20,6 +16,9 @@ public class LDAP {
     Logger logger = LogManager.getLogger(LDAP.class);
 
     DirContext getLDAPConnection(String commonName, String organisationUnit, String password) throws NamingException {
+        if (password == null || password.isEmpty()) {
+            throw new AuthenticationException("LDAP Password cannot be null or empty");
+        }
         Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, "ldaps://dc01.ad.uclv.net:636/OU=fhusers,DC=ad,DC=uclv,DC=net");

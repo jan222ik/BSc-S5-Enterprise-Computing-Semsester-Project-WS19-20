@@ -30,8 +30,8 @@ public class SearchServiceCoreImpl implements SearchServiceCore {
 
     @Override
     public List<Event> searchFor(String queryString) {
-        Search search = searchParser.parseString(queryString);
-        List<SearchPair> searchPairs = (search != null) ? search.retrieveSearchPairs().stream().filter(sp -> sp.getKey() == SearchCategories.EVENT_NAME || sp.getKey() == SearchCategories.GENRE || sp.getKey() == SearchCategories.ARTIST_NAME || sp.getKey() == SearchCategories.LOCATION).collect(Collectors.toList()) : new LinkedList<>();
+        Search search = searchParser.parseString(queryString);//|| sp.getKey() == SearchCategories.LOCATION
+        List<SearchPair> searchPairs = (search != null) ? search.retrieveSearchPairs().stream().filter(sp -> sp.getKey() == SearchCategories.EVENT_NAME || sp.getKey() == SearchCategories.GENRE || sp.getKey() == SearchCategories.ARTIST_NAME).collect(Collectors.toList()) : new LinkedList<>();
         List<Event> result = eventRepository.search(searchPairs);
         logger.info("result = {}", result.size());
         LinkedList<SearchPair> searchPairs1 = (search != null) ? search.retrieveSearchPairs() : new LinkedList<>();

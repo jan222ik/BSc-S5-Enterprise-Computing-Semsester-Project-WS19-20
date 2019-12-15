@@ -20,6 +20,7 @@ import java.util.LinkedList;
 
 
 @SuppressWarnings("DuplicatedCode")
+@Deprecated
 public class MockSearchServiceImpl implements SearchService {
 
     @Override

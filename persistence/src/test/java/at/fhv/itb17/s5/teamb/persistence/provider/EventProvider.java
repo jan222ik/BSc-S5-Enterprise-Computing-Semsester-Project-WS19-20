@@ -18,7 +18,7 @@ import java.util.List;
 
 public class EventProvider {
 
-    public static Event getNewEventAndAddDB(EntityRepository ep, String cName) {
+    public static Event getNewEventAndAddDB(String cName) {
         Address address = new Address(cName + "AT", cName + "685ftui0", cName + "Do", cName + "ABCStr.", cName + "4711");
         Client client = new Client(cName + "test_client", cName + "Hugo Hugo", new LinkedList<>(), new LinkedList<>(), address);
         EventCategory g21 = new EventCategory(cName + "G21", 9001, 500, 69);
@@ -27,9 +27,7 @@ public class EventProvider {
         Organizer organizer = new Organizer(cName + "Std. Do", cName + "e@mail.com", address);
         Artist hugo_hugo = new Artist(cName + "Hugo Hugo");
         List<Artist> artists = new LinkedList<>(Collections.singletonList(hugo_hugo));
-        Event event = new Event(cName + "Weihnachtsmarkt", cName + "Weihnachtsmarkt vom 22.11 bis 23.11.2019", cName + "Death Metal", new LinkedList<>(Collections.singletonList(occurrence0)), organizer, artists);
-        ep.saveOrUpdate(event);
-        return event;
+        return new Event(cName + "Weihnachtsmarkt", cName + "Weihnachtsmarkt vom 22.11 bis 23.11.2019", cName + "Death Metal", new LinkedList<>(Collections.singletonList(occurrence0)), organizer, artists);
     }
 
     public static Event getNewTransientEvent(String cName) {

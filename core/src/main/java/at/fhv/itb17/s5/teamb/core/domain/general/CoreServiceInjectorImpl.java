@@ -35,12 +35,13 @@ import java.util.List;
 @SuppressWarnings({"squid:S1192", "squid:CommentedOutCodeLine", "FieldCanBeLocal"})
 public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final EntityRepository entityRepository = new EntityRepository();
+
     private final EventRepository eventRepository = new EventRepository(entityRepository);
     private final SearchServiceCore searchServiceCore = new SearchServiceCoreImpl(eventRepository);
     private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
     private final BookingServiceCore bookingServiceCore = new BookingServiceCoreImpl(ticketRepository);
-
     private final ClientRepository clientRepository = new ClientRepository(entityRepository);
+
     private final AuthManagerCore authManagerCore;
     private final EntityDTORepo entityDTORepo = new EntityDTORepoImpl();
     private final MsgRepository msgRepository = new MsgRepository(entityRepository);
@@ -162,7 +163,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         events.add(new Event("Scene-Openair Lustenau", "Openair Festival in Lustenau", "Festival", sceneOccurrences, new Organizer("Lustenau Festivalverband", "scene@lustenau.at", new Address("Österreich", "6830", "Lustenau", "Langegasse", "23")), sceneArtists));
         events.add(new Event("Scene-Writing", "Scene Writing für Amateure", "Vortrag", sceneWritingOccurence, new Organizer("Amateurtheater Hohenems", "info@hohenems-play.at", new Address("Österreich", "6870", "Hohenems", "Bergreuthe", "5")), Arrays.asList(new Artist("Markus Riedmann"))));
         events.add(new Event("Sponsion der FHV", "Abschlussfeier für Bachelor und Master", "Kulturveranstaltung", sponsionOccurences, new Organizer("FH Vorarlberg", "info@fhv.at", new Address("Österreich", "6850", "Dornbirn", "Hochschulstraße", "1")), Arrays.asList(new Artist("2nd Dimension"))));
-        events.add(new Event("Latenight Berlin", "Klaas hat Spaas", "Comedy", klaasOccurence, new Organizer("Pro 7", "redaktion@prosieben.de", new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")), Arrays.asList(new Artist("Klaas Heufer-Umlauf"))));
+        events.add(new Event("Latenight Berlin", "Klaas hat Spaas", "Unterhaltung", klaasOccurence, new Organizer("Pro 7", "redaktion@prosieben.de", new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")), Arrays.asList(new Artist("Klaas Heufer-Umlauf"))));
         events.add(new Event("Kochshow", "Kochshow mit Janik Mayr", "Unterhaltung", kochshowOccurence, new Organizer("Satteins", "janik.mayr@satteins.de", new Address("Deutschland", "10115", "Berlin", "Kölschwasser", "4711")), Arrays.asList(new Artist("Dr. Janik Mayr"))));
 
         events.forEach(entityRepository::saveOrUpdate);
@@ -209,5 +210,9 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     @Override
     public MsgServiceCore getMsgTopicServiceCore() {
         return msgTopicServiceCore;
+    }
+
+    public EntityRepository getEntityRepository() {
+        return entityRepository;
     }
 }

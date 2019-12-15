@@ -7,6 +7,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import java.util.LinkedList;
 import java.util.List;
 
+@Deprecated
 public class MockMsgTopicServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService {
     @Override
     public RMIConnectionStatus doLoginMsgTopic(String username, String password) {

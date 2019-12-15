@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Deprecated
 public class MockMsgAsyncServiceImpl implements MsgAsyncService {
 
     private static final Logger logger = LogManager.getLogger(MockMsgAsyncServiceImpl.class);
