@@ -7,6 +7,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+@javax.ejb.Remote
 public interface MsgTopicService extends Remote {
     List<MsgTopicDTO> getAllTopics() throws RemoteException;
 

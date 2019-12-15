@@ -9,18 +9,27 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.StatelessSession;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 
+@Stateless
 public class SearchServiceEJB implements SearchService {
     private static final Logger logger = LogManager.getLogger(SearchServiceEJB.class);
     private SearchServiceCore coreSearch;
     private EntityDTORepo entityDTORepo;
 
+    @Inject
     public SearchServiceEJB(SearchServiceCore searchServiceCore, EntityDTORepo entityDTORepo) {
         this.coreSearch = searchServiceCore;
         this.entityDTORepo = entityDTORepo;
+    }
+
+    public SearchServiceEJB(){
+
     }
 
     @SuppressWarnings("DuplicatedCode")

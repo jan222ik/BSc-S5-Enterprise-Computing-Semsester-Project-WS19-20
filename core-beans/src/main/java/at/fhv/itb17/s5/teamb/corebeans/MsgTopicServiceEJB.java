@@ -3,7 +3,6 @@ package at.fhv.itb17.s5.teamb.corebeans;
 import at.fhv.itb17.s5.teamb.core.controllers.general.ClientSessionRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
 import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
-import at.fhv.itb17.s5.teamb.core.controllers.rmi.MsgTopicServiceRMI;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
@@ -12,11 +11,14 @@ import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Stateless
 public class MsgTopicServiceEJB implements MsgTopicService {
     private static final Logger logger = LogManager.getLogger(MsgTopicServiceEJB.class);
 
@@ -26,10 +28,17 @@ public class MsgTopicServiceEJB implements MsgTopicService {
 
     List<String> feeds = new LinkedList<>(Collections.singletonList("https://www.ots.at/rss/kultur"));
 
+    @Inject
     public MsgTopicServiceEJB(MsgServiceCore topicService, ClientSessionRMI client, EntityDTORepo entityDTORepo) {
         this.topicService = topicService;
         this.entityDTORepo = entityDTORepo;
         this.client = client;
+    }
+
+    public MsgTopicServiceEJB() {
+        client = null;
+        topicService = null;
+        entityDTORepo = null;
     }
 
     @Override

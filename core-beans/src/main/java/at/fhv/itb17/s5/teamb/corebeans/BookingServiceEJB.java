@@ -10,8 +10,11 @@ import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.List;
 
+@Stateless
 public class BookingServiceEJB implements BookingService {
 
     private static final Logger logger = LogManager.getLogger(BookingServiceEJB.class);
@@ -20,10 +23,15 @@ public class BookingServiceEJB implements BookingService {
     private ClientSessionRMI clientSessionRMI;
     private EntityDTORepo entityDTORepo;
 
+    @Inject
     public BookingServiceEJB(BookingServiceCore bookingServiceCore, ClientSessionRMI client, EntityDTORepo entityDTORepo) {
         this.bookingServiceCore = bookingServiceCore;
         this.clientSessionRMI = client;
         this.entityDTORepo = entityDTORepo;
+    }
+
+    public BookingServiceEJB(){
+
     }
 
     @Override
