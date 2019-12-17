@@ -6,5 +6,26 @@ import java.util.List;
 
 public interface PaymentProcessor {
 
-    boolean buy(List<Ticket> ticket2Book, PaymentInfo bookingInfo);
+    PaymentTransaction buy(List<Ticket> ticket2Book, PaymentInfo bookingInfo);
+
+
+    public class PaymentTransaction {
+
+        boolean validStatus = true;
+
+        public boolean commit() {
+            // Impl not in scope
+            return true;
+        }
+
+        public void abort() {
+            validStatus = false;
+            // Impl not in scope
+        }
+
+        public boolean isValid() {
+            return validStatus;
+        }
+    }
 }
+

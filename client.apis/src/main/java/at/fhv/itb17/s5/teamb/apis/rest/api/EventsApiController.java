@@ -106,11 +106,13 @@ public class EventsApiController implements EventsApi {
             System.out.println(client + " => " + client.getUsername());
             clientRepo.addClient(client);
             List<Ticket> ticket2Book = entityRepo.toTickets(ticketDTOS, client);
-            if (paymentProcessor.buy(ticket2Book, bookingInfo)) {
+            PaymentProcessor.PaymentTransaction paymentTransaction = paymentProcessor.buy(ticket2Book, bookingInfo);
+            if (paymentTransaction != null) {
                 log.info("Size of Tickets to book: {}", ticket2Book.size());
                 List<Ticket> bookedTickets = InjectHolder.injector.getBookingServiceCore().bookTickets(ticket2Book);
                 List<BookingResponse> bookingResponses;
                 if (bookedTickets.isEmpty()) {
+                    paymentTransaction.abort();
                     return new ResponseEntity<List<BookingResponse>>(Arrays.asList(new BookingResponse().errMsg("Tickets could not be booked")), HttpStatus.CONFLICT);
                 } else if (isSeat) {
                     bookingResponses = ticket2Book.stream().map(t2b -> {
@@ -119,6 +121,7 @@ public class EventsApiController implements EventsApi {
                         if (first.isPresent()) {
                             response.tranactionId(first.get().getTicketId());
                         } else {
+                            paymentTransaction.abort();
                             response.errMsg("Could not be booked INFO:" + t2b);
                         }
                         return response;
@@ -132,17 +135,29 @@ public class EventsApiController implements EventsApi {
                             if (first.isPresent()) {
                                 response.tranactionId(first.get().getTicketId());
                             } else {
+                                paymentTransaction.abort();
                                 response.errMsg("Could not be booked INFO:" + t2b);
                             }
                             return response;
                         }).collect(Collectors.toList());
                     } else {
+                        paymentTransaction.abort();
                         throw new RuntimeException("Unexpected Error - No tickets should have been booked");
                     }
                 }
-                return new ResponseEntity<List<BookingResponse>>(bookingResponses, HttpStatus.OK);
+                if (paymentTransaction.isValid()) {
+                    boolean commit = paymentTransaction.commit();
+                    if (commit) {
+                        return new ResponseEntity<List<BookingResponse>>(bookingResponses, HttpStatus.OK);
+                    } else {
+                        //Out of scope - Free tickets again
+                        return new ResponseEntity<List<BookingResponse>>(Arrays.asList(new BookingResponse().errMsg("Payment could not be processed")), HttpStatus.CONFLICT);
+                    }
+                } else {
+                    return new ResponseEntity<List<BookingResponse>>(Arrays.asList(new BookingResponse().errMsg("Payment could not be processed")), HttpStatus.CONFLICT);
+                }
             } else {
-                return new ResponseEntity<List<BookingResponse>>(Arrays.asList(new BookingResponse().errMsg("Payment was not successful")), HttpStatus.CONFLICT);
+                return new ResponseEntity<List<BookingResponse>>(Arrays.asList(new BookingResponse().errMsg("No connection to payment processor possible")), HttpStatus.CONFLICT);
             }
         } catch (NotFoundException | IllegalArgumentException e) {
             log.error("Did not found parts of input", e);
