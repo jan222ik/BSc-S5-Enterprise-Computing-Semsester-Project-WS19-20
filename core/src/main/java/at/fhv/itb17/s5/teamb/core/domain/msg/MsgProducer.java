@@ -3,6 +3,7 @@ package at.fhv.itb17.s5.teamb.core.domain.msg;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,7 +47,7 @@ public class MsgProducer {
         connection.start();
 
         // Create a Session
-        session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+        session = connection.createSession(false, ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE);
 
         // Create the destination (Topic or Queue)
         for (MsgTopic msgTopic : topics) { //TODO filter topic names to prevent doublettes -> doesn't hahsmap put just overwrite?

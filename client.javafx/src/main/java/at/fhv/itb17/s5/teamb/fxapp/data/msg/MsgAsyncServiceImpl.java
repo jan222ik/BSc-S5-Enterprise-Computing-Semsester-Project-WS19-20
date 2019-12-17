@@ -10,6 +10,7 @@ import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.subjects.PublishSubject;
 import javafx.application.Platform;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,7 +59,7 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
         connection.start();
 
         // Create a Session
-        session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+        session = connection.createSession(false, ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
         for (MsgTopic msgTopic : topics) {
             Topic topic = session.createTopic("VirtualTopic." + msgTopic.getName());
