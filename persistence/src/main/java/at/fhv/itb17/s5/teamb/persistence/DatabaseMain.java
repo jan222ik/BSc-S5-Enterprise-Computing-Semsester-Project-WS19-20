@@ -1,15 +1,7 @@
 package at.fhv.itb17.s5.teamb.persistence;
 
 
-import at.fhv.itb17.s5.teamb.persistence.entities.Address;
-import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
-import at.fhv.itb17.s5.teamb.persistence.entities.Client;
-import at.fhv.itb17.s5.teamb.persistence.entities.Event;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
-import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
-import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
-import at.fhv.itb17.s5.teamb.persistence.entities.TicketStates;
+import at.fhv.itb17.s5.teamb.persistence.entities.*;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
@@ -18,10 +10,7 @@ import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings({"squid:S106", "squid:S00117", "ArraysAsListWithZeroOrOneArgument", "OctalInteger", "DuplicatedCode", "squid:CommentedOutCodeLine", "squid:UnusedPrivateMethod", "squid:S1854", "squid:S1481"})
 public class DatabaseMain {
@@ -30,7 +19,7 @@ public class DatabaseMain {
 
     private static void test() {
         Address address = new Address("AT", "685ftui0", "Do", "ABCStr.", "4711");
-        Client client = new Client("test_client", "Hugo Hugo", new LinkedList<>(), new LinkedList<>(), address);
+        Client client = new Client("test_client", "Hugo Hugo", new LinkedList<>(), new HashSet<>(), address);
         EventCategory g21 = new EventCategory("G21", 9001, 500, 69);
         EventCategory g16 = new EventCategory("G16", 12312312, 19, 3);
         EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)), address);
