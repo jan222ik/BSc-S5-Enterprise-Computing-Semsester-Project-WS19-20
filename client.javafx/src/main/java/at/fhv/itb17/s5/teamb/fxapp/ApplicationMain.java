@@ -54,11 +54,13 @@ public class ApplicationMain extends Application implements SetupCallback {
 
 
         setupManager = new RmiManager();
+        setupManager.setMsgNotificationPresenter(this);
         boolean b = setupManager.create();
         if (!b) {
             throw new RuntimeException("Error in manager.create");
         }
         setupManager.setCallbackConsumer(this);
+
 
         Injector.setModelOrService(SetupManager.class, setupManager);
         Injector.setModelOrService(RMIController.class, rmiController);

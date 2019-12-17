@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers;
 
+import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
@@ -32,6 +33,7 @@ public class RmiManager implements SetupManager {
     private MsgAsyncService msgAsyncService;
 
     private List<Disposable> disposables;
+    private ApplicationMain presenter;
 
     @Override
     public boolean create() {
@@ -42,6 +44,7 @@ public class RmiManager implements SetupManager {
             bookingService = new RMIBookingServiceImpl(controller);
             msgTopicService = new RMITopicServiceImpl(controller);
             msgAsyncService = new MsgAsyncServiceImpl();
+            msgAsyncService.setPresenter(presenter);
             Injector.setModelOrService(SearchService.class, searchService);
             Injector.setModelOrService(BookingService.class, bookingService);
             Injector.setModelOrService(MsgTopicService.class, msgTopicService);
@@ -142,5 +145,10 @@ public class RmiManager implements SetupManager {
                 e.printStackTrace();
             }
         }, "Hedwig").start();
+    }
+
+    @Override
+    public void setMsgNotificationPresenter(ApplicationMain presenter) {
+        this.presenter = presenter;
     }
 }

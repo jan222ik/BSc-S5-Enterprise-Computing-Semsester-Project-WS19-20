@@ -99,7 +99,7 @@ public class RMITopicServiceImpl implements MsgTopicService {
                 logger.info("SubscribedTopics size is {}", subscribedTopics.size());
                 return subscribedTopics;
             } catch (RemoteException e) {
-                logger.catching(e);
+                e.printStackTrace();
             }
         }
         return new LinkedList<>();

@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers;
 
+import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
@@ -20,4 +21,6 @@ public interface SetupManager {
     void setMsgTopics();
 
     void initMsgAsync(String clientId);
+
+    void setMsgNotificationPresenter(ApplicationMain presenter);
 }

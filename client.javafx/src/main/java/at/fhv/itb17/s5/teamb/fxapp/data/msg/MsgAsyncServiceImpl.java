@@ -8,8 +8,8 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.subjects.PublishSubject;
+import javafx.application.Platform;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ActiveMQSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,7 +86,7 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
 
     @Override
     public void setPresenter(ApplicationMain presenter) {
-        dispose = outList.getObservable().subscribeOn(JavaFxScheduler.platform()).subscribe(presenter::showNewMsg);
+        dispose = outList.getObservable().subscribeOn(JavaFxScheduler.platform()).subscribe((presenter::showNewMsg), Throwable::printStackTrace);
     }
 
     @Override
@@ -107,9 +107,10 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
                 logger.debug("{} Received Topic: {}", this.hashCode(), topic);
                 logger.debug("Received header: {}", header);
                 logger.debug("Received text: {}", text);
-                outList.add(new MsgWrapper(topic, text, textMessage, LocalDateTime.now(), false, header));
+                MsgWrapper msgWrapper = new MsgWrapper(topic, text, textMessage, LocalDateTime.now(), false, header);
+                Platform.runLater(() -> outList.add(msgWrapper));
             } catch (JMSException e) {
-                logger.catching(e);
+                e.printStackTrace();
             }
         } else {
             logger.debug("Received message: {}", message);
