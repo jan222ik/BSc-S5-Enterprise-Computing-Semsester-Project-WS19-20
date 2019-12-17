@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers;
 
+import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
@@ -7,7 +8,6 @@ import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.*;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import com.airhacks.afterburner.injection.Injector;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
@@ -89,6 +89,8 @@ public class RmiManager implements SetupManager {
                 notifyCallbackConsumer("Initializing Messaging Component (RMI)", 5, totalSteps);
                 status = msgTopicService.doLoginMsgTopic(user, pwd);
                 if (status == RMIConnectionStatus.CONNECTED) {
+                    setMsgTopics();
+                    initMsgAsync(user);
                     notifyCallbackConsumer("Successfully initialized Messaging Component (RMI)", 6, totalSteps);
                     notifyCallbackConsumer("Initializing Booking Component (RMI)", 7, totalSteps);
                     status = bookingService.doLoginBooking(user, pwd);
@@ -132,7 +134,7 @@ public class RmiManager implements SetupManager {
         disposables.add(Observable.just(new Object()).subscribeOn(JavaFxScheduler.platform()).subscribe(consumer));
     }
 
-    private List<MsgTopic> getSubscribedTopics() {
+    private List<MsgTopicDTO> getSubscribedTopics() {
         return msgTopicService.getSubscribedTopics();
     }
 

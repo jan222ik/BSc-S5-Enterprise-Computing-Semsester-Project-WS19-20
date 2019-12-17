@@ -5,6 +5,7 @@ import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
 import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
+import at.fhv.itb17.s5.teamb.dtos.mapper.MsgTopicMapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
@@ -59,10 +60,10 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
     }
 
     @Override
-    public List<MsgTopic> getSubscribedTopics() throws RemoteException {
-        List<MsgTopic> topics = new LinkedList<>();
+    public List<MsgTopicDTO> getSubscribedTopics() throws RemoteException {
+        List<MsgTopicDTO> topics = new LinkedList<>();
         if (client != null) {
-            topics = client.getClient().getSubscribedTopics();
+            topics = MsgTopicMapper.toDTOs(client.getClient().getSubscribedTopics());
         }
         return topics;
     }

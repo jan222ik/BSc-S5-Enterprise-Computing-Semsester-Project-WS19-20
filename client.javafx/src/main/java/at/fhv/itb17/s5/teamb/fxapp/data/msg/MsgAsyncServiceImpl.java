@@ -1,9 +1,9 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.msg;
 
+import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
@@ -18,7 +18,6 @@ import javax.jms.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, MsgAsyncService {
@@ -26,7 +25,7 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     private static final Logger logger = LogManager.getLogger(MsgAsyncServiceImpl.class);
 
     private Disposable dispose;
-    private List<MsgTopic> topics;
+    private List<MsgTopicDTO> topics;
     private Session session;
     private Connection connection;
     private HashMap<String, Destination> destinations = new HashMap<>();
@@ -34,18 +33,18 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     private HashMap<Topic, String> subNames = new HashMap<>();
     private ObservableList<MsgWrapper> outList = new ObservableList<>();
 
-    public MsgAsyncServiceImpl(List<MsgTopic> topics) {
+    public MsgAsyncServiceImpl(List<MsgTopicDTO> topics) {
         this.topics = topics;
     }
 
     public MsgAsyncServiceImpl() {
-        this.topics = new LinkedList<>();
+        /*this.topics = new LinkedList<>();
         MsgTopic system = new MsgTopic("SYSTEM", false);
         MsgTopic rock = new MsgTopic("ROCK", false);
         MsgTopic opera = new MsgTopic("OPERA", false);
         topics.add(system);
         topics.add(rock);
-        topics.add(opera);
+        topics.add(opera); */
     }
 
     @Override
@@ -61,7 +60,8 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
         // Create a Session
         session = connection.createSession(false, ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
-        for (MsgTopic msgTopic : topics) {
+        for (MsgTopicDTO msgTopic : topics) {
+            logger.info("Consumer Topic is {}", msgTopic.getName());
             Topic topic = session.createTopic("VirtualTopic." + msgTopic.getName());
             destinations.put(msgTopic.getName(), topic);
             subNames.put(topic, msgTopic.getName());
@@ -141,7 +141,7 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     }
 
     @Override
-    public void setTopics(List<MsgTopic> topics) {
+    public void setTopics(List<MsgTopicDTO> topics) {
         this.topics = topics;
     }
 

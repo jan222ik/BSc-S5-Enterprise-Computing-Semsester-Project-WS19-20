@@ -13,10 +13,7 @@ import at.fhv.itb17.s5.teamb.persistence.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings({"squid:S1192", "squid:CommentedOutCodeLine", "FieldCanBeLocal"})
 public class CoreServiceInjectorImpl implements CoreServiceInjector {
@@ -170,7 +167,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         ClientRole admin = new ClientRole("ADMIN", true, true, 10);
         entityRepository.saveOrUpdate(admin);
-        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<>(topics), new Address("Country", "zip", "city", "street", "house")));
+        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new HashSet<>(topics), new Address("Country", "zip", "city", "street", "house")));
 
     }
 

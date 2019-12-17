@@ -1,9 +1,9 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.mock;
 
+import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
@@ -68,7 +68,8 @@ public class MockMsgAsyncServiceImpl implements MsgAsyncService {
     }
 
     @Override
-    public void setTopics(List<MsgTopic> topics) {
+    public void setTopics(List<MsgTopicDTO> topics) {
 
     }
+
 }

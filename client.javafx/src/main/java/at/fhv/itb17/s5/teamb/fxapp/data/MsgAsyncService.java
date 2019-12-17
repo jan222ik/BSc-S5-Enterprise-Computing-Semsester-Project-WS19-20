@@ -1,7 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.data;
 
+import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
 import javax.jms.JMSException;
 import java.util.List;
@@ -15,5 +15,5 @@ public interface MsgAsyncService {
 
     void close() throws JMSException;
 
-    void setTopics(List<MsgTopic> topics);
+    void setTopics(List<MsgTopicDTO> topics);
 }
