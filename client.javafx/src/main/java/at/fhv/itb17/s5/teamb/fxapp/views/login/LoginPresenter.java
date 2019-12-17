@@ -102,12 +102,14 @@ public class LoginPresenter implements Initializable {
         new Thread(() -> {
             RMIConnectionStatus status = checkPasswordRemote(finalUsername, finalPassword);
             Observable.just(new Object()).subscribeOn(JavaFxScheduler.platform()).subscribe(o -> {
+                System.out.println("status = " + status);
+                setup.close();
                 if (status == RMIConnectionStatus.CREDENTIALS_INVALID) {
-                    NotificationsHelper.error("Invalid Input", "Username or Password wrong!", NotificationsHelper.DisplayDuration.SHORT);
-                } else {
+                    NotificationsHelper.error("Invalid Input", "Username or Password wrong!", NotificationsHelper.DisplayDuration.INDEFINITE);
+                }
+                if (status == RMIConnectionStatus.NO_CONNECTION) {
                     NotificationsHelper.error("Connection Refused", "No RMI Connection to host possible", NotificationsHelper.DisplayDuration.SHORT);
                 }
-                setup.close();
             });//.dispose(); TODO Dispose after inner code was executed.
         }, "Setup").start();
         //setupManager.setMsgTopics(); //TODO Fix
