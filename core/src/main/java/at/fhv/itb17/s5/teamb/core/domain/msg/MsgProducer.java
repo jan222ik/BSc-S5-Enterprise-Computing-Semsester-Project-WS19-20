@@ -3,19 +3,18 @@ package at.fhv.itb17.s5.teamb.core.domain.msg;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.jms.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MsgProducer {
+
+    private static final Logger logger = LogManager.getLogger(MsgProducer.class);
 
     private List<MsgTopic> topics;
     private Session session;
@@ -24,11 +23,11 @@ public class MsgProducer {
     private HashMap<Destination, MessageProducer> msgProducers = new HashMap<>();
 
     public MsgProducer() {
-        MsgTopic system = new MsgTopic("System", false);
-        MsgTopic rock = new MsgTopic("Rock", false);
-        MsgTopic opera = new MsgTopic("Opera", false);
-        MsgTopic theater = new MsgTopic("Theater", false);
-        this.topics = new LinkedList<>();
+        topics = new LinkedList<>();
+        MsgTopic system = new MsgTopic("SYSTEM", false);
+        MsgTopic rock = new MsgTopic("ROCK", false);
+        MsgTopic opera = new MsgTopic("OPERA", false);
+        MsgTopic theater = new MsgTopic("THEATER", false);
         topics.add(system);
         topics.add(rock);
         topics.add(opera);
@@ -39,18 +38,20 @@ public class MsgProducer {
         topics = repo.getAllTopics();
     }
 
-    public void init(String brokerUrl) throws JMSException {
+    public void init(String brokerUrl, String clientId) throws JMSException {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
 
         // Create a Connection
         connection = connectionFactory.createConnection();
+        connection.setClientID(clientId);
         connection.start();
 
         // Create a Session
-        session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+        session = connection.createSession(false, ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE);
 
         // Create the destination (Topic or Queue)
-        for (MsgTopic msgTopic : topics) {
+        for (MsgTopic msgTopic : topics) { //TODO filter topic names to prevent doublettes -> doesn't hahsmap put just overwrite?
+            logger.info("Topic is {}", msgTopic.getName());
             destinations.put(msgTopic.getName(), session.createTopic("VirtualTopic." + msgTopic.getName()));
         }
 
@@ -62,13 +63,13 @@ public class MsgProducer {
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
                 msgProducers.put(destination1, producer);
             } catch (JMSException e) {
+                logger.debug("Stacktrace: {}", e.getMessage());
                 e.printStackTrace();
             }
         });
     }
 
     public void sendCreatedMessages() throws JMSException {
-
         // Create a messages
         List<TextMessage> createdMessages = new LinkedList<>();
         for (MsgTopic topic : topics) {
@@ -77,7 +78,6 @@ public class MsgProducer {
                         + topic.getName(), topic));
             }
         }
-
         //Send messages
         for (TextMessage createdMessage : createdMessages) {
             sendMessage(createdMessage);
@@ -102,8 +102,11 @@ public class MsgProducer {
             message = this.createMessage(header, content, topic);
             sendMessage(message);
         } catch (JMSException e) {
+            logger.info(e.toString());
             e.printStackTrace();
+            return false;
         }
+        //noinspection ConstantConditions
         return message != null;
     }
 

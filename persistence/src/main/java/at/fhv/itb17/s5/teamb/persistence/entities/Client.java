@@ -1,12 +1,8 @@
 package at.fhv.itb17.s5.teamb.persistence.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Client {
@@ -19,10 +15,10 @@ public class Client {
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
 
-    @OneToMany(cascade = {CascadeType.PERSIST})
-    private List<MsgTopic> subscribedTopics;
+    @OneToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    private Set<MsgTopic> subscribedTopics;
 
-    public Client(String username, String name, List<ClientRole> role, List<MsgTopic> topics, Address address) {
+    public Client(String username, String name, List<ClientRole> role, Set<MsgTopic> topics, Address address) {
         this.username = username;
         this.name = name;
         this.role = role;
@@ -57,11 +53,11 @@ public class Client {
         this.role = role;
     }
 
-    public List<MsgTopic> getSubscribedTopics() {
+    public Set<MsgTopic> getSubscribedTopics() {
         return subscribedTopics;
     }
 
-    public void setSubscribedTopics(List<MsgTopic> subscribedTopics) {
+    public void setSubscribedTopics(Set<MsgTopic> subscribedTopics) {
         this.subscribedTopics = subscribedTopics;
     }
 

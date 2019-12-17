@@ -2,7 +2,6 @@ package at.fhv.itb17.s5.teamb.fxapp.data.rmi;
 
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -91,10 +90,13 @@ public class RMITopicServiceImpl implements MsgTopicService {
     }
 
     @Override
-    public List<MsgTopic> getSubscribedTopics() {
+    public List<MsgTopicDTO> getSubscribedTopics() {
         if (msgTopicService != null) {
+            logger.info("Trying to get SubscribedTopics...");
             try {
-                return msgTopicService.getSubscribedTopics();
+                List<MsgTopicDTO> subscribedTopics = msgTopicService.getSubscribedTopics();
+                logger.info("SubscribedTopics size is {}", subscribedTopics.size());
+                return subscribedTopics;
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
