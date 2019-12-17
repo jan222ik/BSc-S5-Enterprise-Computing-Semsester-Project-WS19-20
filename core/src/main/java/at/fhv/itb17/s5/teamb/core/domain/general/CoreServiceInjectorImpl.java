@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,11 +46,12 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final AuthManagerCore authManagerCore;
     private final EntityDTORepo entityDTORepo = new EntityDTORepoImpl();
     private final MsgRepository msgRepository = new MsgRepository(entityRepository);
-    private final MsgServiceCore msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);
+    private final MsgServiceCore msgTopicServiceCore;
 
     public CoreServiceInjectorImpl(boolean withLDAP) {
         authManagerCore = new AuthManagerCore(true, withLDAP, clientRepository);
         addDBDATA();
+        msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);
     }
 
     @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
@@ -170,10 +172,10 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
 
         List<MsgTopic> topics = new LinkedList<>();
-        MsgTopic system = new MsgTopic("System", false);
-        MsgTopic rock = new MsgTopic("Rock", false);
-        MsgTopic opera = new MsgTopic("Opera", false);
-        MsgTopic theater = new MsgTopic("Theater", false);
+        MsgTopic system = new MsgTopic("SYSTEM", false);
+        MsgTopic rock = new MsgTopic("ROCK", false);
+        MsgTopic opera = new MsgTopic("OPERA", false);
+        MsgTopic theater = new MsgTopic("THEATER", false);
         topics.add(system);
         topics.add(rock);
         topics.add(opera);
@@ -185,7 +187,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         ClientRole web = new ClientRole("WEB", false, false, 0);
         entityRepository.saveOrUpdate(admin);
         entityRepository.saveOrUpdate(web);
-        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new LinkedList<MsgTopic>(topics), new Address("Country", "zip", "city", "street", "house")));
+        entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new HashSet<>(topics), new Address("Country", "zip", "city", "street", "house")));
 
     }
 

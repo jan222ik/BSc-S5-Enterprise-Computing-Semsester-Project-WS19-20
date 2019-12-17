@@ -112,6 +112,8 @@ public class LoginPresenter implements Initializable {
                 }
             });//.dispose(); TODO Dispose after inner code was executed.
         }, "Setup").start();
+        //setupManager.setMsgTopics(); //TODO Fix
+        //setupManager.initMsgAsync(finalUsername);
     }
 
     private RMIConnectionStatus checkPasswordRemote(String user, String pwd) {

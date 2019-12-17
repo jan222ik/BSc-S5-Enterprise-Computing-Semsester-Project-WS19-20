@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class MsgTopicMapper {
@@ -13,7 +14,7 @@ public final class MsgTopicMapper {
     private MsgTopicMapper() {
     }
 
-    public static List<MsgTopicDTO> toDTOs(@NotNull List<MsgTopic> topics) {
+    public static List<MsgTopicDTO> toDTOs(@NotNull Set<MsgTopic> topics) {
         return topics.stream().map(MsgTopicMapper::toDTO).collect(Collectors.toList());
     }
 

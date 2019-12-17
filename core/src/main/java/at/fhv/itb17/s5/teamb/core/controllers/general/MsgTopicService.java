@@ -1,7 +1,6 @@
 package at.fhv.itb17.s5.teamb.core.controllers.general;
 
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -14,7 +13,7 @@ public interface MsgTopicService extends Remote {
 
     boolean mayPublish() throws RemoteException;
 
-    List<MsgTopic> getSubscribedTopics() throws RemoteException;
+    List<MsgTopicDTO> getSubscribedTopics() throws RemoteException;
 
     boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) throws RemoteException;
 
