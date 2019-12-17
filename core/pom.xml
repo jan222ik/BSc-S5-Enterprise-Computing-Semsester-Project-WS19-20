@@ -44,7 +44,7 @@
             <configuration>
                 <archive>
                     <manifest>
-                        <mainClass>at.fhv.itb17.s5.teamb.core.domain.general.CoreMain</mainClass>
+                        <mainClass>at.fhv.itb17.s5.teamb.corestarte.CoreMain</mainClass>
                     </manifest>
                 </archive>
                 <descriptorRefs>

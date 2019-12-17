@@ -1,18 +1,23 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.List;
 
 @SuppressWarnings({"squid:S00116", "squid:S00100", "squid:S00117"}) // Underscore in naming of field, setter, constructor
 public class EventDTO implements Serializable {
-
+    @JsonProperty("eventId")
     private Long eventId;
+    @JsonProperty("title")
     private String title;
+    @JsonProperty("description")
     private String description;
+    @JsonProperty("genere")
     private String genre;
-
+    @JsonProperty("artistNames")
     private List<String> artistNames;
-
+    @JsonProperty("occurrences")
     private List<EvOccurrenceDTO> occurrences;
 
     //Organizer Flattened

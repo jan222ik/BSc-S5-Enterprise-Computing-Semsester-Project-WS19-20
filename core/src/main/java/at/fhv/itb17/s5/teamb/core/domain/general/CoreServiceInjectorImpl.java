@@ -8,12 +8,30 @@ import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImpl;
-import at.fhv.itb17.s5.teamb.persistence.entities.*;
-import at.fhv.itb17.s5.teamb.persistence.repository.*;
+import at.fhv.itb17.s5.teamb.persistence.entities.Address;
+import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
+import at.fhv.itb17.s5.teamb.persistence.entities.Client;
+import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
+import at.fhv.itb17.s5.teamb.persistence.entities.Event;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
+import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
+import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
+import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
+import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
+import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 @SuppressWarnings({"squid:S1192", "squid:CommentedOutCodeLine", "FieldCanBeLocal"})
 public class CoreServiceInjectorImpl implements CoreServiceInjector {
@@ -166,7 +184,9 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         topics.remove(theater);
 
         ClientRole admin = new ClientRole("ADMIN", true, true, 10);
+        ClientRole web = new ClientRole("WEB", false, false, 0);
         entityRepository.saveOrUpdate(admin);
+        entityRepository.saveOrUpdate(web);
         entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new HashSet<>(topics), new Address("Country", "zip", "city", "street", "house")));
 
     }
@@ -198,5 +218,10 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
     public EntityRepository getEntityRepository() {
         return entityRepository;
+    }
+
+    @Override
+    public ClientRepository getClientRepo() {
+        return clientRepository;
     }
 }

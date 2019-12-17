@@ -4,8 +4,8 @@ import at.fhv.itb17.s5.teamb.core.controllers.general.BookingService;
 import at.fhv.itb17.s5.teamb.core.controllers.general.IFrontEndClient;
 import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
 import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
-import at.fhv.itb17.s5.teamb.core.controllers.rmi.EntryPointRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.rmi.IConnectionFactoryRMI;
+import at.fhv.itb17.s5.teamb.corestarter.EntryPointRMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

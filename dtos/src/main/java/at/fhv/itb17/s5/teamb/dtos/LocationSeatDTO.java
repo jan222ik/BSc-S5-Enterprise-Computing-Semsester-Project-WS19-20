@@ -1,10 +1,15 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class LocationSeatDTO implements Serializable {
+    @JsonProperty("seatId")
     private Long seatId;
+    @JsonProperty("isFree")
     private boolean isFree;
+    @JsonProperty("seatIdf")
     private String seatIdentifier;
 
 

@@ -146,4 +146,10 @@ public class EntityDTORepoImpl implements EntityDTORepo {
     public MsgTopic toMsgTopic(MsgTopicDTO topicDTO) {
         return topics.get(topicDTO.getTopicId());
     }
+
+    @Override
+    public EventDTO getEventDTOByID(Long eventID) {
+        Event event = events.get(eventID);
+        return toEventDTO(event);
+    }
 }

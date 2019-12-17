@@ -1,14 +1,12 @@
-package at.fhv.itb17.s5.teamb.core.domain.general;
+package at.fhv.itb17.s5.teamb.corestarter;
 
-import at.fhv.itb17.s5.teamb.core.controllers.general.EntryPoint;
-import at.fhv.itb17.s5.teamb.core.controllers.rmi.EntryPointRMI;
+import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjectorImpl;
 import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 
 public class CoreMain {
@@ -30,9 +28,12 @@ public class CoreMain {
         boolean noLDAP = args.containsKeyword("-noLDAP");
         CoreMain coreMain = new CoreMain();
         EntryPointRMI entryPointRMI;
+        CoreServiceInjectorImpl coreServiceInjector = new CoreServiceInjectorImpl(!noLDAP);
         try {
-            entryPointRMI = new EntryPointRMI(rmiPort, new CoreServiceInjectorImpl(!noLDAP));
-            LinkedList<EntryPoint> entryPoints = new LinkedList<>(Collections.singletonList(entryPointRMI));
+            entryPointRMI = new EntryPointRMI(rmiPort, coreServiceInjector);
+            LinkedList<EntryPoint> entryPoints = new LinkedList<>(Arrays.asList(new EntryPointREST(coreServiceInjector)
+                    , entryPointRMI
+            ));
             coreMain.start(entryPoints);
         } catch (RemoteException e) {
             e.printStackTrace();
