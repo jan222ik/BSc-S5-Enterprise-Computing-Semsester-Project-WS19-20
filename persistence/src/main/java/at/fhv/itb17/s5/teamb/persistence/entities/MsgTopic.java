@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
-public class MsgTopic implements Serializable {
+public class MsgTopic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

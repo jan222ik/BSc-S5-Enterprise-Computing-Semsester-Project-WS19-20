@@ -8,22 +8,8 @@ import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCoreImpl;
-import at.fhv.itb17.s5.teamb.persistence.entities.Address;
-import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
-import at.fhv.itb17.s5.teamb.persistence.entities.Client;
-import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
-import at.fhv.itb17.s5.teamb.persistence.entities.Event;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
-import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
-import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
-import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
-import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
-import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
-import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
-import at.fhv.itb17.s5.teamb.persistence.repository.MsgRepository;
-import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
+import at.fhv.itb17.s5.teamb.persistence.entities.*;
+import at.fhv.itb17.s5.teamb.persistence.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -45,11 +31,12 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final AuthManagerCore authManagerCore;
     private final EntityDTORepo entityDTORepo = new EntityDTORepoImpl();
     private final MsgRepository msgRepository = new MsgRepository(entityRepository);
-    private final MsgServiceCore msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);
+    private final MsgServiceCore msgTopicServiceCore;
 
     public CoreServiceInjectorImpl(boolean withLDAP) {
         authManagerCore = new AuthManagerCore(true, withLDAP, clientRepository);
         addDBDATA();
+        msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);
     }
 
     @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")

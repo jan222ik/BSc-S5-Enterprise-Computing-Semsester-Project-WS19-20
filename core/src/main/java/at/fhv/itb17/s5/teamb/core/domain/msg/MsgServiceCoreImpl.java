@@ -18,8 +18,7 @@ public class MsgServiceCoreImpl implements MsgServiceCore {
 
     public MsgServiceCoreImpl(MsgRepository msgRepository) {
         this.msgRepository = msgRepository;
-        //this.msgProducer = new MsgProducer(msgRepository);
-        this.msgProducer = new MsgProducer();
+        this.msgProducer = new MsgProducer(msgRepository);
         try {
             msgProducer.init(TCP, "ProducerStart");
         } catch (Exception e) {

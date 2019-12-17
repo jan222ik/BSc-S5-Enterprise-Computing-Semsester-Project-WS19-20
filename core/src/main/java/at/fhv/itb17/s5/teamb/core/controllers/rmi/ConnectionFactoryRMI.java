@@ -49,7 +49,7 @@ public class ConnectionFactoryRMI extends UnicastRemoteObject implements IConnec
 
     @Override
     public MsgTopicService createTopicService(String username, String password) throws RemoteException {
-        logger.info("Created BookingService for Client with the username: {}", username);
+        logger.info("Created MsgService for Client with the username: {}", username);
         if (authManagerCore.check(username, password)) {
             Client client = authManagerCore.queryClient(username);
             return topicServiceInstanceSupplier.apply(new ClientSessionRMI(username, password, null, client));
