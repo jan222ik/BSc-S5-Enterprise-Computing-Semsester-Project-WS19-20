@@ -22,7 +22,8 @@ import java.util.List;
 public class RmiManager implements SetupManager {
 
     private static final int totalSteps = 9;
-    public static final String TCP = "tcp://localhost:61616";
+    public static final String TCP_LOCAL = "tcp://localhost:61616";
+    public static final String TCP_JENKINS = "tcp://10.0.51.91:61616";
 
     private RMIController controller;
     private boolean isConnected = false;
@@ -31,6 +32,7 @@ public class RmiManager implements SetupManager {
     private MsgTopicService msgTopicService;
     private SetupCallback callbackConsumer;
     private MsgAsyncService msgAsyncService;
+    private boolean remote = false;
 
     private List<Disposable> disposables;
     private ApplicationMain presenter;
@@ -63,6 +65,9 @@ public class RmiManager implements SetupManager {
             try {
                 notifyCallbackConsumer("Connecting to Server (RMI)", 0, totalSteps);
                 isConnected = controller.connect(host, port);
+                if (host.equals("10.0.51.91")) {
+                    remote = true;
+                }
                 if (isConnected) {
                     notifyCallbackConsumer("Connected to Server (RMI)", 1, totalSteps);
                     return RMIConnectionStatus.CONNECTED;
@@ -90,7 +95,7 @@ public class RmiManager implements SetupManager {
                 status = msgTopicService.doLoginMsgTopic(user, pwd);
                 if (status == RMIConnectionStatus.CONNECTED) {
                     setMsgTopics();
-                    initMsgAsync(user);
+                    initMsgAsync(user, remote);
                     notifyCallbackConsumer("Successfully initialized Messaging Component (RMI)", 6, totalSteps);
                     notifyCallbackConsumer("Initializing Booking Component (RMI)", 7, totalSteps);
                     status = bookingService.doLoginBooking(user, pwd);
@@ -139,10 +144,12 @@ public class RmiManager implements SetupManager {
     }
 
     @Override
-    public void initMsgAsync(String clientId) {
+    public void initMsgAsync(String clientId, boolean remote) {
         new Thread(() -> {
+            String ip = TCP_LOCAL;
+            if (remote) ip = TCP_JENKINS;
             try {
-                msgAsyncService.init(TCP, clientId);
+                msgAsyncService.init(ip, clientId);
             } catch (JMSException e) {
                 e.printStackTrace();
             }
