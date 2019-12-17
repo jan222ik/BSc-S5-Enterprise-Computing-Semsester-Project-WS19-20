@@ -14,11 +14,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.function.Function;
 
@@ -30,7 +26,11 @@ public class EntityRepository {
 
     public EntityRepository() {
         logger.info(LogMarkers.DB, "Start Session Factory");
-        sessionFactory = new Configuration().configure().buildSessionFactory();
+        sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+    }
+
+    public <T> List<T> loadAll(Class<T> type) {
+        return this.doInTransaction(session -> EntityRepository.loadAllData(type, session));
     }
 
     public void save(final Object o) {
@@ -147,5 +147,12 @@ public class EntityRepository {
 
     SessionFactory getSessionFactory() {
         return sessionFactory;
+    }
+
+    private static <T> List<T> loadAllData(Class<T> type, Session session) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(type);
+        criteria.from(type);
+        return session.createQuery(criteria).getResultList();
     }
 }

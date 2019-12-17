@@ -4,7 +4,6 @@ import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +44,7 @@ public class MsgTopicVM implements ViewModel {
         return msgAsyncService.getAllMsgs();
     }
 
-    public List<MsgTopic> getSubscribedTopics() {
+    public List<MsgTopicDTO> getSubscribedTopics() {
         return msgTopicService.getSubscribedTopics();
     }
 

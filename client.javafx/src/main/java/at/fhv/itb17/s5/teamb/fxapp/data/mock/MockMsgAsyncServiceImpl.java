@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.mock;
 
+import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
@@ -48,7 +49,7 @@ public class MockMsgAsyncServiceImpl implements MsgAsyncService {
     }
 
     @Override
-    public void init(String brokerUrl) throws JMSException {
+    public void init(String brokerUrl, String test) throws JMSException {
 
     }
 
@@ -65,4 +66,10 @@ public class MockMsgAsyncServiceImpl implements MsgAsyncService {
     public void close() throws JMSException {
 
     }
+
+    @Override
+    public void setTopics(List<MsgTopicDTO> topics) {
+
+    }
+
 }

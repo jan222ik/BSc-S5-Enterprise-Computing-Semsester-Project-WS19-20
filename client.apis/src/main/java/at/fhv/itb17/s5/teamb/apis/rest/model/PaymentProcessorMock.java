@@ -6,8 +6,8 @@ import java.util.List;
 
 public class PaymentProcessorMock implements PaymentProcessor {
     @Override
-    public boolean buy(List<Ticket> ticket2Book, PaymentInfo bookingInfo) {
+    public PaymentTransaction buy(List<Ticket> ticket2Book, PaymentInfo bookingInfo) {
         //Implementation out of scope
-        return true;
+        return new PaymentTransaction();
     }
 }

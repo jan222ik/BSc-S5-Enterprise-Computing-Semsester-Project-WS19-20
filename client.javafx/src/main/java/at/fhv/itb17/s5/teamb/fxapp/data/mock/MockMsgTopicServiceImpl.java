@@ -2,7 +2,6 @@ package at.fhv.itb17.s5.teamb.fxapp.data.mock;
 
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class MockMsgTopicServiceImpl implements at.fhv.itb17.s5.teamb.fxapp.data
 
     @Override
     @SuppressWarnings("squid:S1168") //Null return
-    public List<MsgTopic> getSubscribedTopics() {
+    public List<MsgTopicDTO> getSubscribedTopics() {
         return null;
     }
 

@@ -9,7 +9,7 @@ import at.fhv.itb17.s5.teamb.util.LDAP;
 import javax.naming.NamingException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 
 public class AuthManagerCore {
 
@@ -31,7 +31,7 @@ public class AuthManagerCore {
                                     Collections.singletonList(
                                             new ClientRole("ADMIN", true, true, 0)
                                     ),
-                                    new LinkedList<>(),
+                                    new HashSet<>(),
                                     new Address("AT", "6850", "Dornbirn", "Sägerstr.", "1"))));
         }
     }

@@ -15,7 +15,7 @@ class TicketTest {
     private var ticketRepository: TicketRepository = TicketRepository(entityRepository)
 
     private val address = Address("AT", "685ftui0", "Do", "ABCStr.", "4711")
-    private val client = Client("test_client", "Hugo Hugo", LinkedList(), LinkedList(), address)
+    private val client = Client("test_client", "Hugo Hugo", LinkedList(), HashSet(), address)
     private val g21 = EventCategory("G21", 9001, 100, 69)
     private val seats = listOf(LocationSeat("1", false), LocationSeat("2", false), LocationSeat("3", true))
     private val rows = listOf(LocationRow("A", seats))

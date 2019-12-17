@@ -42,7 +42,7 @@ public class MsgConPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
 
     @Override
     public void onReturned(MsgTopicVM viewModel) {
-        //TODO Load & display Messages and the existing topics
+        //TODO Display the existing topics
         notificationLV.getItems().clear();
         List<MsgWrapper> msgs = viewModel.getAllMsgs();
         List<Parent> collect = msgs.stream().map(msg -> createView(msg, () -> {
