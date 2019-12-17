@@ -102,7 +102,7 @@ public class EventsApiController implements EventsApi {
                 }
             }
             PaymentInfo bookingInfo = body.getBookingInfo();
-            Client client = new Client(bookingInfo.getNameL() + bookingInfo.getNameF() + System.currentTimeMillis(), bookingInfo.getNameL() + ", " + bookingInfo.getNameF(), Arrays.asList(clientRepo.getWebRole()),new LinkedList<>(), bookingInfo.toAddressEntity());
+            Client client = new Client(bookingInfo.getNameL() + bookingInfo.getNameF() + System.currentTimeMillis(), bookingInfo.getNameL() + ", " + bookingInfo.getNameF(), Arrays.asList(clientRepo.getWebRole()),new HashSet<>(), bookingInfo.toAddressEntity());
             System.out.println(client + " => " + client.getUsername());
             clientRepo.addClient(client);
             List<Ticket> ticket2Book = entityRepo.toTickets(ticketDTOS, client);
