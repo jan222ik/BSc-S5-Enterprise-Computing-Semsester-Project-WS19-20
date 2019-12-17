@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="CSS.css">
+    <meta charset="UTF-8">
+    <title>search</title>
+</head>
+<div id="mySidenav" class="sidenav">
+    <li><a href="Search.html"><img src="pictures/49116.png" class="image"> Search </a></li>
+    <li><a href="Event%20Browser.html"> <img src="pictures/list-grid-list-icon.jpg" class="image">Event Browser</a></li>
+    <li><a href="Chart.html"> <img src="pictures/shopping-3650365_960_720.png" class="image" style="color: white"> Chart </a></li>
+</div>
+<ul>
+    <li class='active' style='float:right;'>
+        <?php
+    if($_SESSION['logged']==true)
+    {
+      echo $_SESSION["username"];
+      echo '<a href="logout.php"><span>Logout</span></a></li>';
+    }
+    elseif($_SESSION['logged']==false)
+    {
+    echo '<a href="Login.html"><span>Login/Register</span></a></li>';
+    }
+    ?>
+    </li>
+</ul></ul>
+<body>
+<div class="center">
+    <ul>
+        <label class="label"><b>Name of Event:</b></label>
+        <input type="text" name="EventName">
+        <br>
+        <br>
+        <label class="label"><b>Date:</b></label>
+        <label>from:</label>
+        <input type="checkbox">
+        <input type="date" name="date">
+        <br>
+        <label>to:</label>
+        <input type="checkbox">
+        <input type="date" name="date">
+        <br>
+        <br>
+        <label class="label"><b>Genre:</b></label>
+        <input type="text" name="Genre">
+        <br>
+        <br>
+        <label class="label"><b>Artist:</b></label>
+        <input type="text" name="Artist">
+        <br>
+        <br>
+        <label class="label"><b>Location:</b></label>
+        <input type="text" name="Location">
+        <br>
+        <br>
+        <input type="reset" name="Reset Filter" value="Reset Filter">
+        <input type="submit" name="Search" value="Search">
+    </ul>
+</div>
+</body>
+</html>

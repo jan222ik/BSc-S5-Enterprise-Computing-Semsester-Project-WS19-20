@@ -3,8 +3,11 @@
 <head>
     <link rel="stylesheet" href="CSS.css">
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Chart</title>
 </head>
+<?php
+session_start(); // Right at the top of your script
+?>
 <div id="mySidenav" class="sidenav">
     <li><a href="Search.html"><img src="pictures/49116.png" class="image"> Search </a></li>
     <li><a href="Event%20Browser.html"> <img src="pictures/list-grid-list-icon.jpg" class="image">Event Browser</a></li>
@@ -12,7 +15,7 @@
 </div>
 <ul>
     <li class='active' style='float:right;'>
-        <?php
+    <?php
     if($_SESSION['logged']==true)
     {
       echo $_SESSION["username"];
@@ -28,17 +31,6 @@
 <br>
 <br>
 <body>
-    <div class="center">
-        <label for="Username"><b>Enter Username:</b></label>
-        <input align="center" type="text" placeholder="Enter Username" name="Username" id="Username" minlength="4" maxlength="30" required>
-        <br>
-        <br>
-        <label for="Password"><b>Enter Password:</b></label>
-        <input align="center" type="Password" placeholder="Enter Password" name="Password" id="Password" minlength="4" maxlength="30" required>
-        <br>
-        <br>
-        <input align="center" type="submit" value="Login">
-        </label>
-    </div>
+
 </body>
 </html>
