@@ -1,14 +1,21 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class EvCategorySeatsDTO implements EvCategoryInterfaceDTO, Serializable {
 
+    @JsonProperty("eventCategoryId")
     private Long eventCategoryId;
+    @JsonProperty("categoryName")
     private String categoryName;
+    @JsonProperty("priceInCents")
     private int priceInCent;
+    @JsonProperty("rows")
     private List<LocationRowDTO> seatingRows;
+
 
     public EvCategorySeatsDTO(Long eventCategoryId, String categoryName, int priceInCent, List<LocationRowDTO> seatingRows) {
         this.eventCategoryId = eventCategoryId;

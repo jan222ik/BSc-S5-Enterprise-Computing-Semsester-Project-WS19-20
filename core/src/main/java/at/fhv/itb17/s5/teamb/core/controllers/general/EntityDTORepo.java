@@ -34,4 +34,6 @@ public interface EntityDTORepo {
     List<MsgTopic> toMsgTopics(List<MsgTopicDTO> topicDTOs);
 
     MsgTopic toMsgTopic(MsgTopicDTO topicDTO);
+
+    EventDTO getEventDTOByID(Long eventID);
 }

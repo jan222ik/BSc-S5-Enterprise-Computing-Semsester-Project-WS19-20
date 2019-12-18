@@ -1,7 +1,12 @@
-package at.fhv.itb17.s5.teamb.core.controllers.rmi;
+package at.fhv.itb17.s5.teamb.corestarter;
 
 import at.fhv.itb17.s5.teamb.core.controllers.general.ClientSessionRMI;
-import at.fhv.itb17.s5.teamb.core.controllers.general.EntryPoint;
+import at.fhv.itb17.s5.teamb.core.controllers.rmi.BookingServiceRMI;
+import at.fhv.itb17.s5.teamb.core.controllers.rmi.ConnectionFactoryRMI;
+import at.fhv.itb17.s5.teamb.core.controllers.rmi.IConnectionFactoryRMI;
+import at.fhv.itb17.s5.teamb.core.controllers.rmi.MsgTopicServiceRMI;
+import at.fhv.itb17.s5.teamb.core.controllers.rmi.SearchServiceRMI;
+import at.fhv.itb17.s5.teamb.core.controllers.rmi.SecManagerRMI;
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

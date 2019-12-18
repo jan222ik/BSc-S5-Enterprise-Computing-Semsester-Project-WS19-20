@@ -1,4 +1,4 @@
-package at.fhv.itb17.s5.teamb.core.controllers.general;
+package at.fhv.itb17.s5.teamb.corestarter;
 
 import java.rmi.RemoteException;
 
