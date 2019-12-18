@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="CSS.css">
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<div id="mySidenav" class="sidenav">
+    <li><a href="Search.html"><img src="pictures/49116.png" class="image"> Search </a></li>
+    <li><a href="Event%20Browser.html"> <img src="pictures/list-grid-list-icon.jpg" class="image">Event Browser</a></li>
+    <li><a href="Chart.html"> <img src="pictures/shopping-3650365_960_720.png" class="image" style="color: white"> Chart </a></li>
+</div>
+<ul>
+    <li class='active' style='float:right;'>
+        <?php
+    if($_SESSION['logged']==true)
+    {
+      echo $_SESSION["username"];
+      echo '<a href="logout.php"><span>Logout</span></a></li>';
+    }
+    elseif($_SESSION['logged']==false)
+    {
+    echo '<a href="Login.html"><span>Login/Register</span></a></li>';
+    }
+    ?>
+    </li>
+</ul>
+<br>
+<br>
+<body>
+    <div class="center">
+        <label for="Username"><b>Enter Username:</b></label>
+        <input align="center" type="text" placeholder="Enter Username" name="Username" id="Username" minlength="4" maxlength="30" required>
+        <br>
+        <br>
+        <label for="Password"><b>Enter Password:</b></label>
+        <input align="center" type="Password" placeholder="Enter Password" name="Password" id="Password" minlength="4" maxlength="30" required>
+        <br>
+        <br>
+        <input align="center" type="submit" value="Login">
+        </label>
+    </div>
+</body>
+</html>
