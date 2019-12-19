@@ -22,14 +22,12 @@ object Handler {
                 200.toShort() -> JSON.parse<Array<EventDTO>>(it.first).toList()
                 204.toShort() -> emptyList()
                 else -> {
-                    OnPageAlert.showErr("Server exception occurred: ${it.second}")
-                    emptyList()
+                    throw Exception("Server exception occurred: ${it.second}")
                 }
             }
         }.catch { trow ->
             console.log("Caught: $trow")
-            OnPageAlert.showErr("Server exception occurred")
-            return@catch emptyList<EventDTO>()
+            throw trow
         }
     }
 
@@ -187,8 +185,8 @@ object Handler {
     }
 
     private fun updateTotal() {
-        var totalPrice: Int = 0
-        var ticketAmount: Int = 0
+        var totalPrice = 0
+        var ticketAmount = 0
         for (spinner in spinners) {
             val tickets = spinner.key.value.toInt()
             ticketAmount += tickets
@@ -235,11 +233,11 @@ object Handler {
         return document.createElement("br")
     }
 
-    fun Occurrence.toLocationString() = "$country, $city"
-    fun PriceCategory.toDisplayPrice() = "${priceInCents / 100.0}€"
-    fun PriceCategory.ticketRange() = "$usedTickets / $totalTickets"
-    fun Date.toDateString() = "$year-$month-$dayOfMonth"
-    fun Time.toTimeString() = "$hour:$minute"
+    private fun Occurrence.toLocationString() = "$country, $city"
+    private fun PriceCategory.toDisplayPrice() = "${priceInCents / 100.0}€"
+    private fun PriceCategory.ticketRange() = "$usedTickets / $totalTickets"
+    private fun Date.toDateString() = "$year-$month-$dayOfMonth"
+    private fun Time.toTimeString() = "$hour:$minute"
 
     fun updateCart() {
         val cartContainer = document.getElementById("cart")!!
@@ -274,13 +272,8 @@ object Handler {
             populateContainer(it)
             return@then it.isNotEmpty()
         }.catch {
-            handleError("Could not query search results")
-            return@catch false
+            throw it
         }
-    }
-
-    private fun handleError(s: String) {
-        OnPageAlert.showErr(s)
     }
 }
 
@@ -294,6 +287,8 @@ fun openBrowser() {
         if (it) {
             openTab("container")
         }
+    }.catch {
+        OnPageAlert.showErr("Could not query search results - ${it.message!!}")
     }
 }
 
@@ -308,7 +303,7 @@ fun openTab(id: String) {
     }
 }
 
-fun main(args: Array<String>) {
+fun main() {
     /* Notification code if needed
     //Request Permissions
     if (Notification.permission != NotificationPermission.GRANTED) {
@@ -415,7 +410,7 @@ enum class SearchCategories(private val catIdf: String) {
 }
 
 object Cart {
-    val items: MutableMap<Int, MutableList<LocalTicket>> = mutableMapOf()
+    private val items: MutableMap<Int, MutableList<LocalTicket>> = mutableMapOf()
 
     fun asList(): List<List<LocalTicket>> {
         val outerList: MutableList<List<LocalTicket>> = mutableListOf()
