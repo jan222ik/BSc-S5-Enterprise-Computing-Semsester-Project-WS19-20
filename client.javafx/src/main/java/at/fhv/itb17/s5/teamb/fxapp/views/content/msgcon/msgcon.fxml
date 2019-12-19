@@ -25,13 +25,13 @@
                         <Label text="Topic Filter:" textFill="WHITE" />
                         <VBox fx:id="topicFilterList">
                            <children>
-                              <ToggleButton mnemonicParsing="false" text="Topic 1" />
                            </children>
                         </VBox>
                      </children>
                   </VBox>
                   <VBox fx:id="msgprodVbox">
                      <children>
+                        <Button fx:id="ackAll" mnemonicParsing="false" text="Acknowledge all messages" />
                         <Label text="Message Producer:" textFill="WHITE" />
                         <HBox>
                            <children>
