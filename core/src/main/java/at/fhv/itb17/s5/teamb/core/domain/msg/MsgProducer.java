@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 public class MsgProducer {
@@ -21,18 +20,6 @@ public class MsgProducer {
     private Connection connection;
     private HashMap<String, Destination> destinations = new HashMap<>();
     private HashMap<Destination, MessageProducer> msgProducers = new HashMap<>();
-
-    public MsgProducer() {
-        topics = new LinkedList<>();
-        MsgTopic system = new MsgTopic("SYSTEM", false);
-        MsgTopic rock = new MsgTopic("ROCK", false);
-        MsgTopic opera = new MsgTopic("OPERA", false);
-        MsgTopic theater = new MsgTopic("THEATER", false);
-        topics.add(system);
-        topics.add(rock);
-        topics.add(opera);
-        topics.add(theater);
-    }
 
     public MsgProducer(MsgRepository repo) {
         topics = repo.getAllTopics();
@@ -50,7 +37,7 @@ public class MsgProducer {
         session = connection.createSession(false, ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE);
 
         // Create the destination (Topic or Queue)
-        for (MsgTopic msgTopic : topics) { //TODO filter topic names to prevent doublettes -> doesn't hahsmap put just overwrite?
+        for (MsgTopic msgTopic : topics) {
             logger.info("Topic is {}", msgTopic.getName());
             destinations.put(msgTopic.getName(), session.createTopic("VirtualTopic." + msgTopic.getName()));
         }
@@ -64,24 +51,9 @@ public class MsgProducer {
                 msgProducers.put(destination1, producer);
             } catch (JMSException e) {
                 logger.debug("Stacktrace: {}", e.getMessage());
-                e.printStackTrace();
+                logger.warn("JMSException", e);
             }
         });
-    }
-
-    public void sendCreatedMessages() throws JMSException {
-        // Create a messages
-        List<TextMessage> createdMessages = new LinkedList<>();
-        for (MsgTopic topic : topics) {
-            for (int i = 0; i < 10; i++) {
-                createdMessages.add(createMessage("Message " + i, "Message Nr. " + i + " for "
-                        + topic.getName(), topic));
-            }
-        }
-        //Send messages
-        for (TextMessage createdMessage : createdMessages) {
-            sendMessage(createdMessage);
-        }
     }
 
     public void close() throws JMSException {
@@ -97,13 +69,13 @@ public class MsgProducer {
     }
 
     public boolean createMessagePub(String header, String content, MsgTopic topic) {
-        TextMessage message = null;
+        TextMessage message;
         try {
             message = this.createMessage(header, content, topic);
             sendMessage(message);
         } catch (JMSException e) {
             logger.info(e.toString());
-            e.printStackTrace();
+            logger.warn("JMSException", e);
             return false;
         }
         //noinspection ConstantConditions

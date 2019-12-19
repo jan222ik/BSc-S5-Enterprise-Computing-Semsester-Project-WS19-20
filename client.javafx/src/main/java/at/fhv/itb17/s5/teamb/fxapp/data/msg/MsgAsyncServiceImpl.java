@@ -29,22 +29,11 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     private Session session;
     private Connection connection;
     private HashMap<String, Destination> destinations = new HashMap<>();
-    private HashMap<Destination, TopicSubscriber> msgConsumers = new HashMap<>();
     private HashMap<Topic, String> subNames = new HashMap<>();
     private ObservableList<MsgWrapper> outList = new ObservableList<>();
 
-    public MsgAsyncServiceImpl(List<MsgTopicDTO> topics) {
-        this.topics = topics;
-    }
-
     public MsgAsyncServiceImpl() {
-        /*this.topics = new LinkedList<>();
-        MsgTopic system = new MsgTopic("SYSTEM", false);
-        MsgTopic rock = new MsgTopic("ROCK", false);
-        MsgTopic opera = new MsgTopic("OPERA", false);
-        topics.add(system);
-        topics.add(rock);
-        topics.add(opera); */
+        //empty Constructor
     }
 
     @Override
@@ -73,7 +62,6 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
             try {
                 consumer = session.createDurableSubscriber((Topic) destination, subNames.get(destination));
                 consumer.setMessageListener(this);
-                msgConsumers.put(destination, consumer);
             } catch (JMSException e) {
                 logger.catching(e);
             }
@@ -111,7 +99,7 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
                 MsgWrapper msgWrapper = new MsgWrapper(topic, text, textMessage, LocalDateTime.now(), false, header);
                 Platform.runLater(() -> outList.add(msgWrapper));
             } catch (JMSException e) {
-                e.printStackTrace();
+                logger.catching(e);
             }
         } else {
             logger.debug("Received message: {}", message);
