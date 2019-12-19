@@ -15,7 +15,7 @@ public class Client {
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
 
-    @OneToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private Set<MsgTopic> subscribedTopics;
 
     public Client(String username, String name, List<ClientRole> role, Set<MsgTopic> topics, Address address) {

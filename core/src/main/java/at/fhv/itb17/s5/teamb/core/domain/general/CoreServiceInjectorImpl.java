@@ -163,11 +163,18 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         topics.add(opera);
         topics.add(theater);
         topics.forEach(entityRepository::saveOrUpdate);
-        topics.remove(theater);
 
         ClientRole admin = new ClientRole("ADMIN", true, true, 10);
+        ClientRole nobody = new ClientRole("NOBODY", false, false, 0);
+        ClientRole onlyRead = new ClientRole("READER", true, false, 5);
+        ClientRole messager = new ClientRole("MESSAGER", true, true, 7);
         entityRepository.saveOrUpdate(admin);
+        entityRepository.saveOrUpdate(messager);
+        entityRepository.saveOrUpdate(nobody);
+        entityRepository.saveOrUpdate(onlyRead);
         entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new HashSet<>(topics), new Address("Country", "zip", "city", "street", "house")));
+        entityRepository.saveOrUpdate(new Client("tf-test2", "Testor2", Arrays.asList(onlyRead), new HashSet<>(Arrays.asList(system)), new Address("AT", "9999", "SimCity", "Hudson Steet", "13")));
+        entityRepository.saveOrUpdate(new Client("FHVUser", "User, FHV", Arrays.asList(messager), new HashSet<>(Arrays.asList(system, rock, opera)), new Address("D", "0000", "Münchshausen", "Baumgasse", "12")));
 
     }
 
