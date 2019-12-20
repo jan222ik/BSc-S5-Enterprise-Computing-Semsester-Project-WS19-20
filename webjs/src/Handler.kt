@@ -1,8 +1,10 @@
 import org.w3c.dom.*
+import org.w3c.fetch.RequestInit
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.dom.*
 import kotlin.js.Promise
+import kotlin.js.json
 
 object Handler {
     private const val testURL: String = "http://localhost:8080"
@@ -21,6 +23,9 @@ object Handler {
             return@then when (it.second) {
                 200.toShort() -> JSON.parse<Array<EventDTO>>(it.first).toList()
                 204.toShort() -> emptyList()
+                500.toShort() -> {
+                    throw Exception("Server exception occurred: ${it.second}")
+                }
                 else -> {
                     throw Exception("Server exception occurred: ${it.second}")
                 }
@@ -29,6 +34,27 @@ object Handler {
             console.log("Caught: $trow")
             throw trow
         }
+    }
+
+    private fun bookTickets(tickets: List<LocalTicket>) {
+        if (tickets.isNotEmpty()) {
+            val first = tickets.first()
+            window.fetch(input = "$testURL/events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}/book", init = RequestInit(
+                    method = "POST",
+                    headers = json().apply { this["Content-Type"] = "application/json" },
+                    body = JSON.stringify(json().apply {
+                        this["clientData"] = "I'm posted by client"
+                    })
+            ))
+        }
+        /*
+                        headers = json().apply {
+                    this["Content-Type"] = "application/json"
+                }
+                body = JSON.stringify(json().apply {
+                    this["clientData"] = "I'm posted by client"
+                })
+         */
     }
 
     private fun populateContainer(eventDTOs: List<EventDTO>) {
@@ -258,6 +284,13 @@ object Handler {
                         )
                     }
                 }
+            }
+            cartContainer.appendElement("button") {
+                addEventListener(type = "click", callback = {
+                    Cart.asList().forEach {
+                        bookTickets(it)
+                    }
+                })
             }
         } else {
             cartContainer.appendElement("h3") {
