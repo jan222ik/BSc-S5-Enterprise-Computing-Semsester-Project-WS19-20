@@ -13,6 +13,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.TestOnly;
 
 import javax.jms.*;
 import java.time.LocalDateTime;
@@ -107,7 +108,7 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     }
 
     @Override
-    public void close() throws JMSException {
+    public boolean close() throws JMSException {
         if (session != null) {
             if (topics != null) {
                 topics.forEach((msgTopic -> {
@@ -126,11 +127,27 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
         if (dispose != null && !dispose.isDisposed()) {
             dispose.dispose();
         }
+        return true;
     }
 
     @Override
     public void setTopics(List<MsgTopicDTO> topics) {
         this.topics = topics;
+    }
+
+    @Override
+    @TestOnly
+    public void acknowledgeTest() {
+        List<MsgWrapper> allMsgs = getAllMsgs();
+        for (MsgWrapper allMsg : allMsgs) {
+            if (allMsg.getTopicName().equals("TEST")) {
+                try {
+                    allMsg.getTextMessage().acknowledge();
+                } catch (JMSException e) {
+                    logger.warn("JMSException acknowledgeTest", e);
+                }
+            }
+        }
     }
 
     public static class ObservableList<T> {

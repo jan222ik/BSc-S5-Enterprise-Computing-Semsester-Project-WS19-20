@@ -158,6 +158,8 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         MsgTopic rock = new MsgTopic("ROCK", false);
         MsgTopic opera = new MsgTopic("OPERA", false);
         MsgTopic theater = new MsgTopic("THEATER", false);
+        MsgTopic test = new MsgTopic("TEST", false); //only to be used for testing!
+        entityRepository.saveOrUpdate(test);
         topics.add(system);
         topics.add(rock);
         topics.add(opera);

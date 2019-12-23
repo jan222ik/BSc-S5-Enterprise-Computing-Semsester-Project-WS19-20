@@ -9,4 +9,7 @@ public interface MsgServiceCore {
     List<MsgTopic> getAllTopics();
 
     boolean createMessage(MsgTopic topic, String messageHeader, String messageBody);
+
+    boolean closeProducer();
+
 }
