@@ -14,6 +14,11 @@
 
     <dependencies>
         <dependency>
+            <artifactId>CoreStarter</artifactId>
+            <groupId>advanceticketsale.parent</groupId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.airhacks</groupId>
             <artifactId>afterburner.fx</artifactId>
             <version>1.7.0</version>
@@ -35,24 +40,16 @@
             <artifactId>controlsfx</artifactId>
             <version>8.40.14</version>
         </dependency>
-
         <dependency>
-            <groupId>advanceticketsale.persistence</groupId>
-            <artifactId>persistence</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjavafx</artifactId>
+            <version>2.2.2</version>
         </dependency>
         <dependency>
             <groupId>advanceticketsale.util</groupId>
             <artifactId>util</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>advanceticketsale.parent</groupId>
-            <artifactId>advanceticketsale</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>advanceticketsale.core</groupId>
@@ -86,4 +83,54 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.5</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>at.fhv.itb17.s5.teamb.fxapp.ApplicationMain</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.fxml</include>
+                    <include>**/*.css</include>
+                    <include>**/*.png</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.MF</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.fxml</include>
+                    <include>**/*.css</include>
+                    <include>**/*.png</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.MF</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>

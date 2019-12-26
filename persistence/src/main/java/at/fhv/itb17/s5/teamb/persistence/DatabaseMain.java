@@ -1,37 +1,25 @@
 package at.fhv.itb17.s5.teamb.persistence;
 
 
-import at.fhv.itb17.s5.teamb.persistence.entities.Address;
-import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
-import at.fhv.itb17.s5.teamb.persistence.entities.Client;
-import at.fhv.itb17.s5.teamb.persistence.entities.ClientRoles;
-import at.fhv.itb17.s5.teamb.persistence.entities.Event;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
-import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
-import at.fhv.itb17.s5.teamb.persistence.entities.Organizer;
-import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
-import at.fhv.itb17.s5.teamb.persistence.entities.TicketStates;
+import at.fhv.itb17.s5.teamb.persistence.entities.*;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.EventRepository;
 import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchCategories;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
-import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
 
-import javax.swing.text.html.parser.Entity;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
-@SuppressWarnings("squid:S106")
+@SuppressWarnings({"squid:S106", "squid:S00117", "ArraysAsListWithZeroOrOneArgument", "OctalInteger", "DuplicatedCode", "squid:CommentedOutCodeLine", "squid:UnusedPrivateMethod", "squid:S1854", "squid:S1481"})
 public class DatabaseMain {
 
     private static EntityRepository repository = new EntityRepository();
 
     private static void test() {
         Address address = new Address("AT", "685ftui0", "Do", "ABCStr.", "4711");
-        Client client = new Client("test_client", "Hugo Hugo", ClientRoles.EXTERNAL, address);
+        Client client = new Client("test_client", "Hugo Hugo", new LinkedList<>(), new HashSet<>(), address);
         EventCategory g21 = new EventCategory("G21", 9001, 500, 69);
         EventCategory g16 = new EventCategory("G16", 12312312, 19, 3);
         EventOccurrence occurrence0 = new EventOccurrence(LocalDate.now(), LocalTime.now(), new LinkedList<>(Arrays.asList(g21, g16)), address);
@@ -65,10 +53,8 @@ public class DatabaseMain {
         //System.out.println("ticket = " + ticket.getTicketId());
 
 
-
         repository.saveOrUpdate(event);
         events.forEach(e -> repository.saveOrUpdate(e));
-
 
 
 //        repository.save(address);
@@ -103,8 +89,7 @@ public class DatabaseMain {
         searchTest();
     }
 
-    public static void searchTest(){
-
+    public static void searchTest() {
 
 
         EventRepository eventRepository = new EventRepository(new EntityRepository());

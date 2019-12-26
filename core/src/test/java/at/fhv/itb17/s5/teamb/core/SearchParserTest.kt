@@ -47,12 +47,13 @@ internal class SearchParserTest {
     @Test
     fun `Parsing Search Invalid String`() {
         val invalid = "name='value'"
-        var executed = true;
+        @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
+        var executed = true
         try {
             SearchParser.parseString(invalid)
-            fail("Call should have thrown error");
+            fail("Call should have thrown error")
         } catch (e: SearchException) {
-            executed = false;
+            executed = false
         }
         MatcherAssert.assertThat(executed, Matchers.`is`(false))
     }

@@ -14,9 +14,20 @@ public class RMISearchServiceImpl implements SearchService {
     private RMIController rmi;
     private at.fhv.itb17.s5.teamb.core.controllers.general.SearchService remoteSearchService;
 
+    @SuppressWarnings({"RedundantThrows", "squid:RedundantThrowsDeclarationCheck"})
     public RMISearchServiceImpl(RMIController rmi) throws RemoteException {
         this.rmi = rmi;
-        remoteSearchService = rmi.createSearchService();
+    }
+
+    public RMIConnectionStatus init() {
+        logger.debug("Create SearchService");
+        try {
+            remoteSearchService = rmi.createSearchService();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        logger.debug("SearchService: {}", remoteSearchService);
+        return (remoteSearchService != null) ? RMIConnectionStatus.CONNECTED : RMIConnectionStatus.NO_CONNECTION;
     }
 
     @Override

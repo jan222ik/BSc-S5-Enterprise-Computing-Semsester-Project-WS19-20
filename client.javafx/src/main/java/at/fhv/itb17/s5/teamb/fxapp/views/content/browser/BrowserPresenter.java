@@ -16,15 +16,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class BrowserPresenter implements ContentfulViewLifeCycle<ResultVM> {
-
-    private static final Logger logger = LogManager.getLogger(BrowserPresenter.class);
 
     @FXML
     private VBox resultBox;
@@ -36,7 +32,8 @@ public class BrowserPresenter implements ContentfulViewLifeCycle<ResultVM> {
     private JFXListView<AnchorPane> resultLV;
     @FXML
     private Button back2FilterBtn;
-    @FXML private Button refreshBtn;
+    @FXML
+    private Button refreshBtn;
 
     private NavigationStackActions<ResultVM> navigationStackActions = null; //Use with caution
 
@@ -63,9 +60,7 @@ public class BrowserPresenter implements ContentfulViewLifeCycle<ResultVM> {
     @NotNull
     private BrowserItemView createBrowserItemView(EventDTO evt) {
         BrowserItemView browserItemView = new BrowserItemView();
-        ((BrowserItemPresenter) browserItemView.getPresenter()).setEventData(evt, (EvOccurrenceDTO dto) -> {
-            showDetailsOf(evt, dto, navigationStackActions);
-        });
+        ((BrowserItemPresenter) browserItemView.getPresenter()).setEventData(evt, (EvOccurrenceDTO dto) -> showDetailsOf(evt, dto, navigationStackActions));
         return browserItemView;
     }
 

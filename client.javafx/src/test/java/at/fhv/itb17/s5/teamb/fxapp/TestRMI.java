@@ -11,7 +11,8 @@ public class TestRMI {
 
     @BeforeAll
     public static void beforeAll() throws RemoteException {
-        rmi = new RMIController("localhost", 2345);
+        rmi = new RMIController();
+        rmi.connect("localhost", 2345);
     }
 
     //@Test

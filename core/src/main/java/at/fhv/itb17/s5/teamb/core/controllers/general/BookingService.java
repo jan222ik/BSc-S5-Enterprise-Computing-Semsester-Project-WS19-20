@@ -7,5 +7,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public interface BookingService extends Remote {
-    boolean bookTickets(List<TicketDTO> ticketDTOs) throws RemoteException;
+    List<TicketDTO> bookTickets(List<TicketDTO> ticketDTOs) throws RemoteException;
+
+    List<TicketDTO> reserveTickets(List<TicketDTO> ticketDTOs) throws RemoteException;
 }

@@ -1,10 +1,15 @@
 package at.fhv.itb17.s5.teamb.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class CategoryCalcDataDTO implements Serializable {
+    @JsonProperty("minPrice")
     private int minPrice = Integer.MAX_VALUE;
+    @JsonProperty("maxPrice")
     private int maxPrice = Integer.MIN_VALUE;
+    @JsonProperty("ticketTypes")
     private String ticketTypes = "";
 
     public String getPriceRangeString() {

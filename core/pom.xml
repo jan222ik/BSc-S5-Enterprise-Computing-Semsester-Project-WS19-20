@@ -14,7 +14,14 @@
     <packaging>jar</packaging>
 
 
+
+
     <dependencies>
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>rome</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>advanceticketsale.persistence</groupId>
             <artifactId>persistence</artifactId>
@@ -37,7 +44,7 @@
             <configuration>
                 <archive>
                     <manifest>
-                        <mainClass>at.fhv.itb17.s5.teamb.core.domain.general.CoreMain</mainClass>
+                        <mainClass>at.fhv.itb17.s5.teamb.corestarte.CoreMain</mainClass>
                     </manifest>
                 </archive>
                 <descriptorRefs>

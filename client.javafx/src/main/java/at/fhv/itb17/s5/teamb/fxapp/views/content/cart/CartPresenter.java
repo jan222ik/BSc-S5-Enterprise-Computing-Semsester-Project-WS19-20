@@ -14,13 +14,18 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
+
+    private static final Logger logger = LogManager.getLogger(CartPresenter.class);
 
     @Inject
     private Style style;
@@ -40,9 +45,10 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
     @FXML
     private Button backBtn;
 
+    @SuppressWarnings("DuplicatedCode") //False Detected Duplicate
     @Override
     public void onCreate(CartVM viewModel, NavigationStackActions<CartVM> navActions) {
-        backBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW, true,  () -> NotificationsHelper.error("Internal Error", "Could not switch to menu item")));
+        backBtn.setOnAction(e -> navActions.changeToMenuItem(ApplicationMenuViews.BROWSER_VIEW, true, () -> NotificationsHelper.error("Internal Error", "Could not switch to menu item")));
         style.hoverBtn(backBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.SECONDARY().asPaint());
         buyBtn.setOnAction(e -> this.buyOrReserve(viewModel, true, navActions));
         style.hoverBtn(buyBtn, style.BACKGROUND().asBackground(), style.ON_BACKGROUND().asPaint(), style.BACKGROUND().asBackground(), style.PRIMARY().asPaint());
@@ -56,9 +62,13 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
     }
 
     private void buyOrReserve(CartVM viewModel, boolean doBuy, NavigationStackActions<CartVM> navActions) {
-        System.out.println("doBuy = " + doBuy);
-        boolean successful = viewModel.book();
-        System.out.println("successful = " + successful);
+        logger.debug("doBuy = {}", doBuy);
+        Boolean book = (doBuy) ? viewModel.book() : viewModel.reserve();
+        boolean successful = Optional.ofNullable(book).orElseGet(() -> {
+            NotificationsHelper.error("Error", "Error during Booking");
+            return false;
+        });
+        logger.debug("successful = {}", successful);
         if (successful) {
             navActions.push(new ConfirmationView()).showTOS();
         } else {
@@ -74,7 +84,7 @@ public class CartPresenter implements ContentfulViewLifeCycle<CartVM> {
     private void render(CartVM viewModel) {
         AtomicInteger totalPrice = new AtomicInteger();
         AtomicInteger totalAmount = new AtomicInteger();
-        List<Parent> collect = viewModel.getTicketsSortedAfterEventAndOcc().stream().map(tick -> {
+        List<Parent> collect = viewModel.getTicketsSortedAfterEventAndOcc().stream().filter(l -> !l.isEmpty()).map(tick -> {
             CartItemView cartItemView = new CartItemView();
             CartItemPresenter presenter = (CartItemPresenter) cartItemView.getPresenter();
             presenter.setData(tick);

@@ -28,7 +28,6 @@ public class SearchVM implements ViewModel {
         private String location;
 
         public String toQueryString() {
-            //TODO Change type to SearchCategory.NAME.catIdf to work
             StringBuilder sb = new StringBuilder();
             if (includeFrom) {
                 sb.append("-").append(SearchCategories.DATE_FROM.getIdf()).append("=\"").append(fromDate.format(format)).append("\"");

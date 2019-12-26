@@ -20,9 +20,12 @@ public final class WindowEventHelper {
     private WindowEventHelper() {
     }
 
-    public static void closeApplicationImpl(@NotNull Button closeBtn) {
+    public static void closeApplicationImpl(@NotNull Button closeBtn, Runnable... cleanup) {
         closeBtn.setOnAction(e -> {
             logger.debug(LogMarkers.WINDOW, "EXIT pressed");
+            for (Runnable runnable : cleanup) {
+                runnable.run();
+            }
             Platform.exit();
         });
     }

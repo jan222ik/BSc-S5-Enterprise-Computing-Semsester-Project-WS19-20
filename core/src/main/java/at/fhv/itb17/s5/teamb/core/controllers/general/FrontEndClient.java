@@ -5,5 +5,6 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class FrontEndClient extends UnicastRemoteObject implements IFrontEndClient {
     public FrontEndClient() throws RemoteException {
+        //Object for possible RMI Callbacks
     }
 }

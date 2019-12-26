@@ -2,8 +2,6 @@ package at.fhv.itb17.s5.teamb.persistence.repository;
 
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
-import at.fhv.itb17.s5.teamb.persistence.util.WhereClauseBuilder;
-import at.fhv.itb17.s5.teamb.persistence.util.WhereCondition;
 
 import java.util.List;
 

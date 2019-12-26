@@ -5,7 +5,6 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
-import at.fhv.itb17.s5.teamb.persistence.util.WhereCondition;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +26,11 @@ public class EntityRepository {
 
     public EntityRepository() {
         logger.info(LogMarkers.DB, "Start Session Factory");
-        sessionFactory = new Configuration().configure().buildSessionFactory();
+        sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+    }
+
+    public <T> List<T> loadAll(Class<T> type) {
+        return this.doInTransaction(session -> EntityRepository.loadAllData(type, session));
     }
 
     public void save(final Object o) {
@@ -45,6 +48,10 @@ public class EntityRepository {
     }
 
     public <T> T get(final Class<T> type, final Long id) {
+        return this.doInTransaction(session -> session.get(type, id));
+    }
+
+    public <T> T get(final Class<T> type, final String id) {
         return this.doInTransaction(session -> session.get(type, id));
 
     }
@@ -117,10 +124,10 @@ public class EntityRepository {
             }
         }
 
-        List<T> resultList = sessionFactory.getCurrentSession().createQuery(criteriaQuery).getResultList();
-        return resultList;
+        return sessionFactory.getCurrentSession().createQuery(criteriaQuery).getResultList();
     }
 
+    @SuppressWarnings("squid:S1181") //To be able to catch Throwable
     private <T> T doInTransaction(Function<Session, T> supplier) {
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
@@ -140,5 +147,12 @@ public class EntityRepository {
 
     SessionFactory getSessionFactory() {
         return sessionFactory;
+    }
+
+    private static <T> List<T> loadAllData(Class<T> type, Session session) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(type);
+        criteria.from(type);
+        return session.createQuery(criteria).getResultList();
     }
 }

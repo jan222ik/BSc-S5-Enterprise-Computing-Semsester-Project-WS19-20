@@ -5,5 +5,6 @@ import java.security.Permission;
 public class SecManager extends SecurityManager {
     @Override
     public void checkPermission(Permission perm) {
+        //Should allow all, so no action is needed
     }
 }

@@ -19,6 +19,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.format.DateTimeFormatter;
@@ -27,6 +29,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookingPresenter implements ContentfulViewLifeCycle<ResultVM> {
+
+    private static final Logger logger = LogManager.getLogger(BookingPresenter.class);
 
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -119,11 +123,11 @@ public class BookingPresenter implements ContentfulViewLifeCycle<ResultVM> {
     }
 
     private void updateTotals() {
-        System.out.println("update" + catItemViewPresenter.size());
+        logger.debug("update {}", catItemViewPresenter.size());
         int totalPrice = 0;
         int totalAmount = 0;
         for (CatItemView catItemView : catItemViewPresenter) {
-            System.out.println(" catItemView.getTicketAmount(); = " + catItemView.getTicketAmount());
+            logger.debug(" catItemView.getTicketAmount(); = {}", catItemView.getTicketAmount());
             totalAmount += catItemView.getTicketAmount();
             totalPrice += (catItemView.getCat().getPriceInCent()) * catItemView.getTicketAmount();
         }

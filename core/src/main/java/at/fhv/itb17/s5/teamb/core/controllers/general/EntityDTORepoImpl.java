@@ -5,8 +5,10 @@ import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.LocationRowDTO;
 import at.fhv.itb17.s5.teamb.dtos.LocationSeatDTO;
+import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.dtos.mapper.EventMapper;
+import at.fhv.itb17.s5.teamb.dtos.mapper.MsgTopicMapper;
 import at.fhv.itb17.s5.teamb.dtos.mapper.TicketMapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
@@ -14,6 +16,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.EventCategory;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.entities.LocationRow;
 import at.fhv.itb17.s5.teamb.persistence.entities.LocationSeat;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import at.fhv.itb17.s5.teamb.persistence.entities.TicketStates;
 
@@ -22,8 +25,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityDTORepoImpl implements EntityDTORepo {
+    //FIXME Possible Mem leak
     private HashMap<TicketDTO, Ticket> tickets = new HashMap<>();
     private HashMap<Long, Event> events = new HashMap<>();
+    private HashMap<Long, MsgTopic> topics = new HashMap<>();
 
 
     @Override
@@ -119,5 +124,32 @@ public class EntityDTORepoImpl implements EntityDTORepo {
     @Override
     public List<Ticket> toTickets(List<TicketDTO> ticketDTOs, Client client) {
         return ticketDTOs.stream().map((TicketDTO ticketDTO) -> toTicket(ticketDTO, client)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MsgTopicDTO> toMsgTopicDTOs(List<MsgTopic> topics) {
+        return topics.stream().map(this::toMsgTopicDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public MsgTopicDTO toMsgTopicDTO(MsgTopic topic) {
+        topics.put(topic.getTopicId(), topic);
+        return MsgTopicMapper.toDTO(topic);
+    }
+
+    @Override
+    public List<MsgTopic> toMsgTopics(List<MsgTopicDTO> topicDTOs) {
+        return topicDTOs.stream().map(this::toMsgTopic).collect(Collectors.toList());
+    }
+
+    @Override
+    public MsgTopic toMsgTopic(MsgTopicDTO topicDTO) {
+        return topics.get(topicDTO.getTopicId());
+    }
+
+    @Override
+    public EventDTO getEventDTOByID(Long eventID) {
+        Event event = events.get(eventID);
+        return toEventDTO(event);
     }
 }
