@@ -36,10 +36,10 @@ public class EJBController {
         return new InitialContext(jndiProps);
     }
 
-    public SearchService createSearchService() throws NamingException, RemoteException {
+    public SearchService createSearchService() throws NamingException {
         logger.info("EJB: Creating SearchService");
         if (initialContext != null) {
-            SearchService searchService = (SearchService) initialContext.lookup("");
+            SearchService searchService = (SearchService) initialContext.lookup("ejb:/core-beans-1.0-jar-with-dependencies/SearchServiceEJB!at.fhv.itb17.s5.teamb.core.controllers.general.SearchService");
             logger.info("EJB: Created SearchService");
             return searchService;
         } else {
@@ -48,19 +48,23 @@ public class EJBController {
         }
     }
 
-    public BookingService createBookingService(IFrontEndClient frontEndClient, String username, String password) throws RemoteException {
-        logger.info("RMI: Creating BookingService");
-        if (stub == null) return null;
-        BookingService bookingService = stub.createBookingService(frontEndClient, username, password);
-        logger.debug("Created bookingService = {}", bookingService);
-        return bookingService;
+    public BookingService createBookingService(IFrontEndClient frontEndClient, String username, String password) throws NamingException {
+        logger.info("EJB: Creating BookingService");
+        if (initialContext != null) {
+            BookingService bookingService = (BookingService) initialContext.lookup("ejb:/core-beans-1.0-jar-with-dependencies/BookingServiceEJB!at.fhv.itb17.s5.teamb.core.controllers.general.BookingService");
+            logger.debug("Created bookingService = {}", bookingService);
+            return bookingService;
+        }
+        return null;
     }
 
-    public MsgTopicService createMsgTopicService(String username, String password) throws RemoteException {
+    public MsgTopicService createMsgTopicService(String username, String password) throws NamingException {
         logger.info("RMI: Creating MsgTopicService");
-        if (stub == null) return null;
-        MsgTopicService topicService = stub.createTopicService(username, password);
-        logger.debug("Created topicService = {}", topicService);
-        return topicService;
+        if(initialContext != null) {
+            MsgTopicService topicService = (MsgTopicService) initialContext.lookup("ejb:/core-beans-1.0-jar-with-dependencies/MsgTopicServiceEJB!at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService");
+            logger.debug("Created topicService = {}", topicService);
+            return topicService;
+        }
+        return null;
     }
 }

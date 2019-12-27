@@ -9,6 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class EJBTopicServiceImpl implements MsgTopicService {
             } else {
                 return RMIConnectionStatus.CREDENTIALS_INVALID;
             }
-        } catch (RemoteException e) {
+        } catch (NamingException e) {
             e.printStackTrace();
             logger.error(RMI_ERROR_MSG);
         }

@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
+import javax.naming.NamingException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -17,7 +18,7 @@ import java.util.List;
 public class EJBBookingServiceImpl implements BookingService {
     private static final Logger logger = LogManager.getLogger(EJBBookingServiceImpl.class);
     private EJBController ejb;
-    private static final String RMI_REMOTE_EXCEPTION = "RMI Remote Exception";
+    private static final String EJB_EXCEPTION = "EJB Exception";
     private IFrontEndClient client;
     private at.fhv.itb17.s5.teamb.core.controllers.general.BookingService remoteBookingService;
 
@@ -37,9 +38,9 @@ public class EJBBookingServiceImpl implements BookingService {
             } else {
                 return RMIConnectionStatus.CREDENTIALS_INVALID;
             }
-        } catch (RemoteException e) {
+        } catch (NamingException | RemoteException e) {
             e.printStackTrace();
-            logger.error(RMI_REMOTE_EXCEPTION);
+            logger.error(EJB_EXCEPTION);
         }
         return RMIConnectionStatus.NO_CONNECTION;
     }
@@ -65,7 +66,7 @@ public class EJBBookingServiceImpl implements BookingService {
                 return remoteBookingService.bookTickets(ticketDTOs);
             } catch (RemoteException e) {
                 e.printStackTrace();
-                logger.error(RMI_REMOTE_EXCEPTION);
+                logger.error(EJB_EXCEPTION);
                 return null;
             }
         } else {
@@ -84,7 +85,7 @@ public class EJBBookingServiceImpl implements BookingService {
                 return remoteBookingService.reserveTickets(ticketDTOs);
             } catch (RemoteException e) {
                 e.printStackTrace();
-                logger.error(RMI_REMOTE_EXCEPTION);
+                logger.error(EJB_EXCEPTION);
                 return null;
             }
         } else {

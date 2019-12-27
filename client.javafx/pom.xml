@@ -58,6 +58,12 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-ejb-client-bom</artifactId>
+            <version>17.0.1.Final</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
 
     <build>
