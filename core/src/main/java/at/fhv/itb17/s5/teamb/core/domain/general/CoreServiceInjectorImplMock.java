@@ -48,4 +48,9 @@ public class CoreServiceInjectorImplMock implements CoreServiceInjector {
     public MsgServiceCore getMsgTopicServiceCore() {
         return msgTopicServiceCore;
     }
+
+    @Override
+    public EntityRepository getEntityRepository() {
+        return entityRepository;
+    }
 }

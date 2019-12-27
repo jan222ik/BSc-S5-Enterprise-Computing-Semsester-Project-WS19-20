@@ -31,7 +31,7 @@ public class CoreMain {
         CoreMain coreMain = new CoreMain();
         EntryPointRMI entryPointRMI;
         try {
-            entryPointRMI = new EntryPointRMI(rmiPort, new CoreServiceInjectorImpl(!noLDAP));
+            entryPointRMI = new EntryPointRMI(rmiPort, CoreServiceInjectorImpl.getInstance(!noLDAP));
             LinkedList<EntryPoint> entryPoints = new LinkedList<>(Collections.singletonList(entryPointRMI));
             coreMain.start(entryPoints);
         } catch (RemoteException e) {

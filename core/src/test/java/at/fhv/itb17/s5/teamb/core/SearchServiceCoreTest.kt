@@ -27,14 +27,14 @@ class SearchServiceCoreTest {
 
     @Test
     fun `Search Tickets - Success - Find All`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor("")
         assertThat(search.size, `is`(5))
     }
 
     @Test
     fun `Search Tickets - Success - by event title`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val evt = coreServiceInjectorImpl.entityRepository.getAll(Event::class.java, listOf())[0]
         val pair = toSearchString(listOf(SearchPair(SearchCategories.EVENT_NAME, evt.title)))
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
@@ -45,7 +45,7 @@ class SearchServiceCoreTest {
 
     @Test
     fun `Search Tickets - Success - by artist name`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val evt = coreServiceInjectorImpl.entityRepository.getAll(Event::class.java, listOf())[0]
         val pair = toSearchString(listOf(SearchPair(SearchCategories.ARTIST_NAME, evt.artists[0].name)))
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
@@ -56,7 +56,7 @@ class SearchServiceCoreTest {
 
     @Test
     fun `Search Tickets - Fail - by event title`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val pair = toSearchString(listOf(SearchPair(SearchCategories.EVENT_NAME, "DOESNOTEXIST")))
         println("pair = ${pair}")
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
@@ -65,7 +65,7 @@ class SearchServiceCoreTest {
 
     @Test
     fun `Search Tickets - Success - by event genre`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val evt = coreServiceInjectorImpl.entityRepository.getAll(Event::class.java, listOf())[4]
         val pair = toSearchString(listOf(SearchPair(SearchCategories.GENRE, evt.genre)))
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
@@ -78,7 +78,7 @@ class SearchServiceCoreTest {
 
     @Test
     fun `Search Tickets - Fail - by event genre`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val pair = toSearchString(listOf(SearchPair(SearchCategories.GENRE, "DOESNOTEXIST")))
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
         assertThat(search.size, Matchers.`is`(0))
@@ -86,7 +86,7 @@ class SearchServiceCoreTest {
 
     @Test
     fun `Search Tickets - Success - by date from and genre`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val evt = coreServiceInjectorImpl.entityRepository.getAll(Event::class.java, listOf())[4]
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val pair = toSearchString(listOf(SearchPair(SearchCategories.GENRE, evt.genre), SearchPair(SearchCategories.DATE_FROM, evt.occurrences.get(0).date.format(formatter))))
@@ -100,7 +100,7 @@ class SearchServiceCoreTest {
 
     @Test
     fun `Search Tickets - Success - by date until and genre`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val evt = coreServiceInjectorImpl.entityRepository.getAll(Event::class.java, listOf())[4]
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val pair = toSearchString(listOf(SearchPair(SearchCategories.GENRE, evt.genre), SearchPair(SearchCategories.DATE_UNTIL, evt.occurrences.get(0).date.plusDays(1L).format(formatter))))
@@ -114,7 +114,7 @@ class SearchServiceCoreTest {
 
     @Test
     fun `Search Tickets - Success - by location`() {
-        val coreServiceInjectorImpl = CoreServiceInjectorImpl(false)
+        val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val evt = coreServiceInjectorImpl.entityRepository.getAll(Event::class.java, listOf())[4]
         val pair = toSearchString(listOf(SearchPair(SearchCategories.LOCATION, evt.occurrences[0].address.city)))
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
