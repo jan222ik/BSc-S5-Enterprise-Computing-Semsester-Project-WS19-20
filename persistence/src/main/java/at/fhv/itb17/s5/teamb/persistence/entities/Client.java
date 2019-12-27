@@ -14,12 +14,12 @@ public class Client {
     @Id
     private String username;
     private String name;
-    @OneToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<ClientRole> role;
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
 
-    @OneToMany(cascade = {CascadeType.PERSIST})
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<MsgTopic> subscribedTopics;
 
     public Client(String username, String name, List<ClientRole> role, List<MsgTopic> topics, Address address) {
