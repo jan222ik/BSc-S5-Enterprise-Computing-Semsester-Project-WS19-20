@@ -3,6 +3,8 @@ package at.fhv.itb17.s5.teamb.corebeans;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
 import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
 import at.fhv.itb17.s5.teamb.core.controllers.rmi.SearchServiceRMI;
+import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
+import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjectorImpl;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
@@ -22,14 +24,15 @@ public class SearchServiceEJB implements SearchService {
     private SearchServiceCore coreSearch;
     private EntityDTORepo entityDTORepo;
 
-    @Inject
     public SearchServiceEJB(SearchServiceCore searchServiceCore, EntityDTORepo entityDTORepo) {
         this.coreSearch = searchServiceCore;
         this.entityDTORepo = entityDTORepo;
     }
 
     public SearchServiceEJB(){
-
+        CoreServiceInjector injector = CoreServiceInjectorImpl.getInstance(true);
+        this.coreSearch = injector.getSearchServiceCore();
+        this.entityDTORepo = injector.getEntityRepo();
     }
 
     @SuppressWarnings("DuplicatedCode")

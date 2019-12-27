@@ -3,6 +3,8 @@ package at.fhv.itb17.s5.teamb.corebeans;
 import at.fhv.itb17.s5.teamb.core.controllers.general.ClientSessionRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
 import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
+import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
+import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjectorImpl;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
@@ -28,7 +30,6 @@ public class MsgTopicServiceEJB implements MsgTopicService {
 
     List<String> feeds = new LinkedList<>(Collections.singletonList("https://www.ots.at/rss/kultur"));
 
-    @Inject
     public MsgTopicServiceEJB(MsgServiceCore topicService, ClientSessionRMI client, EntityDTORepo entityDTORepo) {
         this.topicService = topicService;
         this.entityDTORepo = entityDTORepo;
@@ -36,9 +37,10 @@ public class MsgTopicServiceEJB implements MsgTopicService {
     }
 
     public MsgTopicServiceEJB() {
-        client = null;
-        topicService = null;
-        entityDTORepo = null;
+        CoreServiceInjector injector = CoreServiceInjectorImpl.getInstance(true);
+        this.client = new ClientSessionRMI("null", null, null, injector.getAuthManagerCore().queryClient("admin"));
+        this.topicService = injector.getMsgTopicServiceCore();
+        this.entityDTORepo = injector.getEntityRepo();
     }
 
     @Override
