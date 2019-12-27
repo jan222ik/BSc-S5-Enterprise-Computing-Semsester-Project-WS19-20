@@ -80,7 +80,7 @@ public class ApplicationMain extends Application implements SetupCallback {
         msgAsyncService = new MsgAsyncServiceImpl();
         new Thread(() -> {
             try {
-                msgAsyncService.init(MsgServiceCoreImpl.VM_LOCALHOST);
+                msgAsyncService.init(MsgServiceCoreImpl.TCP, "Consumer"); //TODO use username as clientID
             } catch (JMSException e) {
                 e.printStackTrace();
             }
@@ -143,11 +143,12 @@ public class ApplicationMain extends Application implements SetupCallback {
         primary.setTitle(title);
     }
 
-    private void showStage(@NotNull Stage primary) {
+    private void showStage(@NotNull Stage primary) throws FileNotFoundException {
         primary.initStyle(
                 args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
         );
-        primary.getIcons().add(new Image("icon.png"));
+        File file = new File("client.javafx/src/main/resources/icon.png");
+        primary.getIcons().add(new Image(new FileInputStream(file)));
         primary.show();
         primary.toFront();
     }

@@ -9,6 +9,7 @@ import java.util.List;
 public class MsgServiceCoreImpl implements MsgServiceCore {
 
     public static final String VM_LOCALHOST = "vm://localhost";
+    public static final String TCP = "tcp://localhost:61616";
     private MsgRepository msgRepository;
     private MsgProducer msgProducer;
 
@@ -16,8 +17,8 @@ public class MsgServiceCoreImpl implements MsgServiceCore {
         this.msgRepository = msgRepository;
         this.msgProducer = new MsgProducer();
         try {
-            msgProducer.init(VM_LOCALHOST);
-        } catch (JMSException e) {
+            msgProducer.init(TCP, "ProducerStart");
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -32,10 +33,10 @@ public class MsgServiceCoreImpl implements MsgServiceCore {
     public boolean createMessage(MsgTopic topic, String messageHeader, String messageBody) {
         boolean created = false;
         try {
-            msgProducer.init(VM_LOCALHOST);
+            msgProducer.init(TCP, "ProducerProduce");
             created = msgProducer.createMessagePub(messageHeader, messageBody, topic);
             msgProducer.close();
-        } catch (JMSException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return created;

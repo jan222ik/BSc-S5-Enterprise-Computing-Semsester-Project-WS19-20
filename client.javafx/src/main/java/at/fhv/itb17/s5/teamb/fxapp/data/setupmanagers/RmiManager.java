@@ -1,13 +1,16 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
+import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIBookingServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMISearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import com.airhacks.afterburner.injection.Injector;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
@@ -16,6 +19,7 @@ import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.jms.JMSException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
@@ -123,5 +127,10 @@ public class RmiManager implements SetupManager {
 
     public void executeOnFX(Consumer<Object> consumer) {
         disposables.add(Observable.just(new Object()).subscribeOn(JavaFxScheduler.platform()).subscribe(consumer));
+    }
+
+    @Override
+    public List<MsgTopic> getSubscribedTopics() {
+        return msgTopicService.getSubscribedTopics();
     }
 }

@@ -3,6 +3,7 @@ package at.fhv.itb17.s5.teamb.fxapp.data.mock;
 import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
@@ -48,7 +49,7 @@ public class MockMsgAsyncServiceImpl implements MsgAsyncService {
     }
 
     @Override
-    public void init(String brokerUrl) throws JMSException {
+    public void init(String brokerUrl, String test) throws JMSException {
 
     }
 
@@ -63,6 +64,11 @@ public class MockMsgAsyncServiceImpl implements MsgAsyncService {
 
     @Override
     public void close() throws JMSException {
+
+    }
+
+    @Override
+    public void setTopics(List<MsgTopic> topics) {
 
     }
 }

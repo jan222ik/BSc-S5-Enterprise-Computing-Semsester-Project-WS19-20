@@ -1,5 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.msg;
 
+import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
+import at.fhv.itb17.s5.teamb.dtos.mapper.MsgTopicMapper;
 import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
@@ -12,18 +14,10 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.jms.Connection;
-import javax.jms.Destination;
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.jms.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,48 +25,63 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
 
     private static final Logger logger = LogManager.getLogger(MsgAsyncServiceImpl.class);
     private Disposable dispose;
-
     private List<MsgTopic> topics;
     private Session session;
     private Connection connection;
-    @SuppressWarnings({"FieldCanBeLocal", "squid:1450", "MismatchedQueryAndUpdateOfCollection"})
-    private List<MessageConsumer> msgConsumers;
+    private HashMap<String, Destination> destinations = new HashMap<>();
+    private HashMap<Destination, TopicSubscriber> msgConsumers = new HashMap<>();
+    private HashMap<Topic, String> subNames = new HashMap<>();
     private List<TextMessage> messages;
     private ObservableList<MsgWrapper> outList = new ObservableList<>();
+
+    public MsgAsyncServiceImpl(List<MsgTopic> topics) {
+        this.topics = topics;
+        this.messages = new LinkedList<>();
+    }
 
     public MsgAsyncServiceImpl() {
         this.topics = new LinkedList<>();
         this.messages = new LinkedList<>();
+        MsgTopic system = new MsgTopic("SYSTEM", false);
+        MsgTopic rock = new MsgTopic("ROCK", false);
+        MsgTopic opera = new MsgTopic("OPERA", false);
+        topics.add(system);
+        topics.add(rock);
+        topics.add(opera);
     }
 
     @Override
-    public void init(String brokerUrl) throws JMSException {
-        logger.debug("Init MsgAsyncServiceImpl");
+    public void init(String brokerUrl, String clientId) throws JMSException {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
 
         // Create a Connection
         connection = connectionFactory.createConnection();
-        connection.start();
-
+        connection.setClientID(clientId);
         connection.setExceptionListener(this);
 
         // Create a Session
         session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-
         // Create the destination (Topic or Queue)
-        List<Destination> destinations = new LinkedList<>();
         for (MsgTopic msgTopic : topics) {
-            Queue queue = session.createQueue("Consumer." + this.hashCode() + ".VirtualTopic." + msgTopic.getName());
-            destinations.add(queue);
+            Topic topic = session.createTopic("VirtualTopic." + msgTopic.getName());
+            //Topic topic = session.createTopic("Consumer." + this.hashCode() + ".VirtualTopic." + msgTopic.getName());
+            destinations.put(msgTopic.getName(), topic);
+            subNames.put(topic, msgTopic.getName());
         }
 
         // Create a MessageConsumer from the Session to the Topic or Queue
-        //msgConsumers = new LinkedList<>();
-        for (Destination destination1 : destinations) {
-            MessageConsumer consumer = session.createConsumer(destination1);
-            consumer.setMessageListener(this);
-            //msgConsumers.add(consumer);
-        }
+        destinations.forEach((topic, destination) -> {
+            TopicSubscriber consumer = null;
+            try {
+                consumer = session.createDurableSubscriber((Topic) destination, subNames.get(destination));
+                consumer.setMessageListener(this);
+                msgConsumers.put(destination, consumer);
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        });
+
+        connection.start();
     }
 
     @Override
@@ -116,6 +125,13 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     @Override
     public void close() throws JMSException {
         if (session != null) {
+            topics.forEach((msgTopic -> {
+                try {
+                    session.unsubscribe(msgTopic.getName());
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }));
             session.close();
         }
         if (connection != null) {
@@ -124,6 +140,11 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
         if (dispose != null && !dispose.isDisposed()) {
             dispose.dispose();
         }
+    }
+
+    @Override
+    public void setTopics(List<MsgTopic> topics) {
+
     }
 
     public static class ObservableList<T> {
@@ -135,10 +156,12 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
             this.list = new ArrayList<>();
             this.onAdd = PublishSubject.create();
         }
+
         public void add(T value) {
             list.add(value);
             onAdd.onNext(value);
         }
+
         public Observable<T> getObservable() {
             return onAdd;
         }
