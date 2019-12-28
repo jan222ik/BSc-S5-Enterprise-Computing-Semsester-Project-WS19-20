@@ -28,15 +28,6 @@ class RestServer {
             val mapper = jacksonObjectMapper()
             mapper.registerModule(KotlinModule())
             val server = embeddedServer(Netty, 8080) {
-                /*install(ContentNegotiation) {
-                    jackson {
-                        // extension method of ObjectMapper to allow config etc
-                        enable(SerializationFeature.INDENT_OUTPUT)
-                        registerModule(KotlinModule())
-                    }
-                }
-
-                 */
                 routing {
                     get(path = "/") {
                         call.respondText(html(), ContentType.Text.Html)
@@ -65,8 +56,6 @@ class RestServer {
             }
             server.start(wait = true)
         }
-
-    data class TestOut(val test: String)
 
 
         private fun html(): String = """
