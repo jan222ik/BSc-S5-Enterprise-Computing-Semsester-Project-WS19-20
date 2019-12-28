@@ -34,14 +34,15 @@ class RestServer {
                 routing {
                     // STATIC CONTENT SERVE
                     get(path = "/") {
-                        call.respondText(html(), ContentType.Text.Html)
+                        call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\kotlinweb\\src\\main\\resources\\TestJS.html"))
+                        //call.respondText(html(), ContentType.Text.Html)
                     }
                     get(path = "/lib/kotlin.js") {
-                        call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\out\\production\\webjs\\lib\\kotlin.js"))
+                        call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\client.apis.ktor\\src\\main\\resources\\kotlin.js"))
                         //call.respondText("", ContentType.Text.JavaScript)
                     }
                     get(path = "/lib/webjs.js") {
-                        call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\out\\production\\webjs\\webjs.js"))
+                        call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\kotlinweb\\build\\classes\\kotlin\\main\\kotlinweb.js"))
                     }
                     // REST API
                     post(path = "/events/{eventID}/occurrences/{occID}/categories/{catID}/book") {
