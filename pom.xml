@@ -17,6 +17,7 @@
         <module>dtos</module>
         <module>core-beans</module>
         <module>CoreStarter</module>
+        <module>client.apis.ktor</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -120,6 +121,7 @@
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
                     <include>**/*.MF</include>
+                    <include>**/*.html</include>
                 </includes>
             </resource>
             <resource>
@@ -130,6 +132,7 @@
                     <include>**/*.png</include>
                     <include>**/*.xml</include>
                     <include>**/*.MF</include>
+                    <include>**/*.html</include>
                 </includes>
             </resource>
         </resources>

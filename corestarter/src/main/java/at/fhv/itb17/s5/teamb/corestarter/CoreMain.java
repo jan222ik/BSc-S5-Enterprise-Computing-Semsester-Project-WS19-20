@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.corestarter;
 
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjectorImpl;
+import at.fhv.itb17.s5.teamb.ktor.RestServer;
 import at.fhv.itb17.s5.teamb.util.ArgumentParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,13 +32,15 @@ public class CoreMain {
         CoreServiceInjectorImpl coreServiceInjector = new CoreServiceInjectorImpl(!noLDAP);
         try {
             entryPointRMI = new EntryPointRMI(rmiPort, coreServiceInjector);
-            LinkedList<EntryPoint> entryPoints = new LinkedList<>(Arrays.asList(new EntryPointREST(coreServiceInjector)
-                    , entryPointRMI
+            LinkedList<EntryPoint> entryPoints = new LinkedList<>(Arrays.asList(
+                    //new EntryPointREST(coreServiceInjector),
+                    entryPointRMI
             ));
             coreMain.start(entryPoints);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        new RestServer().main(coreServiceInjector);
         logger.info("Finished Init Core");
     }
 }

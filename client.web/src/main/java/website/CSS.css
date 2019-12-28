@@ -37,6 +37,9 @@
     .sidenav a {font-size: 18px;}
 }
 
+.list{
+    float: end;
+}
 
 .center {
     text-align: center;

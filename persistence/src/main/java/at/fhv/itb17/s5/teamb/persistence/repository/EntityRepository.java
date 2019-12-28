@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.criteria.*;
@@ -131,7 +132,7 @@ public class EntityRepository {
     private <T> T doInTransaction(Function<Session, T> supplier) {
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
-        if (!(transaction.isActive())) {
+        if (transaction.getStatus() != TransactionStatus.ACTIVE) {
             transaction.begin();
         }
         try {

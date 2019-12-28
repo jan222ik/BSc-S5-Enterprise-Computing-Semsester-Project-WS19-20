@@ -13,14 +13,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>advanceticketsale.client.apis</groupId>
-            <artifactId>client.apis</artifactId>
+            <groupId>advanceticketsale.core</groupId>
+            <artifactId>core</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>advanceticketsale.core</groupId>
-            <artifactId>core</artifactId>
+            <groupId>advanceticketsale.client.apis</groupId>
+            <artifactId>client.apis</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>advanceticketsale.parent</groupId>
+            <artifactId>client.apis.ktor</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
