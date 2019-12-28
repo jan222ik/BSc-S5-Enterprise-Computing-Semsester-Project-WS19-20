@@ -54,18 +54,19 @@ public class EventsApiController implements EventsApi {
         System.out.println("eventID = [" + eventID + "], occID = [" + occID + "], catID = [" + catID + "], body = [" + body + "]");
         try {
             EntityDTORepo entityRepo = injector.getEntityRepo();
+            System.out.println("entityRepo = " + entityRepo);
             ClientRepository clientRepo = injector.getClientRepo();
             LinkedList<TicketDTO> ticketDTOS = new LinkedList<>();
             EventDTO evt = entityRepo.getEventDTOByID(eventID);
-            EvOccurrenceDTO occ = evt.getOccurrences().stream().filter(e -> e.getOccurrenceId() == occID).findFirst().orElseThrow(() -> new NotFoundException("OCCId not found"));
-            EvCategoryInterfaceDTO cat = occ.getPriceCategories().stream().filter(e -> e.getEventCategoryId() == catID).findFirst().orElseThrow(() -> new NotFoundException("CatId not found"));
+            EvOccurrenceDTO occ = evt.getOccurrences().stream().filter(e -> e.getOccurrenceId().equals(occID)).findFirst().orElseThrow(() -> new NotFoundException("OCCId not found"));
+            EvCategoryInterfaceDTO cat = occ.getPriceCategories().stream().filter(e -> e.getEventCategoryId().equals(catID)).findFirst().orElseThrow(() -> new NotFoundException("CatId not found"));
             boolean isSeat = false;
             if (body.getRowseats() != null && !body.getRowseats().isEmpty()) {
                 isSeat = true;
                 EvCategorySeatsDTO castCat = (EvCategorySeatsDTO) cat;
                 for (RowSeat rowSeat : body.getRowseats()) {
-                    LocationRowDTO row = castCat.getSeatingRows().stream().filter(e -> e.getRowId() == rowSeat.getRowID()).findFirst().orElseThrow(() -> new NotFoundException("RowId not found"));
-                    LocationSeatDTO seat = row.getSeats().stream().filter(e -> e.getSeatId() == rowSeat.getSeatID()).findFirst().orElseThrow(() -> new NotFoundException("SeatId not found"));
+                    LocationRowDTO row = castCat.getSeatingRows().stream().filter(e -> e.getRowId().equals(rowSeat.getRowID())).findFirst().orElseThrow(() -> new NotFoundException("RowId not found"));
+                    LocationSeatDTO seat = row.getSeats().stream().filter(e -> e.getSeatId().equals(rowSeat.getSeatID())).findFirst().orElseThrow(() -> new NotFoundException("SeatId not found"));
                     ticketDTOS.add(new TicketDTO(evt, occ, castCat, row, seat));
                 }
             } else {

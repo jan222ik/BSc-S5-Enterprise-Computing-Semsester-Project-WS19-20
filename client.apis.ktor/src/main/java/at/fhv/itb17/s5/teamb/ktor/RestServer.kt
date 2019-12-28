@@ -13,13 +13,16 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
+import io.ktor.request.receiveText
 import io.ktor.response.respond
+import io.ktor.response.respondFile
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import java.io.File
 
 class RestServer {
 
@@ -29,16 +32,30 @@ class RestServer {
             mapper.registerModule(KotlinModule())
             val server = embeddedServer(Netty, 8080) {
                 routing {
+                    // STATIC CONTENT SERVE
                     get(path = "/") {
                         call.respondText(html(), ContentType.Text.Html)
                     }
-                    get(path = "lib/kotlin.js") {
-                        call.respondText("", ContentType.Text.JavaScript)
+                    get(path = "/lib/kotlin.js") {
+                        call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\out\\production\\webjs\\lib\\kotlin.js"))
+                        //call.respondText("", ContentType.Text.JavaScript)
                     }
+                    get(path = "/lib/webjs.js") {
+                        call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\out\\production\\webjs\\webjs.js"))
+                    }
+                    // REST API
                     post(path = "/events/{eventID}/occurrences/{occID}/categories/{catID}/book") {
-                        val result = api.bookTicket(1L, 1L, 1L, TicketOrder())
-                        call.respond(status = HttpStatusCode.fromValue(result.status)) {
-                            result.generic
+                        val eventID = call.parameters["eventID"]!!.toLong()
+                        val occID = call.parameters["occID"]!!.toLong()
+                        val catID = call.parameters["catID"]!!.toLong()
+                        val body = mapper.readValue<TicketOrder>(call.receiveText(), TicketOrder::class.java)
+                        val result = api.bookTicket(eventID, occID, catID, body)
+                        println(result.generic)
+                        val status = HttpStatusCode.fromValue(result.status)
+                        if (result.generic != null) {
+                            call.respondText(text =  mapper.writeValueAsString(result.generic), status = status)
+                        } else {
+                            call.respond(status = status, message = status.description)
                         }
                     }
                     get(path = "/events/findByQueryString") {
@@ -209,14 +226,9 @@ class RestServer {
     </div>
 </div>
 <div id="cart" class="tabcontent"></div>
-<script src="Z:\Users\jan22\CodeProjects\advance-ticket-sale\out\production\webjs\lib\kotlin.js"></script>
-<script src="Z:\Users\jan22\CodeProjects\advance-ticket-sale\out\production\webjs\webjs.js"></script>
+<script src="/lib/kotlin.js"></script>
+<script src="/lib/webjs.js"></script>
 </body>
 </html>
     """.trimIndent()
-
-        fun scriptKotlin(): String {
-            return ""
-        }
-
 }

@@ -1,0 +1,317 @@
+openapi: 3.0.1
+info:
+  title: Advance Ticket Sale
+  description: Advance Ticket Sale is a mandatory project from uni.
+  version: 1.0.0
+externalDocs:
+  description: External Doku
+  url: https://github.com/jan222ik/Semester5---Project-Enterprise-Computing
+servers:
+  - url: https://localhost:8080
+tags:
+  - name: events
+    description: Everything about the existing events
+paths:
+  /events/findByQueryString:
+    get:
+      tags:
+        - events
+      summary: Query a list of events based on a search string
+      parameters:
+        - name: queryString
+          in: query
+          description: QueryString used as a filter
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Request was successful, returns not empty result set found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        204:
+          description: Request was successful but resultset is empty
+          content: {}
+        400:
+          description: Invalid QueryString
+          content: {}
+        500:
+          description: Unexpected server exception
+          content: {}
+
+  /events/{eventID}/occurrences/{occID}/categories/{catID}/book:
+    post:
+      tags:
+        - events
+      summary: Book tickets for a specific category of an event's occurrence
+      description: Multiple status values can be provided with comma separated strings
+      operationId: bookTicket
+      parameters:
+        - name: eventID
+          in: path
+          description: ID of the event to book
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: occID
+          in: path
+          description: ID of the occurence to book
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: catID
+          in: path
+          description: ID of the category to book
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketOrder'
+      responses:
+        200:
+          description: Successful operation, but tickets may have not been booked, check payload errMsg for info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingResponse'
+        400:
+          description: Unpareable data and types
+          content: {}
+        404:
+          description: Data in path or Body not linkable to entity
+          content: {}
+        406:
+          description: Content-Type Header missing or does not conatin application/json
+          content: {}
+        409:
+          description: If not enough tickets are avariable
+          content: {}
+        500:
+          description: Unexpected server exception
+          content: {}
+
+
+
+components:
+  schemas:
+    PaymentInfo:
+      required:
+        - nameF
+        - nameL
+        - country
+        - city
+        - zip
+        - street
+        - house
+        - cardNr
+      type: object
+      properties:
+        nameF:
+          type: string
+        nameL:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+        zip:
+          type: string
+        street:
+          type: string
+        house:
+          type: string
+        cardNr:
+          type: integer
+          format: int64
+    TicketOrder:
+      required:
+        - amount
+        - rowseats
+        - bookinginfo
+      type: object
+      properties:
+        amount:
+          type: integer
+          format: int64
+        rowseats:
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/RowSeat'
+        bookingInfo:
+          $ref: '#/components/schemas/PaymentInfo'
+    RowSeat:
+      required:
+        - rowID
+        - seatID
+      type: object
+      properties:
+        rowID:
+          type: integer
+          format: int64
+        seatID:
+          type: integer
+          format: int64
+    BookingResponse:
+      required:
+        - transactionId
+        - errMsg
+      type: object
+      properties:
+        tranactionId:
+          type: integer
+          format: int64
+        errMsg:
+          nullable: true
+          type: string
+    Event:
+      required:
+        - eventId
+        - title
+        - description
+        - genre
+        - artistNames
+        - occurrences
+      type: object
+      properties:
+        eventId:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        genere:
+          type: string
+        artistNames:
+          type: array
+          items:
+            type: string
+        occurrences:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventOcc'
+    EventOcc:
+      required:
+        - occurrenceId
+        - date
+        - time
+        - priceCategories
+        - addressId
+        - country
+        - zip
+        - city
+        - street
+        - house
+        - categoryCalcDataDTO
+      type: object
+      properties:
+        occurrenceId:
+          type: integer
+          format: int64
+        date:
+          type: integer
+          format: int64
+        time:
+          type: integer
+          format: int64
+        priceCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/OccCat'
+        addressId:
+          type: integer
+          format: int64
+        country:
+          type: string
+        zip:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        house:
+          type: string
+        categoryCalcDataDTO:
+          $ref: '#/components/schemas/categoryCalcDataDto'
+    OccCat:
+      required:
+        - eventCategoryId
+        - categoryName
+        - totalTickets
+        - usedTickets
+        - priceInCents
+        - rows
+      type: object
+      properties:
+        eventCategoryId:
+          type: integer
+          format: int64
+        categoryName:
+          type: string
+        totalTickets:
+          type: integer
+          format: int64
+        usedTickets:
+          type: integer
+          format: int64
+        priceInCents:
+          type: integer
+          format: int64
+        rows:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/Row'
+    Row:
+      required:
+        - rowId
+        - rowIdf
+        - seats
+      type: object
+      properties:
+        rowId:
+          type: integer
+          format: int64
+        rowIdf:
+          type: string
+        seats:
+          $ref: '#/components/schemas/Seat'
+    Seat:
+      required:
+        - seatId
+        - seatIdf
+        - isFree
+      properties:
+        seatId:
+          type: integer
+          format: int64
+        seatIdf:
+          type: string
+        isFree:
+          type:  boolean
+    categoryCalcDataDto:
+      required:
+        - minPrice
+        - maxPrice
+        - ticketTypes
+      properties:
+        minPrice:
+          type: integer
+        maxPrice:
+          type: integer
+        ticketTypes:
+          type: string
+
