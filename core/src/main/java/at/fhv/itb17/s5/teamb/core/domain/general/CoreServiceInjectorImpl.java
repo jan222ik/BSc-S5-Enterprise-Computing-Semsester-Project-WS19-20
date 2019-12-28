@@ -160,13 +160,43 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12, 20), LocalTime.of(16, 30, 0), Arrays.asList(new EventCategory("Standardeintritt", 500, 80, 0)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
         kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12, 25), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 500, 80, 0)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
         kochshowOccurence.add(new EventOccurrence(LocalDate.of(2019, 12, 30), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 600, seatingRows)), new Address("Deutschland", "10115", "Berlin", "Langestraße", "44")));
-        List<Event> events = new LinkedList<>();
 
+        List<EventOccurrence> karaokeOccurrence = new ArrayList<>();
+        List<LocationRow> karaokeSeatingRows = new ArrayList<>();
+        karaokeSeatingRows.add(new LocationRow("Row 1", Arrays.asList(
+                new LocationSeat("Seat 1", false),
+                new LocationSeat("Seat 2", false),
+                new LocationSeat("Seat 3", false),
+                new LocationSeat("Seat 4", false),
+                new LocationSeat("Seat 5", false),
+                new LocationSeat("Seat 6", false))));
+
+        karaokeSeatingRows.add(new LocationRow("Row 2", Arrays.asList(
+                new LocationSeat("Seat 1", false),
+                new LocationSeat("Seat 2", false),
+                new LocationSeat("Seat 3", false),
+                new LocationSeat("Seat 4", false),
+                new LocationSeat("Seat 5", false),
+                new LocationSeat("Seat 6", false))));
+
+        karaokeSeatingRows.add(new LocationRow("Row 3", Arrays.asList(
+                new LocationSeat("Seat 1", false),
+                new LocationSeat("Seat 2", false),
+                new LocationSeat("Seat 3", false),
+                new LocationSeat("Seat 4", false),
+                new LocationSeat("Seat 5", false),
+                new LocationSeat("Seat 6", false))));
+
+        karaokeOccurrence.add(new EventOccurrence(LocalDate.of(2020, 10, 20), LocalTime.of(22, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1000, karaokeSeatingRows)), new Address("Österreich", "6900", "Bregenz", "Arlbergstraße", "100")));
+        karaokeOccurrence.add(new EventOccurrence(LocalDate.of(2020, 10, 21), LocalTime.of(22, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1000, karaokeSeatingRows)), new Address("Österreich", "6900", "Bregenz", "Arlbergstraße", "100")));
+
+        List<Event> events = new LinkedList<>();
         events.add(new Event("Scene-Openair Lustenau", "Openair Festival in Lustenau", "Festival", sceneOccurrences, new Organizer("Lustenau Festivalverband", "scene@lustenau.at", new Address("Österreich", "6830", "Lustenau", "Langegasse", "23")), sceneArtists));
         events.add(new Event("Scene-Writing", "Scene Writing für Amateure", "Vortrag", sceneWritingOccurence, new Organizer("Amateurtheater Hohenems", "info@hohenems-play.at", new Address("Österreich", "6870", "Hohenems", "Bergreuthe", "5")), Arrays.asList(new Artist("Markus Riedmann"))));
         events.add(new Event("Sponsion der FHV", "Abschlussfeier für Bachelor und Master", "Kulturveranstaltung", sponsionOccurences, new Organizer("FH Vorarlberg", "info@fhv.at", new Address("Österreich", "6850", "Dornbirn", "Hochschulstraße", "1")), Arrays.asList(new Artist("2nd Dimension"))));
         events.add(new Event("Latenight Berlin", "Klaas hat Spaas", "Unterhaltung", klaasOccurence, new Organizer("Pro 7", "redaktion@prosieben.de", new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")), Arrays.asList(new Artist("Klaas Heufer-Umlauf"))));
         events.add(new Event("Kochshow", "Kochshow mit Janik Mayr", "Unterhaltung", kochshowOccurence, new Organizer("Satteins", "janik.mayr@satteins.de", new Address("Deutschland", "10115", "Berlin", "Kölschwasser", "4711")), Arrays.asList(new Artist("Dr. Janik Mayr"))));
+        events.add(new Event("Karaoke Night", "Karaokespaß für jung und alt", "Unterhaltung", karaokeOccurrence, new Organizer("Karaoke GmbH", "karaoke-group@bregenz.at", new Address("Österreich", "6900", "Bregenz", "Seestraße", "55")), Arrays.asList(new Artist("Karaoke Guru"))));
 
         events.forEach(entityRepository::saveOrUpdate);
 

@@ -11,6 +11,7 @@ object Handler {
     private const val searchURL: String = "$testURL/events/findByQueryString?queryString="
     private var spinners: HashMap<HTMLInputElement, PriceCategory> = hashMapOf()
     var latestSearchQuery: String = ""
+    var latestPaymentInfo: BookingInfo? = null
 
 
     private fun getSearchResults(searchQuery: String): Promise<List<EventDTO>> {
