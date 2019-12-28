@@ -1,7 +1,7 @@
 package at.fhv.itb17.s5.teamb.corestarter;
 
-import at.fhv.itb17.s5.teamb.apis.rest.Swagger2SpringBoot;
-import at.fhv.itb17.s5.teamb.apis.rest.api.InjectHolder;
+import advanceticketsale.client.apis.client.apis.Application;
+import advanceticketsale.client.apis.client.apis.api.InjectHolder;
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
 
 import java.rmi.RemoteException;
@@ -16,7 +16,7 @@ public class EntryPointREST extends EntryPoint {
     @Override
     public void start() throws RemoteException {
         try {
-            Swagger2SpringBoot.main(new String[0]);
+            Application.main(new String[0]);
         } catch (Exception e) {
             e.printStackTrace();
         }
