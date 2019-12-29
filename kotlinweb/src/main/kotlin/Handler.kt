@@ -8,7 +8,7 @@ import kotlin.js.json
 
 object Handler {
     private const val testURL: String = "http://localhost:8080"
-    private const val searchURL: String = "$testURL/events/findByQueryString?queryString="
+    private const val searchURL: String = "/events/findByQueryString?queryString="
     private var spinners: HashMap<HTMLInputElement, PriceCategory> = hashMapOf()
     var latestSearchQuery: String = ""
     var latestBookingInfo: BookingInfo? = null
@@ -40,7 +40,7 @@ object Handler {
     private fun bookTickets(tickets: List<LocalTicket>) {
         if (tickets.isNotEmpty()) {
             val first = tickets.first()
-            window.fetch(input = "$testURL/events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}/book", init = RequestInit(
+            window.fetch(input = "/events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}/book", init = RequestInit(
                     method = "POST",
                     headers = json().apply { this["Content-Type"] = "application/json" },
                     body = JSON.stringify(json().apply {
