@@ -79,8 +79,8 @@ public class EntityRepository {
             transaction.commit();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             transaction.rollback();
+            e.printStackTrace();
             return false;
         }
     }

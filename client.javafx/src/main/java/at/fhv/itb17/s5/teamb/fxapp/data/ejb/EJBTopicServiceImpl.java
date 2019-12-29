@@ -16,8 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class EJBTopicServiceImpl implements MsgTopicService {
-    private static final Logger logger = LogManager.getLogger(RMITopicServiceImpl.class);
-    private static final String RMI_ERROR_MSG = "RMI Remote Exception";
+    private static final Logger logger = LogManager.getLogger(EJBTopicServiceImpl.class);
+    private static final String EJB_ERROR_MSG = "EJB Naming Exception";
     private EJBController ejb;
     private at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService msgTopicService;
 
@@ -38,7 +38,7 @@ public class EJBTopicServiceImpl implements MsgTopicService {
             }
         } catch (NamingException e) {
             e.printStackTrace();
-            logger.error(RMI_ERROR_MSG);
+            logger.error(EJB_ERROR_MSG);
         }
         return RMIConnectionStatus.NO_CONNECTION;
     }
@@ -58,7 +58,7 @@ public class EJBTopicServiceImpl implements MsgTopicService {
                 return msgTopicService.getAllTopics();
             } catch (RemoteException e) {
                 e.printStackTrace();
-                logger.error(RMI_ERROR_MSG);
+                logger.error(EJB_ERROR_MSG);
                 return new LinkedList<>();
             }
         } else {
@@ -74,7 +74,7 @@ public class EJBTopicServiceImpl implements MsgTopicService {
                 return msgTopicService.publishMsg(msgTopicDTO, header, body);
             } catch (RemoteException e) {
                 e.printStackTrace();
-                logger.error(RMI_ERROR_MSG);
+                logger.error(EJB_ERROR_MSG);
             }
         }
         return false;
@@ -87,7 +87,7 @@ public class EJBTopicServiceImpl implements MsgTopicService {
                 return msgTopicService.mayPublish();
             } catch (RemoteException e) {
                 e.printStackTrace();
-                logger.error(RMI_ERROR_MSG);
+                logger.error(EJB_ERROR_MSG);
             }
         }
         return false;

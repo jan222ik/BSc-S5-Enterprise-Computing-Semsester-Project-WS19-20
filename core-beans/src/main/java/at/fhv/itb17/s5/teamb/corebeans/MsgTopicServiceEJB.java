@@ -24,11 +24,12 @@ import java.util.stream.Collectors;
 public class MsgTopicServiceEJB implements MsgTopicService {
     private static final Logger logger = LogManager.getLogger(MsgTopicServiceEJB.class);
 
-    private final ClientSessionRMI client;
+    private ClientSessionRMI client;
     private final MsgServiceCore topicService;
     private final EntityDTORepo entityDTORepo;
 
     List<String> feeds = new LinkedList<>(Collections.singletonList("https://www.ots.at/rss/kultur"));
+    private CoreServiceInjector injector;
 
     public MsgTopicServiceEJB(MsgServiceCore topicService, ClientSessionRMI client, EntityDTORepo entityDTORepo) {
         this.topicService = topicService;
@@ -37,10 +38,10 @@ public class MsgTopicServiceEJB implements MsgTopicService {
     }
 
     public MsgTopicServiceEJB() {
-        CoreServiceInjector injector = CoreServiceInjectorImpl.getInstance(true);
-        this.client = new ClientSessionRMI("null", null, null, injector.getAuthManagerCore().queryClient("admin"));
+        injector = CoreServiceInjectorImpl.getInstance(true);
         this.topicService = injector.getMsgTopicServiceCore();
         this.entityDTORepo = injector.getEntityRepo();
+        client = null;
     }
 
     @Override
@@ -56,14 +57,17 @@ public class MsgTopicServiceEJB implements MsgTopicService {
 
     @Override
     public boolean mayPublish() {
-        Client role = client.getClient();
-        if (role != null) {
-            ClientRole clientRole = ClientRole.calcEffectiveRole(role.getRole());
-            logger.info("clientRole = {}", clientRole);
-            return clientRole.getMayWriteMsg();
-        } else {
-            return false;
+        if(client != null) {
+            Client role = client.getClient();
+            if (role != null) {
+                ClientRole clientRole = ClientRole.calcEffectiveRole(role.getRole());
+                logger.info("clientRole = {}", clientRole);
+                return clientRole.getMayWriteMsg();
+            } else {
+                return false;
+            }
         }
+        return false;
     }
 
     @Override
@@ -84,5 +88,10 @@ public class MsgTopicServiceEJB implements MsgTopicService {
     @Override
     public List<String> getRSSFeedURLs() {
         return feeds.stream().map(s -> new String(s)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void setUserForEJB(String username, String password) {
+        this.client = new ClientSessionRMI(username, "", null, injector.getAuthManagerCore().checkAndQuery(username, password));
     }
 }

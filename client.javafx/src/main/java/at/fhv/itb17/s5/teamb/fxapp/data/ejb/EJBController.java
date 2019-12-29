@@ -63,6 +63,11 @@ public class EJBController {
         if(initialContext != null) {
             MsgTopicService topicService = (MsgTopicService) initialContext.lookup("ejb:/core-beans-1.0-jar-with-dependencies/MsgTopicServiceEJB!at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService");
             logger.debug("Created topicService = {}", topicService);
+            try {
+                topicService.setUserForEJB(username, password);
+            }catch (RemoteException e){
+                e.printStackTrace();
+            }
             return topicService;
         }
         return null;

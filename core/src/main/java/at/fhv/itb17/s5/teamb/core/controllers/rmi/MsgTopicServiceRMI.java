@@ -77,4 +77,9 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
     public List<String> getRSSFeedURLs() throws RemoteException {
         return feeds.stream().map(s -> new String(s)).collect(Collectors.toList());
     }
+
+    @Override
+    public void setUserForEJB(String username, String password) {
+        //only used for ejb
+    }
 }

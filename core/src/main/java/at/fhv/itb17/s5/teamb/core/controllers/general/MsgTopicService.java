@@ -20,4 +20,6 @@ public interface MsgTopicService extends Remote {
     boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) throws RemoteException;
 
     List<String> getRSSFeedURLs() throws RemoteException;
+
+    void setUserForEJB(String username, String password) throws RemoteException;
 }

@@ -8,6 +8,7 @@ import at.fhv.itb17.s5.teamb.fxapp.data.ejb.EJBController;
 import at.fhv.itb17.s5.teamb.fxapp.data.ejb.EJBSearchServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.ejb.EJBTopicServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.*;
+import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import com.airhacks.afterburner.injection.Injector;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
@@ -52,9 +53,9 @@ public class BeanManager implements SetupManager {
     @Override
     public RMIConnectionStatus connect(String host, int port) {
         if (controller != null) {
-            notifyCallbackConsumer("Connecting to Server (RMI)", 0, totalSteps);
+            notifyCallbackConsumer("Connecting to Server (EJB)", 0, totalSteps);
             if (isConnected) {
-                notifyCallbackConsumer("Connected to Server (RMI)", 1, totalSteps);
+                notifyCallbackConsumer("Connected to Server (EJB)", 1, totalSteps);
                 return RMIConnectionStatus.CONNECTED;
             }
             return RMIConnectionStatus.NO_CONNECTION;
@@ -66,20 +67,20 @@ public class BeanManager implements SetupManager {
     @Override
     public RMIConnectionStatus authenticate(String user, String pwd) {
         RMIConnectionStatus status;
-        notifyCallbackConsumer("Checking Connection Status (RMI)", 2, totalSteps);
+        notifyCallbackConsumer("Checking Connection Status (EJB)", 2, totalSteps);
         if (isConnected) {
-            notifyCallbackConsumer("Initializing Search Component (RMI)", 3, totalSteps);
+            notifyCallbackConsumer("Initializing Search Component (EJB)", 3, totalSteps);
             status = searchService.init();
             if (status == RMIConnectionStatus.CONNECTED) {
-                notifyCallbackConsumer("Successfully initialized Search Component (RMI)", 4, totalSteps);
-                notifyCallbackConsumer("Initializing Messaging Component (RMI)", 5, totalSteps);
+                notifyCallbackConsumer("Successfully initialized Search Component (EJB)", 4, totalSteps);
+                notifyCallbackConsumer("Initializing Messaging Component (EJB)", 5, totalSteps);
                 status = msgTopicService.doLoginMsgTopic(user, pwd);
                 if (status == RMIConnectionStatus.CONNECTED) {
-                    notifyCallbackConsumer("Successfully initialized Messaging Component (RMI)", 6, totalSteps);
-                    notifyCallbackConsumer("Initializing Booking Component (RMI)", 7, totalSteps);
+                    notifyCallbackConsumer("Successfully initialized Messaging Component (EJB)", 6, totalSteps);
+                    notifyCallbackConsumer("Initializing Booking Component (EJB)", 7, totalSteps);
                     status = bookingService.doLoginBooking(user, pwd);
                     if (status == RMIConnectionStatus.CONNECTED) {
-                        notifyCallbackConsumer("Successfully initialized Booking Component (RMI)", 8, totalSteps);
+                        notifyCallbackConsumer("Successfully initialized Booking Component (EJB)", 8, totalSteps);
                         notifyCallbackConsumer("Opening Application", 9, totalSteps);
                         if (callbackConsumer != null) executeOnFX(o -> callbackConsumer.setupFinished(disposables));
                     }
@@ -100,6 +101,11 @@ public class BeanManager implements SetupManager {
     @Override
     public void setCallbackConsumer(SetupCallback callbackConsumer) {
         this.callbackConsumer = callbackConsumer;
+    }
+
+    @Override
+    public List<MsgTopic> getSubscribedTopics() {
+        return msgTopicService.getSubscribedTopics();
     }
 
     public void notifyCallbackConsumer(String text, int current, int total) {
