@@ -287,10 +287,10 @@ object Handler {
                 }
             }
             cartContainer.appendElement("button") {
+                this.textContent = "Buy"
+                this.className = "cart-buy"
                 addEventListener(type = "click", callback = {
-                    Cart.asList().forEach {
-                        bookTickets(it)
-                    }
+                    showPaymentInfo()
                 })
             }
         } else {
@@ -299,6 +299,135 @@ object Handler {
             }
 
         }
+    }
+
+    private fun showPaymentInfo() {
+        openTab("paymentInfo")
+        fillLatestPaymentInfo()
+        val confirmBtn = document.getElementById("confirmBtn") as HTMLButtonElement
+        confirmBtn.addEventListener(type = "click", callback = {
+            updateLatestPaymentInfo()
+            Cart.asList().forEach {
+                bookTickets(it)
+            }
+        })
+    }
+
+    private fun fillLatestPaymentInfo() {
+        val cardInput = document.getElementById("cardNumber") as HTMLInputElement
+        if (latestBookingInfo != null) {
+            cardInput.value = latestBookingInfo?.cardNr.toString()
+        }
+        val cityInput = document.getElementById("city") as HTMLInputElement
+        if (latestBookingInfo != null) {
+            cityInput.value = latestBookingInfo?.city.toString()
+        }
+        val countryInput = document.getElementById("country") as HTMLInputElement
+        if (latestBookingInfo != null) {
+            countryInput.value = latestBookingInfo?.country.toString()
+        }
+        val houseInput = document.getElementById("house") as HTMLInputElement
+        if (latestBookingInfo != null) {
+            houseInput.value = latestBookingInfo?.house.toString()
+        }
+        val nameFInput = document.getElementById("nameF") as HTMLInputElement
+        if (latestBookingInfo != null) {
+            nameFInput.value = latestBookingInfo?.nameF.toString()
+        }
+        val nameLInput = document.getElementById("nameL") as HTMLInputElement
+        if (latestBookingInfo != null) {
+            nameLInput.value = latestBookingInfo?.nameL.toString()
+        }
+        val streetInput = document.getElementById("street") as HTMLInputElement
+        if (latestBookingInfo != null) {
+            streetInput.value = latestBookingInfo?.street.toString()
+        }
+        val zipInput = document.getElementById("zip") as HTMLInputElement
+        if (latestBookingInfo != null) {
+            zipInput.value = latestBookingInfo?.zip.toString()
+        }
+    }
+
+    private fun updateLatestPaymentInfo() {
+        //card
+        val cardInput = document.getElementById("cardNumber") as HTMLInputElement
+        val cardNumber = cardInput.value
+        try {
+            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+        } catch (e: NumberFormatException) {
+            OnPageAlert.showInfo("Card Number is not correct")
+        }
+        console.dir("latestBookingInfo = ${latestBookingInfo}")
+
+        //city
+        val cityInput = document.getElementById("city") as HTMLInputElement
+        val city = cityInput.value
+        try {
+            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+        } catch (e: NumberFormatException) {
+            OnPageAlert.showInfo("City is not correct")
+        }
+        console.dir("latestBookingInfo = ${latestBookingInfo}")
+
+        //country
+        val countryInput = document.getElementById("country") as HTMLInputElement
+        val country = countryInput.value
+        try {
+            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+        } catch (e: NumberFormatException) {
+            OnPageAlert.showInfo("Country is not correct")
+        }
+        console.dir("latestBookingInfo = ${latestBookingInfo}")
+
+        //house
+        val houseInput = document.getElementById("house") as HTMLInputElement
+        val house = houseInput.value
+        try {
+            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+        } catch (e: NumberFormatException) {
+            OnPageAlert.showInfo("House is not correct")
+        }
+        console.dir("latestBookingInfo = ${latestBookingInfo}")
+
+        //First Name
+        val nameFInput = document.getElementById("nameF") as HTMLInputElement
+        val nameF = nameFInput.value
+        try {
+            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+        } catch (e: NumberFormatException) {
+            OnPageAlert.showInfo("First Name is not correct")
+        }
+        console.dir("latestBookingInfo = ${latestBookingInfo}")
+
+        //Last Name
+        val nameLInput = document.getElementById("nameL") as HTMLInputElement
+        val nameL = nameLInput.value
+        try {
+            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+        } catch (e: NumberFormatException) {
+            OnPageAlert.showInfo("Last Name is not correct")
+        }
+        console.dir("latestBookingInfo = ${latestBookingInfo}")
+
+        //street
+        val streetInput = document.getElementById("street") as HTMLInputElement
+        val street = streetInput.value
+        try {
+            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+        } catch (e: NumberFormatException) {
+            OnPageAlert.showInfo("Street is not correct")
+        }
+        console.dir("latestBookingInfo = ${latestBookingInfo}")
+
+        //zip
+        val zipInput = document.getElementById("zip") as HTMLInputElement
+        val zip = zipInput.value
+        try {
+            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+        } catch (e: NumberFormatException) {
+            OnPageAlert.showInfo("Zip is not correct")
+        }
+        console.dir("latestBookingInfo = ${latestBookingInfo}")
     }
 
     fun updateBrowser(): Promise<Boolean> {
