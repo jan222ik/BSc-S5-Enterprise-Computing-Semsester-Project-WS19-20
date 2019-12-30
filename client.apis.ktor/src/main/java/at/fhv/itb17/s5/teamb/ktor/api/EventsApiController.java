@@ -23,6 +23,7 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchException;
+import kotlin.random.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class EventsApiController implements EventsApi {
                 }
             }
             PaymentInfo bookingInfo = body.getBookingInfo();
-            Client client = new Client(bookingInfo.getNameL() + bookingInfo.getNameF() + System.currentTimeMillis(), bookingInfo.getNameL() + ", " + bookingInfo.getNameF(), Arrays.asList(clientRepo.getWebRole()), new HashSet<>(), bookingInfo.toAddressEntity());
+            Client client = new Client(bookingInfo.getNameL() + bookingInfo.getNameF() + System.currentTimeMillis() + Random.Default.nextInt(), bookingInfo.getNameL() + ", " + bookingInfo.getNameF(), Arrays.asList(clientRepo.getWebRole()), new HashSet<>(), bookingInfo.toAddressEntity());
             System.out.println(client + " => " + client.getUsername());
             clientRepo.addClient(client);
             List<Ticket> ticket2Book = entityRepo.toTickets(ticketDTOS, client);

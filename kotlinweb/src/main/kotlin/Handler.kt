@@ -11,7 +11,7 @@ object Handler {
     private const val searchURL: String = "/events/findByQueryString?queryString="
     private var spinners: HashMap<HTMLInputElement, PriceCategory> = hashMapOf()
     var latestSearchQuery: String = ""
-    var latestBookingInfo: BookingInfo? = null
+    private var latestBookingInfo: BookingInfo? = null
 
 
     private fun getSearchResults(searchQuery: String): Promise<List<EventDTO>> {
@@ -37,25 +37,35 @@ object Handler {
         }
     }
 
-    private fun bookTickets(tickets: List<LocalTicket>) {
+    private fun bookTickets(tickets: List<LocalTicket>): Promise<List<BookingResponse>> {
         if (tickets.isNotEmpty()) {
             val first = tickets.first()
-            window.fetch(input = "/events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}/book", init = RequestInit(
+            return window.fetch(input = "/events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}/book", init = RequestInit(
                     method = "POST",
                     headers = json().apply { this["Content-Type"] = "application/json" },
-                    body = JSON.stringify(json().apply {
-                        this["clientData"] = "I'm posted by client"
-                    })
-            ))
-        }
-        /*
-                        headers = json().apply {
-                    this["Content-Type"] = "application/json"
+                    body = JSON.stringify(TicketPayload(tickets.size, latestBookingInfo!!, emptyArray()))
+            )).then outerThen@{ res ->
+                val text = res.text()
+                return@outerThen Promise<Pair<String, Short>> { resolve, reject ->
+                    text.then { resolve(Pair(it, res.status)) }.catch(reject)
                 }
-                body = JSON.stringify(json().apply {
-                    this["clientData"] = "I'm posted by client"
-                })
-         */
+            }.then {
+                return@then when (it.second) {
+                    200.toShort(), 409.toShort() -> JSON.parse<Array<BookingResponse>>(it.first).toList()
+                    500.toShort() -> {
+                        throw Exception("Server exception occurred: ${it.second}")
+                    }
+                    else -> {
+                        throw Exception("Server exception occurred: ${it.second}")
+                    }
+                }
+            }.catch { trow ->
+                console.log("Caught: $trow")
+                throw trow
+            }
+        } else {
+            return Promise { resolve, _ -> resolve(emptyList()) }
+        }
     }
 
     private fun populateContainer(eventDTOs: List<EventDTO>) {
@@ -304,13 +314,102 @@ object Handler {
     private fun showPaymentInfo() {
         openTab("paymentInfo")
         fillLatestPaymentInfo()
-        val confirmBtn = document.getElementById("confirmBtn") as HTMLButtonElement
-        confirmBtn.addEventListener(type = "click", callback = {
-            updateLatestPaymentInfo()
-            Cart.asList().forEach {
-                bookTickets(it)
+        (document.getElementById("confirmBtn") as HTMLButtonElement).apply {
+            addEventListener(type = "click", callback = {
+                updateLatestPaymentInfo()
+                val bookedTickets: MutableMap<List<LocalTicket>, List<BookingResponse>> = mutableMapOf()
+                val errors = mutableMapOf<List<LocalTicket>, BookingResponse>()
+                val asList = Cart.asList()
+                val promise: Promise<Any> = Promise() { resolve, _ ->
+                    asList.forEachIndexed { index, it ->
+                        bookTickets(it).then { list ->
+                            if (list.size == it.size) {
+                                console.info("Same length ${list.size} == ${it.size}\"")
+                                var bool = true
+                                list.forEach { res ->
+                                    console.info(res.errMsg)
+                                    //bool = res.errMsg != null && res.tranactionId != null && res.tranactionId.isNotEmpty()
+                                }
+                                if (bool) {
+                                    bookedTickets[it] = list
+                                } else {
+                                    errors[it] = list.first()
+                                }
+                            } else {
+                                console.info("Dif len: ${list.size} != ${it.size}")
+                                errors[it] = list.first()
+                            }
+                            if (index == asList.lastIndex) {
+                                resolve(Any())
+                            }
+                            console.info("Resolved $index")
+                        }.catch { throwable ->
+                            OnPageAlert.showErr("Exception occurred: ${throwable.message}")
+                        }
+                    }
+                }
+                promise.then {
+                    console.log("Now")
+                    bookedTickets.keys.forEach { list -> list.forEach { item -> Cart.remove(item) } }
+                    showResult(bookedTickets, errors)
+                }
+            })
+        }
+    }
+
+    private fun showResult(bookedTickets: MutableMap<List<LocalTicket>, List<BookingResponse>>, errors: MutableMap<List<LocalTicket>, BookingResponse>) {
+        openTab("res")
+        (document.getElementById("suc") as HTMLDivElement).apply {
+            var count = 0
+            clear()
+            bookedTickets.entries.forEachIndexed { index, mutableEntry ->
+                appendElement("div") {
+                    append(
+                            span("#$index", ""),
+                            span(mutableEntry.key.first().event.title, ""),
+                            span(mutableEntry.key.first().occurrence.date.toDateString() + " - " + mutableEntry.key.first().occurrence.time.toTimeString(), ""),
+                            span(mutableEntry.key.first().category.categoryName, ""),
+                            br(),
+                            label("Transaction Ids", ""),
+                            br()
+                    )
+                    appendElement("div") {
+                        mutableEntry.value.forEachIndexed { index, bookingResponse ->
+                            count++
+                            append(
+                                    span("${index + 1}:\t\t", ""),
+                                    span("ID: ${bookingResponse.tranactionId}", ""),
+                                    br()
+                            )
+                        }
+                    }
+                }
             }
-        })
+            if (count > 0) {
+                OnPageAlert.showSuc("Booked $count tickets.")
+            }
+        }
+        (document.getElementById("err") as HTMLDivElement).apply {
+            clear()
+            errors.entries.forEachIndexed { index, mutableEntry ->
+                appendElement("div") {
+                    append(
+                            span("#$index", ""),
+                            span(mutableEntry.key.first().event.title, ""),
+                            span(mutableEntry.key.first().occurrence.date.toDateString() + " - " + mutableEntry.key.first().occurrence.time.toTimeString(), ""),
+                            span(mutableEntry.key.first().category.categoryName, ""),
+                            br()
+                    )
+                    appendElement("div") div@{
+                        mutableEntry.value.apply {
+                            this@div.append(
+                                    span("Failed due to: ${this.errMsg}", "")
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun fillLatestPaymentInfo() {
@@ -349,85 +448,66 @@ object Handler {
     }
 
     private fun updateLatestPaymentInfo() {
-        //card
+        //Card
         val cardInput = document.getElementById("cardNumber") as HTMLInputElement
         val cardNumber = cardInput.value
-        try {
-            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
-        } catch (e: NumberFormatException) {
-            OnPageAlert.showInfo("Card Number is not correct")
-        }
-        console.dir("latestBookingInfo = ${latestBookingInfo}")
-
         //city
         val cityInput = document.getElementById("city") as HTMLInputElement
         val city = cityInput.value
-        try {
-            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
-        } catch (e: NumberFormatException) {
-            OnPageAlert.showInfo("City is not correct")
-        }
-        console.dir("latestBookingInfo = ${latestBookingInfo}")
-
         //country
         val countryInput = document.getElementById("country") as HTMLInputElement
         val country = countryInput.value
-        try {
-            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
-        } catch (e: NumberFormatException) {
-            OnPageAlert.showInfo("Country is not correct")
-        }
-        console.dir("latestBookingInfo = ${latestBookingInfo}")
-
         //house
         val houseInput = document.getElementById("house") as HTMLInputElement
         val house = houseInput.value
-        try {
-            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
-        } catch (e: NumberFormatException) {
-            OnPageAlert.showInfo("House is not correct")
-        }
-        console.dir("latestBookingInfo = ${latestBookingInfo}")
-
         //First Name
         val nameFInput = document.getElementById("nameF") as HTMLInputElement
         val nameF = nameFInput.value
-        try {
-            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
-        } catch (e: NumberFormatException) {
-            OnPageAlert.showInfo("First Name is not correct")
-        }
-        console.dir("latestBookingInfo = ${latestBookingInfo}")
-
         //Last Name
         val nameLInput = document.getElementById("nameL") as HTMLInputElement
         val nameL = nameLInput.value
-        try {
-            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
-        } catch (e: NumberFormatException) {
-            OnPageAlert.showInfo("Last Name is not correct")
-        }
-        console.dir("latestBookingInfo = ${latestBookingInfo}")
-
         //street
         val streetInput = document.getElementById("street") as HTMLInputElement
         val street = streetInput.value
-        try {
-            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
-        } catch (e: NumberFormatException) {
-            OnPageAlert.showInfo("Street is not correct")
-        }
-        console.dir("latestBookingInfo = ${latestBookingInfo}")
-
         //zip
         val zipInput = document.getElementById("zip") as HTMLInputElement
         val zip = zipInput.value
+        var emptyFields: String = ""
+        val empty = isEmpty(
+                Pair(cardNumber, "Card Number"),
+                Pair(city, "City Name"),
+                Pair(nameF, "First Name"),
+                Pair(nameL, "Last Name"),
+                Pair(street, "Street Name"),
+                Pair(zip, "Zip code")
+        )
         try {
-            latestBookingInfo = BookingInfo(cardNumber.toInt(), "", "", "", "", "", "", "")
+            emptyFields = empty.joinToString(separator = ", ", prefix = "The field(s) for ", postfix = " may not be empty")
+            if (cardNumber.isNotEmpty()) {
+                val bookingInfo = BookingInfo(cardNumber.toInt(), city, country, house, nameF, nameL, street, zip)
+                if (empty.isNotEmpty()) {
+                    OnPageAlert.showErr(emptyFields)
+                } else {
+                    latestBookingInfo = bookingInfo
+                    OnPageAlert.clear()
+                }
+            } else {
+                if (empty.isNotEmpty()) {
+                    OnPageAlert.showErr(emptyFields)
+                }
+            }
         } catch (e: NumberFormatException) {
-            OnPageAlert.showInfo("Zip is not correct")
+            if (empty.isNotEmpty()) {
+                OnPageAlert.showErr("Card Number is not a number and $emptyFields")
+            } else {
+                OnPageAlert.showErr("Card Number is not a number")
+            }
         }
-        console.dir("latestBookingInfo = ${latestBookingInfo}")
+        console.dir("latestBookingInfo = $latestBookingInfo")
+    }
+
+    private fun isEmpty(vararg arr: Pair<String, String>): MutableList<String> {
+        return arr.map { if (it.first.isNotEmpty()) "" else it.second }.filter { it.isNotEmpty() }.toCollection(mutableListOf())
     }
 
     fun updateBrowser(): Promise<Boolean> {
@@ -590,6 +670,10 @@ object Cart {
             items[localTicket.category.eventCategoryId] = mutableListOf(localTicket)
         }
     }
+
+    fun remove(item: LocalTicket) {
+        items.remove(item.category.eventCategoryId)
+    }
 }
 
 
@@ -602,7 +686,12 @@ data class LocalTicket(
 data class TicketPayload(
         val amount: Int,
         val bookingInfo: BookingInfo,
-        val rowseats: List<Any>
+        val rowseats: Array<Any>
+)
+
+data class BookingResponse(
+        val tranactionId: String?,
+        val errMsg: String?
 )
 
 data class BookingInfo(
@@ -655,5 +744,11 @@ object OnPageAlert {
             })
             textContent = "×"
         }
+    }
+
+    fun clear() {
+        val element = document.getElementById("alertBox")!!
+        element.textContent = ""
+        element.addClass("none")
     }
 }
