@@ -8,6 +8,7 @@ import at.fhv.itb17.s5.teamb.core.controllers.rmi.IConnectionFactoryRMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.rmi.RemoteException;
@@ -32,7 +33,9 @@ public class EJBController {
         Properties jndiProps = new Properties();
         jndiProps.put("java.naming.factory.initial", "org.jboss.naming.remote.client.InitialContextFactory");
         jndiProps.put("jboss.naming.client.ejb.context", true);
-        jndiProps.put("java.naming.provider.url", "http-remoting://localhost:8080");
+        jndiProps.put("java.naming.provider.url", "http-remoting://10.0.51.91:8081");
+        jndiProps.put(Context.SECURITY_PRINCIPAL, "user");
+        jndiProps.put(Context.SECURITY_CREDENTIALS, "user");
         return new InitialContext(jndiProps);
     }
 
@@ -60,12 +63,12 @@ public class EJBController {
 
     public MsgTopicService createMsgTopicService(String username, String password) throws NamingException {
         logger.info("RMI: Creating MsgTopicService");
-        if(initialContext != null) {
+        if (initialContext != null) {
             MsgTopicService topicService = (MsgTopicService) initialContext.lookup("ejb:/core-beans-1.0-jar-with-dependencies/MsgTopicServiceEJB!at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService");
             logger.debug("Created topicService = {}", topicService);
             try {
                 topicService.setUserForEJB(username, password);
-            }catch (RemoteException e){
+            } catch (RemoteException e) {
                 e.printStackTrace();
             }
             return topicService;
