@@ -35,7 +35,7 @@ public class CoreMain {
             LinkedList<EntryPoint> entryPoints = new LinkedList<>(Collections.singletonList(entryPointRMI));
             coreMain.start(entryPoints);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.warn("RemoteException", e);
         }
         logger.info("Finished Init Core");
     }

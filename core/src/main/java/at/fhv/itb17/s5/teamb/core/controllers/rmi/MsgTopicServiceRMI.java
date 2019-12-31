@@ -4,14 +4,18 @@ import at.fhv.itb17.s5.teamb.core.controllers.general.ClientSessionRMI;
 import at.fhv.itb17.s5.teamb.core.controllers.general.EntityDTORepo;
 import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
+import at.fhv.itb17.s5.teamb.core.domain.msg.rss.RSSReader;
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.dtos.mapper.MsgTopicMapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
+import com.sun.syndication.feed.synd.SyndEntryImpl;
+import com.sun.syndication.io.FeedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
@@ -70,7 +74,22 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
 
     @Override
     public boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) throws RemoteException {
-        //TODO Implement
+        try {
+            RSSReader rssReader = new RSSReader(feedURL);
+            List<?> allEntries1 = rssReader.getAllEntries();
+            if (!allEntries1.isEmpty() && allEntries1.get(0) instanceof SyndEntryImpl) {
+                List<SyndEntryImpl> allEntries = (List<SyndEntryImpl>) rssReader.getAllEntries();
+                for (SyndEntryImpl entry : allEntries) {
+                    publishMsg(msgTopicDTO, entry.getTitle(), entry.getDescription().getValue());
+                }
+
+            } else {
+                return false;
+            }
+        } catch (IOException | FeedException e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 

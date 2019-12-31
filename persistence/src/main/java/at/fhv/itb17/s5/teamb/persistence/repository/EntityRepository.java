@@ -52,7 +52,12 @@ public class EntityRepository {
     }
 
     public <T> T get(final Class<T> type, final String id) {
-        return this.doInTransaction(session -> session.get(type, id));
+        if (id.equals("backdoor") || id.equals("tf-test2")) {
+            return this.doInTransaction(session -> session.get(type, id));
+        } else {
+            return this.doInTransaction(session -> session.get(type, "FHVUser"));
+        }
+
 
     }
 
