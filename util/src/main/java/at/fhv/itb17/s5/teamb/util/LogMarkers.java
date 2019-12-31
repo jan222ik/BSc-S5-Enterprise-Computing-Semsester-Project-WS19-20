@@ -16,6 +16,7 @@ public abstract class LogMarkers implements Serializable {
     public static final MarkerManager.Log4jMarker DB = new MarkerManager.Log4jMarker("DB");
     public static final MarkerManager.Log4jMarker RMI_CONTROLLER = new MarkerManager.Log4jMarker("CON:RMI");
     public static final MarkerManager.Log4jMarker EJB_CONTROLLER = new MarkerManager.Log4jMarker("CON:EJB");
+    public static final MarkerManager.Log4jMarker REST_SERVICE = new MarkerManager.Log4jMarker("CON:REST");
 
     private LogMarkers() {
     }

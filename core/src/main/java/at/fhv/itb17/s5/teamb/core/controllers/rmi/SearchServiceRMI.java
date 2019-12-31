@@ -32,9 +32,4 @@ public class SearchServiceRMI extends UnicastRemoteObject implements SearchServi
         List<Event> events = coreSearch.searchFor(queryString);
         return new LinkedList<>(entityDTORepo.toEventDTOs(events));
     }
-
-    @Override
-    public Object updateTicketAvailability(Object ticket) throws RemoteException {
-        return null;
-    }
 }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="CSS.css">
+    <meta charset="UTF-8">
+    <title>Chart</title>
+</head>
+<?php
+session_start(); // Right at the top of your script
+?>
+<div id="mySidenav" class="sidenav">
+    <a href="Search.html"><img src="pictures/49116.png" class="image"> Search </a>
+    <a href="Event%20Browser.html"> <img src="pictures/list-grid-list-icon.jpg" class="image">Event Browser</a>
+    <a href="Chart.html"> <img src="pictures/shopping-3650365_960_720.png" class="image" style="color: white"> Chart </a>
+</div>
+<ul style="float:right">
+    <li>
+        <?php
+        if($_SESSION['logged']==true)
+    {
+      echo $_SESSION["username"];
+      echo '<a href="logout.php"><span>Logout</span></a></li>';
+    }
+    elseif($_SESSION['logged']==false)
+    {
+    echo '<a href="Login.html"><span>Login/Register</span></a></li>';
+    }
+    ?>
+    </li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<body>
+
+</body>
+</html>

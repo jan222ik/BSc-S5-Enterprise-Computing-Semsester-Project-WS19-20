@@ -5,6 +5,7 @@ import at.fhv.itb17.s5.teamb.core.domain.booking.BookingServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.core.domain.search.SearchServiceCore;
 import at.fhv.itb17.s5.teamb.persistence.repository.EntityRepository;
+import at.fhv.itb17.s5.teamb.persistence.repository.ClientRepository;
 
 public interface CoreServiceInjector {
 
@@ -17,6 +18,8 @@ public interface CoreServiceInjector {
     EntityDTORepo getEntityRepo();
 
     MsgServiceCore getMsgTopicServiceCore();
+
+    ClientRepository getClientRepo();
 
     EntityRepository getEntityRepository();
 }
