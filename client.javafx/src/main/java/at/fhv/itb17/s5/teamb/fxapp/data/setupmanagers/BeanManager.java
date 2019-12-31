@@ -55,11 +55,11 @@ public class BeanManager implements SetupManager {
     public RMIConnectionStatus connect(String host, int port) {
         if (controller != null) {
             notifyCallbackConsumer("Connecting to Server (EJB)", 0, totalSteps);
-            if (isConnected) {
+            boolean connected = controller.connect(host);
+            if(connected){
                 notifyCallbackConsumer("Connected to Server (EJB)", 1, totalSteps);
-                return RMIConnectionStatus.CONNECTED;
             }
-            return RMIConnectionStatus.NO_CONNECTION;
+            return connected ? RMIConnectionStatus.CONNECTED : RMIConnectionStatus.NO_CONNECTION;
         } else {
             return RMIConnectionStatus.NO_CONNECTION;
         }
