@@ -16,7 +16,8 @@ public class ClientRepository {
     }
 
     public ClientRole getWebRole() {
-        return  ep.get(ClientRole.class, "WEB").cloneObj();
+        ClientRole web = ep.get(ClientRole.class, "WEB");
+        return  web.cloneObj();
     }
 
     public void addClient(Client client) {
