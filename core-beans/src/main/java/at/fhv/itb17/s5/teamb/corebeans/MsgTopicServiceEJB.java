@@ -7,6 +7,7 @@ import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjectorImpl;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
+import at.fhv.itb17.s5.teamb.dtos.mapper.MsgTopicMapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
@@ -16,8 +17,10 @@ import org.apache.logging.log4j.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -71,12 +74,12 @@ public class MsgTopicServiceEJB implements MsgTopicService {
     }
 
     @Override
-    public List<MsgTopic> getSubscribedTopics() {
-        List<MsgTopic> topics = new LinkedList<>();
+    public List<MsgTopicDTO> getSubscribedTopics() {
+        Set<MsgTopic> topics = new HashSet<>();
         if (client != null) {
             topics = client.getClient().getSubscribedTopics();
         }
-        return topics;
+        return MsgTopicMapper.toDTOs(topics);
     }
 
     @Override

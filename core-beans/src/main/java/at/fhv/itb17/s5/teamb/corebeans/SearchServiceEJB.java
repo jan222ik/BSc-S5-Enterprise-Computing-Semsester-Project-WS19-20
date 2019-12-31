@@ -43,8 +43,4 @@ public class SearchServiceEJB implements SearchService {
         return new LinkedList<>(entityDTORepo.toEventDTOs(events));
     }
 
-    @Override
-    public Object updateTicketAvailability(Object ticket) {
-        return null;
-    }
 }

@@ -76,7 +76,10 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
 
     @Override
     public void setPresenter(ApplicationMain presenter) {
-        dispose = outList.getObservable().subscribeOn(JavaFxScheduler.platform()).subscribe((presenter::showNewMsg), Throwable::printStackTrace);
+        dispose = outList.getObservable()
+                .subscribeOn(JavaFxScheduler.platform())
+                .subscribe((presenter::showNewMsg),
+                        Throwable::printStackTrace);
     }
 
     @Override

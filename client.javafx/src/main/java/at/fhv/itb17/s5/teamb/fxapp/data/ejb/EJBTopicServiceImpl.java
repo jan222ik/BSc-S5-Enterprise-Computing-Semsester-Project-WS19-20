@@ -94,7 +94,7 @@ public class EJBTopicServiceImpl implements MsgTopicService {
     }
 
     @Override
-    public List<MsgTopic> getSubscribedTopics() {
+    public List<MsgTopicDTO> getSubscribedTopics() {
         if (msgTopicService != null) {
             try {
                 return msgTopicService.getSubscribedTopics();

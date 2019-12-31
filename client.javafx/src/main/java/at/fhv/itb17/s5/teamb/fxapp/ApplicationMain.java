@@ -77,21 +77,12 @@ public class ApplicationMain extends Application implements SetupCallback {
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
 
-        msgAsyncService = new MsgAsyncServiceImpl();
-        new Thread(() -> {
-            try {
-                msgAsyncService.init(MsgServiceCoreImpl.TCP, "Consumer"); //TODO use username as clientID
-            } catch (JMSException e) {
-                e.printStackTrace();
-            }
-        }, "Hedwig").start();
         if (new Boolean(args.getArgValue("-ejb", "false"))) {
             setupManager = new BeanManager();
-        }
-        else{
+        } else{
             setupManager = new RmiManager();
         }
-
+        setupManager.setMsgNotificationPresenter(this);
         boolean b = setupManager.create();
         if (!b) {
             throw new RuntimeException("Error in manager.create");
@@ -99,7 +90,6 @@ public class ApplicationMain extends Application implements SetupCallback {
         setupManager.setCallbackConsumer(this);
 
         Injector.setModelOrService(SetupManager.class, setupManager);
-        Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
         Injector.setModelOrService(RMIController.class, rmiController);
         Injector.setModelOrService(EJBController.class, ejbController);
 
@@ -158,7 +148,6 @@ public class ApplicationMain extends Application implements SetupCallback {
     public void stop() throws Exception {
         super.stop();
         setupManager.close();
-        msgAsyncService.close();
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 

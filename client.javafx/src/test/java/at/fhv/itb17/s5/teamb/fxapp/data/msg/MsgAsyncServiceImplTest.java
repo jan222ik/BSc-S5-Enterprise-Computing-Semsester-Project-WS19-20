@@ -20,7 +20,7 @@ class MsgAsyncServiceImplTest {
     private static final String CLIENT_ID = "TestClient";
     private static final String TEST_HEADER = "Test-Header";
     private static final String TEST_BODY = "The body of the test message";
-    private static final CoreServiceInjectorImpl injector = new CoreServiceInjectorImpl(false);
+    private static final CoreServiceInjectorImpl injector = (CoreServiceInjectorImpl) CoreServiceInjectorImpl.getInstance(false);
     private static final MsgTopic test = new MsgTopic("TEST", false);
     private static final MsgTopicDTO testDTO = MsgTopicMapper.toDTO(test);
     private static final JFXPanel panel = new JFXPanel(); //is here so the JFX toolkit is alive, necessary for the Platform.RunLater when adding new messages to the outlist.

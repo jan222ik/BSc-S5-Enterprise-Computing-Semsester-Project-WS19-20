@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MsgServiceCoreImplTest {
-    private static final CoreServiceInjectorImpl injector = new CoreServiceInjectorImpl(false);
+    private static final CoreServiceInjectorImpl injector = (CoreServiceInjectorImpl) CoreServiceInjectorImpl.getInstance(false);
 
     @Test
     @DisplayName("Test getting all topics - success")

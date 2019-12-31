@@ -1,5 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers;
 
+import at.fhv.itb17.s5.teamb.fxapp.ApplicationMain;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
@@ -104,9 +105,26 @@ public class BeanManager implements SetupManager {
     }
 
     @Override
+    public void setMsgTopics() {
+
+    }
+
+    @Override
+    public void initMsgAsync(String clientIdm, boolean isRemote) {
+
+    }
+
+    @Override
+    public void setMsgNotificationPresenter(ApplicationMain presenter) {
+
+    }
+
+    /*
+    @Override
     public List<MsgTopic> getSubscribedTopics() {
         return msgTopicService.getSubscribedTopics();
     }
+     */
 
     public void notifyCallbackConsumer(String text, int current, int total) {
         if (callbackConsumer != null) {

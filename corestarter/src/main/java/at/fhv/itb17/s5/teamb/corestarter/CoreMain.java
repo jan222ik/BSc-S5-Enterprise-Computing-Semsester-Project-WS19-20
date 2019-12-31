@@ -29,7 +29,7 @@ public class CoreMain {
         boolean noLDAP = args.containsKeyword("-noLDAP");
         CoreMain coreMain = new CoreMain();
         EntryPointRMI entryPointRMI;
-        CoreServiceInjectorImpl coreServiceInjector = new CoreServiceInjectorImpl(!noLDAP);
+        CoreServiceInjectorImpl coreServiceInjector = (CoreServiceInjectorImpl) CoreServiceInjectorImpl.getInstance(!noLDAP);
         try {
             entryPointRMI = new EntryPointRMI(rmiPort, coreServiceInjector);
             LinkedList<EntryPoint> entryPoints = new LinkedList<>(Arrays.asList(

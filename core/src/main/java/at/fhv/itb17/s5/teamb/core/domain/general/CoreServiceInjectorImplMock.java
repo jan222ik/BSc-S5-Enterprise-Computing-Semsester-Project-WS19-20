@@ -50,6 +50,11 @@ public class CoreServiceInjectorImplMock implements CoreServiceInjector {
     }
 
     @Override
+    public ClientRepository getClientRepo() {
+        return clientRepository;
+    }
+
+    @Override
     public EntityRepository getEntityRepository() {
         return entityRepository;
     }
