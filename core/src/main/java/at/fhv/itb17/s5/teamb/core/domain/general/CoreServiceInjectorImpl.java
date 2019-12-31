@@ -197,8 +197,33 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
                 new LocationSeat("Seat 5", false),
                 new LocationSeat("Seat 6", false))));
 
+        List<LocationRow> karaokeSeatingRows2 = new ArrayList<>();
+        karaokeSeatingRows2.add(new LocationRow("Row 1", Arrays.asList(
+                new LocationSeat("Seat 1", false),
+                new LocationSeat("Seat 2", false),
+                new LocationSeat("Seat 3", false),
+                new LocationSeat("Seat 4", false),
+                new LocationSeat("Seat 5", false),
+                new LocationSeat("Seat 6", false))));
+
+        karaokeSeatingRows2.add(new LocationRow("Row 2", Arrays.asList(
+                new LocationSeat("Seat 1", false),
+                new LocationSeat("Seat 2", false),
+                new LocationSeat("Seat 3", false),
+                new LocationSeat("Seat 4", false),
+                new LocationSeat("Seat 5", false),
+                new LocationSeat("Seat 6", false))));
+
+        karaokeSeatingRows2.add(new LocationRow("Row 3", Arrays.asList(
+                new LocationSeat("Seat 1", false),
+                new LocationSeat("Seat 2", false),
+                new LocationSeat("Seat 3", false),
+                new LocationSeat("Seat 4", false),
+                new LocationSeat("Seat 5", false),
+                new LocationSeat("Seat 6", false))));
+
         karaokeOccurrence.add(new EventOccurrence(LocalDate.of(2020, 10, 20), LocalTime.of(22, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1000, karaokeSeatingRows)), new Address("Österreich", "6900", "Bregenz", "Arlbergstraße", "100")));
-        karaokeOccurrence.add(new EventOccurrence(LocalDate.of(2020, 10, 21), LocalTime.of(22, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1000, karaokeSeatingRows)), new Address("Österreich", "6900", "Bregenz", "Arlbergstraße", "100")));
+        karaokeOccurrence.add(new EventOccurrence(LocalDate.of(2020, 10, 21), LocalTime.of(22, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1000, karaokeSeatingRows2)), new Address("Österreich", "6900", "Bregenz", "Arlbergstraße", "100")));
 
         List<Event> events = new LinkedList<>();
         events.add(new Event("Scene-Openair Lustenau", "Openair Festival in Lustenau", "Festival", sceneOccurrences, new Organizer("Lustenau Festivalverband", "scene@lustenau.at", new Address("Österreich", "6830", "Lustenau", "Langegasse", "23")), sceneArtists));
