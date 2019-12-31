@@ -87,7 +87,7 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
                 return false;
             }
         } catch (IOException | FeedException e) {
-            e.printStackTrace();
+            logger.catching(e);
             return false;
         }
         return true;
@@ -95,7 +95,7 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
 
     @Override
     public List<String> getRSSFeedURLs() throws RemoteException {
-        return feeds.stream().map(s -> new String(s)).collect(Collectors.toList());
+        return feeds.stream().map(String::new).collect(Collectors.toList());
     }
 
     @Override

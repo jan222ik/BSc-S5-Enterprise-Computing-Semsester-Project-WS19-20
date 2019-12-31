@@ -151,9 +151,9 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
                 ));
 
         List<EventOccurrence> klaasOccurence = new ArrayList<>();
-        klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 01, 15), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 0)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
-        klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 01, 22), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 10)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
-        klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 01, 29), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 11)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
+        klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 1, 15), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 0)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
+        klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 1, 22), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 10)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
+        klaasOccurence.add(new EventOccurrence(LocalDate.of(2020, 1, 29), LocalTime.of(18, 0, 0), Arrays.asList(new EventCategory("Standardeintritt", 1500, 100, 11)), new Address("Deutschland", "10115", "Berlin", "Kreuzbergstraße", "120")));
 
         List<EventOccurrence> kochshowOccurence = new ArrayList<>();
         List<LocationRow> seatingRows = new ArrayList<>();
@@ -251,13 +251,11 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         ClientRole admin = new ClientRole("ADMIN", true, true, 10);
         ClientRole web = new ClientRole("WEB", false, false, 0);
-        ClientRole nobody = new ClientRole("NOBODY", false, false, 0);
         ClientRole onlyRead = new ClientRole("READER", true, false, 5);
-        ClientRole messager = new ClientRole("MESSAGER", true, true, 7);
+        ClientRole messager = new ClientRole("WRITER", true, true, 7);
         entityRepository.saveOrUpdate(admin);
         entityRepository.saveOrUpdate(web);
         entityRepository.saveOrUpdate(messager);
-        entityRepository.saveOrUpdate(nobody);
         entityRepository.saveOrUpdate(onlyRead);
         entityRepository.saveOrUpdate(new Client("backdoor", "Door, Back", Arrays.asList(admin), new HashSet<>(topics), new Address("Country", "zip", "city", "street", "house")));
         entityRepository.saveOrUpdate(new Client("tf-test2", "Testor2", Arrays.asList(onlyRead), new HashSet<>(Arrays.asList(system)), new Address("AT", "9999", "SimCity", "Hudson Steet", "13")));
