@@ -6,6 +6,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+@javax.ejb.Remote
 public interface BookingService extends Remote {
     List<TicketDTO> bookTickets(List<TicketDTO> ticketDTOs) throws RemoteException;
 

@@ -9,7 +9,6 @@ import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,7 +20,6 @@ public class BookingServiceCoreImpl implements BookingServiceCore {
 
     private TicketRepository ticketRepository;
 
-    @Inject
     public BookingServiceCoreImpl(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }

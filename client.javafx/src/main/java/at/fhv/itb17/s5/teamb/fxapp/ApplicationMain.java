@@ -1,8 +1,13 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
+import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
+import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
+import at.fhv.itb17.s5.teamb.fxapp.data.ejb.EJBController;
+import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.SecManager;
+import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.BeanManager;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.RmiManager;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.SetupCallback;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.SetupManager;
@@ -25,9 +30,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.jms.JMSException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.security.*;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -38,6 +45,8 @@ public class ApplicationMain extends Application implements SetupCallback {
 
     private Consumer<String> createMenu;
     private RMIController rmiController;
+    private EJBController ejbController;
+    private MsgAsyncService msgAsyncService;
     private SetupManager setupManager;
 
     @Override
@@ -47,23 +56,52 @@ public class ApplicationMain extends Application implements SetupCallback {
         args.parseArgs(getParameters().getRaw(), '=');
     }
 
+    private void setSecurityPolicy() {
+        Policy.setPolicy(
+                new Policy() {
+                    @Override
+                    public PermissionCollection getPermissions(CodeSource codesource) {
+                        Permissions p = new Permissions();
+                        p.add(new AllPermission());
+                        return p;
+                    }
+                });
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
+        }
+    }
+
     public void start(Stage primaryStage) throws Exception {
+        setSecurityPolicy();
         Thread.currentThread().setName("Fred");
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
 
+        msgAsyncService = new MsgAsyncServiceImpl();
+        new Thread(() -> {
+            try {
+                msgAsyncService.init(MsgServiceCoreImpl.TCP, "Consumer"); //TODO use username as clientID
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        }, "Hedwig").start();
+        if (new Boolean(args.getArgValue("-ejb", "false"))) {
+            setupManager = new BeanManager();
+        }
+        else{
+            setupManager = new RmiManager();
+        }
 
-        setupManager = new RmiManager();
-        setupManager.setMsgNotificationPresenter(this);
         boolean b = setupManager.create();
         if (!b) {
             throw new RuntimeException("Error in manager.create");
         }
         setupManager.setCallbackConsumer(this);
 
-
         Injector.setModelOrService(SetupManager.class, setupManager);
+        Injector.setModelOrService(MsgAsyncService.class, msgAsyncService);
         Injector.setModelOrService(RMIController.class, rmiController);
+        Injector.setModelOrService(EJBController.class, ejbController);
 
         Runnable createLogin = () -> generateLogin(primaryStage);
         createMenu = (String name) -> generateMenu(primaryStage, name);
@@ -105,11 +143,12 @@ public class ApplicationMain extends Application implements SetupCallback {
         primary.setTitle(title);
     }
 
-    private void showStage(@NotNull Stage primary) {
+    private void showStage(@NotNull Stage primary) throws FileNotFoundException {
         primary.initStyle(
                 args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
         );
-        primary.getIcons().add(new Image("icon.png"));
+        File file = new File("client.javafx/src/main/resources/icon.png");
+        primary.getIcons().add(new Image(new FileInputStream(file)));
         primary.show();
         primary.toFront();
     }
@@ -119,6 +158,7 @@ public class ApplicationMain extends Application implements SetupCallback {
     public void stop() throws Exception {
         super.stop();
         setupManager.close();
+        msgAsyncService.close();
         logger.info(LogMarkers.APPLICATION, "Application Stopped Gracefully");
     }
 

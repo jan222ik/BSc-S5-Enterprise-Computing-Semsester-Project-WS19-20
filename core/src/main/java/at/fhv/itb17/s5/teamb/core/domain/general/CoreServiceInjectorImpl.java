@@ -17,8 +17,10 @@ import java.util.*;
 
 @SuppressWarnings({"squid:S1192", "squid:CommentedOutCodeLine", "FieldCanBeLocal"})
 public class CoreServiceInjectorImpl implements CoreServiceInjector {
-    private final EntityRepository entityRepository = new EntityRepository();
 
+    private static CoreServiceInjector injector;
+
+    private final EntityRepository entityRepository = new EntityRepository();
     private final EventRepository eventRepository = new EventRepository(entityRepository);
     private final SearchServiceCore searchServiceCore = new SearchServiceCoreImpl(eventRepository);
     private final TicketRepository ticketRepository = new TicketRepository(entityRepository);
@@ -30,10 +32,18 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
     private final MsgRepository msgRepository = new MsgRepository(entityRepository);
     private final MsgServiceCore msgTopicServiceCore;
 
-    public CoreServiceInjectorImpl(boolean withLDAP) {
+    private CoreServiceInjectorImpl(boolean withLDAP) {
+        injector = this;
         authManagerCore = new AuthManagerCore(true, withLDAP, clientRepository);
         addDBDATA();
         msgTopicServiceCore = new MsgServiceCoreImpl(msgRepository);
+    }
+
+    public static CoreServiceInjector getInstance(boolean withLDAP){
+        if(injector == null){
+            injector = new CoreServiceInjectorImpl(withLDAP);
+        }
+        return injector;
     }
 
     @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
@@ -205,6 +215,7 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
         return msgTopicServiceCore;
     }
 
+    @Override
     public EntityRepository getEntityRepository() {
         return entityRepository;
     }
