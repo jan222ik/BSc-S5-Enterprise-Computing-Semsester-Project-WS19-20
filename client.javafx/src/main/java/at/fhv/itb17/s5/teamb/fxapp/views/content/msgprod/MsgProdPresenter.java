@@ -74,7 +74,7 @@ public class MsgProdPresenter implements ContentfulViewLifeCycle<MsgTopicVM> {
     @Override
     public void onReturned(MsgTopicVM viewModel) {
         topicCB.getItems().clear();
-        topicCB.getItems().addAll(viewModel.getAllTopics().stream().map(topic -> {
+        topicCB.getItems().addAll(viewModel.getAllTopics().stream().filter(topic -> !(topic.getName().equals("TEST"))).map(topic -> {
             topicChoices.put(topic.getName(), topic);
             return topic.getName();
         }).collect(Collectors.toList()));

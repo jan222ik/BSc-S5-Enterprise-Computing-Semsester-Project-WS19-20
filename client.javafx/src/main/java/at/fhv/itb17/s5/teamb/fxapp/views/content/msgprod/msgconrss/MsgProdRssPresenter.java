@@ -49,7 +49,7 @@ public class MsgProdRssPresenter implements ContentfulViewLifeCycle<MsgTopicVM> 
     public void onReturned(MsgTopicVM viewModel) {
         List<MsgTopicDTO> allTopics = viewModel.getAllTopics();
         topicCB.getItems().clear();
-        topicCB.getItems().addAll(allTopics.stream().map(e -> {
+        topicCB.getItems().addAll(allTopics.stream().filter(topic -> !(topic.getName().equals("TEST"))).map(e -> {
             topics.put(e.getName(), e);
             return e.getName();
         }).collect(Collectors.toList()));
