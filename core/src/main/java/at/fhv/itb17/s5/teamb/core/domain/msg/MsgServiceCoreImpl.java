@@ -43,11 +43,14 @@ public class MsgServiceCoreImpl implements MsgServiceCore {
         return created;
     }
 
-    public void closeProducer() {
+    @Override
+    public boolean closeProducer() {
         try {
             msgProducer.close();
+            return true;
         } catch (JMSException e) {
             logger.catching(e);
+            return false;
         }
     }
 }

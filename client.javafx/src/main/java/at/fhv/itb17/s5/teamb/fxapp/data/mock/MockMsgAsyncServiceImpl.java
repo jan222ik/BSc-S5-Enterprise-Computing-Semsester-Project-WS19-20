@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+
 @Deprecated
 public class MockMsgAsyncServiceImpl implements MsgAsyncService {
 
@@ -63,12 +64,17 @@ public class MockMsgAsyncServiceImpl implements MsgAsyncService {
     }
 
     @Override
-    public void close() throws JMSException {
-
+    public boolean close() throws JMSException {
+        return false;
     }
 
     @Override
     public void setTopics(List<MsgTopicDTO> topics) {
+
+    }
+
+    @Override
+    public void acknowledgeTest() {
 
     }
 
