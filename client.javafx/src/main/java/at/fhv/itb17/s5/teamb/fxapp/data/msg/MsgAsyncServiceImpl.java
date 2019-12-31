@@ -51,7 +51,6 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
         session = connection.createSession(false, ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
         for (MsgTopicDTO msgTopic : topics) {
-            logger.info("Consumer Topic is {}", msgTopic.getName());
             Topic topic = session.createTopic("VirtualTopic." + msgTopic.getName());
             destinations.put(msgTopic.getName(), topic);
             subNames.put(topic, msgTopic.getName());
@@ -91,15 +90,11 @@ public class MsgAsyncServiceImpl implements ExceptionListener, MessageListener, 
     public synchronized void onMessage(Message message) {
         if (message instanceof TextMessage) {
             TextMessage textMessage = (TextMessage) message;
-            logger.debug("textMessage = {}", textMessage);
             String text;
             try {
                 text = textMessage.getText();
                 String topic = textMessage.getStringProperty("topic");
                 String header = textMessage.getStringProperty("header");
-                logger.debug("{} Received Topic: {}", this.hashCode(), topic);
-                logger.debug("Received header: {}", header);
-                logger.debug("Received text: {}", text);
                 MsgWrapper msgWrapper = new MsgWrapper(topic, text, textMessage, LocalDateTime.now(), false, header);
                 Platform.runLater(() -> outList.add(msgWrapper));
             } catch (JMSException e) {
