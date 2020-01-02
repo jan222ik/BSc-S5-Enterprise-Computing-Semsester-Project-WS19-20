@@ -64,8 +64,6 @@ public class EntityRepository {
         } else {
             return this.doInTransaction(session -> session.get(type, "FHVUser"));
         }
-
-
     }
 
     public void saveOrUpdate(final Object o) {

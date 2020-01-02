@@ -60,7 +60,21 @@ data class PriceCategory(
     val categoryName: String,
     val priceInCents: Int,
     val totalTickets: Int,
-    val usedTickets: Int
+    val usedTickets: Int,
+    val rows: Array<Row>
+)
+
+data class Row(
+        val rowId: Int,
+        val rowIdf: String,
+        val seats: Array<Seat>
+)
+
+data class Seat(
+        val free: Boolean,
+        val seatId: Int,
+        val isFree: Boolean,
+        val seatIdf: String
 )
 
 data class CategoryCalcDataDTO(

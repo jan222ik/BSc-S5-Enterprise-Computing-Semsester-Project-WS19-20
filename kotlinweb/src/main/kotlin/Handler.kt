@@ -40,10 +40,16 @@ object Handler {
     private fun bookTickets(tickets: List<LocalTicket>): Promise<List<BookingResponse>> {
         if (tickets.isNotEmpty()) {
             val first = tickets.first()
+            val rowSeats: MutableList<RowSeat> = mutableListOf()
+            if (first.row != null) {
+                tickets.forEach {
+                    rowSeats.add(RowSeat(it.row!!.rowId, it.seat!!.seatId))
+                }
+            }
             return window.fetch(input = "/events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}/book", init = RequestInit(
                     method = "POST",
                     headers = json().apply { this["Content-Type"] = "application/json" },
-                    body = JSON.stringify(TicketPayload(tickets.size, latestBookingInfo!!, emptyArray()))
+                    body = JSON.stringify(TicketPayload(tickets.size, latestBookingInfo!!, rowSeats.toTypedArray()))
             )).then outerThen@{ res ->
                 val text = res.text()
                 return@outerThen Promise<Pair<String, Short>> { resolve, reject ->
@@ -135,7 +141,7 @@ object Handler {
                     td(span(occurrence.date.toDateString(), "occ-row-col-date")),
                     td(span(occurrence.time.toTimeString(), "occ-row-col-time")),
                     td(span(occurrence.toLocationString(), "occ-row-col-location")),
-                    td(span("TODO", "occ-row-col-tickets")),
+                    td(span("TODO", "occ-row-col-tickets")), //TODO
                     td(span(occurrence.categoryCalcDataDTO.ticketTypes, "occ-row-col-type")),
                     td(span(occurrence.categoryCalcDataDTO.priceRangeString, "occ-row-col-price")),
                     td(document.createElement("button").also {
@@ -188,9 +194,22 @@ object Handler {
         var count = 0
         for (spinner in spinners) {
             val amount = spinner.key.value.toInt()
-            for (i in 0 until amount) {
-                Cart.add(LocalTicket(event, occurrence, spinner.value))
-                count++
+            if (spinner.value.rows == null) {
+                if (amount <= spinner.value.totalTickets - spinner.value.usedTickets) {
+                    for (i in 0 until amount) {
+                        Cart.add(LocalTicket(event, occurrence, spinner.value))
+                        count++
+                    }
+                } else {
+                    spinner.key.value = spinner.key.max
+                }
+            } else {
+                console.log("Adding seats to cart")
+                currentDetailedSeats[spinner.value.eventCategoryId]?.forEach {
+                    val first = spinner.value.rows.first { row -> row.seats.any { seat -> seat.seatId == it.seatId } }
+                    Cart.add(LocalTicket(event, occurrence, spinner.value, first, it))
+                    count++
+                }
             }
         }
         return count
@@ -198,27 +217,97 @@ object Handler {
 
     private fun detailViewCategories(occurrence: Occurrence): Pair<Element, MutableMap<HTMLInputElement, PriceCategory>> {
         val map = mutableMapOf<HTMLInputElement, PriceCategory>()
+        currentDetailedSeats = mutableMapOf()
         val createElement = document.createElement("div") {
             occurrence.priceCategories.forEach {
-                appendElement("div") {
-                    val spinner = document.createElement("input") as HTMLInputElement
-                    spinner.type = "number"
-                    spinner.min = "0"
-                    spinner.max = "${it.totalTickets - it.usedTickets}"
-                    spinner.step = "1"
-                    spinner.value = "0"
-                    spinner.onkeypress = { _ -> updateTotal() }
-                    map[spinner] = it
-                    append(
-                            span(it.categoryName, "cat-name"),
-                            span(it.toDisplayPrice(), "cat-price"),
-                            span(it.ticketRange(), "cat-ticket-range"),
-                            spinner
-                    )
-                }
+                console.dir(it)
+                append(
+                        if (it.rows != null) {
+                            seatSeats(it, map)
+                        } else {
+                            freeSeats(it, map)
+                        }
+                )
             }
         }
         return Pair(createElement, map)
+    }
+
+    var currentDetailedSeats: MutableMap<Int, MutableList<Seat>> = mutableMapOf()
+
+    private fun seatSeats(cat: PriceCategory, map: MutableMap<HTMLInputElement, PriceCategory>): Element {
+        return document.createElement("div") {
+            val hiddenSpinner = document.createElement("input") {
+                this as HTMLInputElement
+                type = "hidden"
+                value = "0"
+            } as HTMLInputElement
+            append(hiddenSpinner)
+            map[hiddenSpinner] = cat
+            appendElement("div") {
+                cat.rows.forEach {
+                    appendElement("div") {
+                        append(
+                                label(it.rowIdf)
+                        )
+                        it.seats.forEach {
+                            appendElement("button") {
+                                textContent = it.seatIdf
+                                var marked = !it.isFree
+                                currentDetailedSeats[cat.eventCategoryId] = mutableListOf()
+                                if (!marked) {
+                                    addEventListener(type = "click", callback = { _ ->
+                                        if (marked) {
+                                            marked = false
+                                            classList.remove("marked")
+                                            hiddenSpinner.value = hiddenSpinner.value.toInt().dec().toString()
+                                            currentDetailedSeats[cat.eventCategoryId]?.remove(it)
+                                        } else {
+                                            classList.add("marked")
+                                            marked = true
+                                            hiddenSpinner.value = hiddenSpinner.value.toInt().inc().toString()
+                                            currentDetailedSeats[cat.eventCategoryId]?.add(it)
+                                        }
+                                        updateTotal()
+                                    })
+                                } else {
+                                    classList.add("blocked")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun freeSeats(cat: PriceCategory, map: MutableMap<HTMLInputElement, PriceCategory>): Element {
+        return document.createElement("div") {
+            val spinner = document.createElement("input") as HTMLInputElement
+            spinner.type = "number"
+            spinner.min = "0"
+            spinner.max = "${cat.totalTickets - cat.usedTickets}"
+            spinner.step = "1"
+            spinner.value = "0"
+            spinner.oninput = { _ ->
+                try {
+                    val toInt = spinner.value.toInt()
+                    if (toInt > cat.totalTickets - cat.usedTickets) {
+                        spinner.value = spinner.max
+                    }
+                    updateTotal()
+                } catch (e: NumberFormatException) {
+                    spinner.value.replace("\\D", "")
+                }
+            }
+            map[spinner] = cat
+            append(
+                    span(cat.categoryName, "cat-name"),
+                    span(cat.toDisplayPrice(), "cat-price"),
+                    span(cat.ticketRange(), "cat-ticket-range"),
+                    spinner
+            )
+        }
     }
 
     private fun updateTotal() {
@@ -242,7 +331,46 @@ object Handler {
 
     private fun detailViewInfo(event: EventDTO, occurrence: Occurrence): Element {
         return document.createElement("div") {
-            //TODO
+            this.appendElement("h3") {
+                this.textContent = "More Information"
+            }
+            this.appendElement("ul") {
+                append(
+                        li(
+                                label("Title"),
+                                span(event.title)
+                        ),
+                        li(
+                                label("Date"),
+                                span(occurrence.date.toDateString()),
+                                span(occurrence.time.toTimeString())
+                        ),
+                        li(
+                                label("Location"),
+                                span(occurrence.toLocationString())
+                        ),
+                        li(
+                                label("Description"),
+                                span(event.description)
+                        ),
+                        li(
+                                label("Genre"),
+                                span(event.genere)
+                        ),
+                        li(
+                                label("Artists"),
+                                span(event.artistNames.joinToString(separator = ", "))
+                        )
+                )
+            }
+        }
+    }
+
+    private fun li(vararg child: Element): Element {
+        return document.createElement("li") {
+            for (c in child) {
+                this.append(c)
+            }
         }
     }
 
@@ -252,14 +380,14 @@ object Handler {
         }
     }
 
-    private fun span(text: String, cssExt: String): Element {
+    private fun span(text: String, cssExt: String = ""): Element {
         return document.createElement("span") {
             this.className = "event-element-$cssExt"
             this.textContent = text
         }
     }
 
-    private fun label(text: String, cssExt: String): Element {
+    private fun label(text: String, cssExt: String = ""): Element {
         return document.createElement("span") {
             this.className = "event-element-$cssExt-label"
             this.textContent = "$text: "
@@ -272,7 +400,13 @@ object Handler {
 
     private fun Occurrence.toLocationString() = "$country, $city"
     private fun PriceCategory.toDisplayPrice() = "${priceInCents / 100.0}€"
-    private fun PriceCategory.ticketRange() = "$usedTickets / $totalTickets"
+    private fun PriceCategory.ticketRange(): String {
+        return when (this.usedTickets) {
+            null, undefined -> ""
+            else -> "$usedTickets / $totalTickets"
+        }
+    }
+
     private fun Date.toDateString() = "$year-$month-$dayOfMonth"
     private fun Time.toTimeString() = "$hour:$minute"
 
@@ -520,6 +654,7 @@ object Handler {
     }
 }
 
+
 fun openCart() {
     Handler.updateCart()
     openTab("cart")
@@ -680,13 +815,20 @@ object Cart {
 data class LocalTicket(
         val event: EventDTO,
         val occurrence: Occurrence,
-        val category: PriceCategory
+        val category: PriceCategory,
+        val row: Row? = null,
+        val seat: Seat? = null
 )
 
 data class TicketPayload(
         val amount: Int,
         val bookingInfo: BookingInfo,
-        val rowseats: Array<Any>
+        val rowseats: Array<RowSeat>
+)
+
+data class RowSeat(
+        val rowID: Int,
+        val seatID: Int
 )
 
 data class BookingResponse(
