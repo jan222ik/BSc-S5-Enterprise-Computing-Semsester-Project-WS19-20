@@ -121,6 +121,7 @@
                     <include>**/*.xml</include>
                     <include>**/*.MF</include>
                     <include>**/*.html</include>
+                    <include>**/*.js</include>
                 </includes>
             </resource>
             <resource>
@@ -132,6 +133,7 @@
                     <include>**/*.xml</include>
                     <include>**/*.MF</include>
                     <include>**/*.html</include>
+                    <include>**/*.js</include>
                 </includes>
             </resource>
         </resources>

@@ -22,11 +22,23 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import java.io.File
+import java.io.*
 
 class RestServer {
 
+    @Throws(IOException::class)
+    fun getResourceFiles(path: String): List<String> = getResourceAsStream(path).use{
+        return if(it == null) emptyList()
+        else BufferedReader(InputStreamReader(it)).readLines()
+    }
+
+    private fun getResourceAsStream(resource: String): InputStream? =
+            Thread.currentThread().contextClassLoader.getResourceAsStream(resource)
+                    ?: resource::class.java.getResourceAsStream(resource)
+
         fun main(injector: CoreServiceInjector) {
+            getResourceFiles("/").forEach{str ->
+                println(str)}
             val api: EventsApi = EventsApiController(injector)
             val mapper = jacksonObjectMapper()
             mapper.registerModule(KotlinModule())
