@@ -29,7 +29,11 @@ public class BookingServiceCoreImpl implements BookingServiceCore {
     public List<Ticket> bookTickets(List<Ticket> tickets) {
         tickets.forEach(e -> e.setState(TicketStates.PAID));
         List<List<Ticket>> listList = getTicketsSortedAfterEventAndOccAndCat(tickets);
-        return listList.stream().flatMap(list -> Optional.ofNullable(ticketRepository.bookIfFree(list)).orElse(new LinkedList<>()).stream()).collect(Collectors.toList());
+        return listList.stream().flatMap(list -> {
+            List<Ticket> value = ticketRepository.bookIfFree(list);
+            System.out.println("value = " + value);
+            return Optional.ofNullable(value).orElse(new LinkedList<>()).stream();
+        }).collect(Collectors.toList());
     }
 
     @Nullable

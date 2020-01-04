@@ -52,7 +52,7 @@ public class EventsApiController implements EventsApi {
     }
 
     public ResponseEntity<List<BookingResponse>> bookTicket(Long eventID, Long occID, Long catID, TicketOrder body) {
-        System.out.println("eventID = [" + eventID + "], occID = [" + occID + "], catID = [" + catID + "], body = [" + body + "]");
+        log.info("eventID = [{}], occID = [{}], catID = [{}], body = [{}]", eventID, occID, catID, body);
         try {
             EntityDTORepo entityRepo = injector.getEntityRepo();
             System.out.println("entityRepo = " + entityRepo);
@@ -84,6 +84,8 @@ public class EventsApiController implements EventsApi {
             if (paymentTransaction != null) {
                 log.info("Size of Tickets to book: {}", ticket2Book.size());
                 List<Ticket> bookedTickets = injector.getBookingServiceCore().bookTickets(ticket2Book);
+                ticket2Book.forEach(i -> log.debug(String.valueOf(i)));
+                bookedTickets.forEach(i -> log.debug(String.valueOf(i)));
                 List<BookingResponse> bookingResponses;
                 if (bookedTickets.isEmpty()) {
                     paymentTransaction.abort();

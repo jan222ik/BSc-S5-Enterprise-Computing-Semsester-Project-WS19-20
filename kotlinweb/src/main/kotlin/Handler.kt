@@ -756,11 +756,11 @@ fun generateSearchQuery() {
     val locationIn = document.getElementById("location") as HTMLInputElement
 
     var sb = ""
-    if (withFromCB.checked) {
-        sb = sb.append("-").append(SearchCategories.DATE_FROM.getIdf()).append("=\"").append(fromDatePick.value).append("\"")
+    if (withFromCB.checked && fromDatePick.value.isNotEmpty()) {
+        sb = sb.append("-").append(SearchCategories.DATE_FROM.getIdf()).append("=\"").append(fromDatePick.value.toSearchDate()).append("\"")
     }
-    if (withTillCB.checked) {
-        sb = sb.append("-").append(SearchCategories.DATE_UNTIL.getIdf()).append("=\"").append(tillDatePicker.value).append("\"")
+    if (withTillCB.checked && tillDatePicker.value.isNotEmpty()) {
+        sb = sb.append("-").append(SearchCategories.DATE_UNTIL.getIdf()).append("=\"").append(tillDatePicker.value.toSearchDate()).append("\"")
     }
     if (searchEvtTitle.value.isNotEmpty()) {
         sb = sb.append("-").append(SearchCategories.EVENT_NAME.getIdf()).append("=\"").append(searchEvtTitle.value).append("\"")
@@ -775,6 +775,10 @@ fun generateSearchQuery() {
         sb = sb.append("-").append(SearchCategories.LOCATION.getIdf()).append("=\"").append(locationIn.value).append("\"")
     }
     Handler.latestSearchQuery = sb
+}
+
+fun String.toSearchDate() : String {
+    return this@toSearchDate.split('-').reversed().joinToString(separator = ".")
 }
 
 enum class SearchCategories(private val catIdf: String) {

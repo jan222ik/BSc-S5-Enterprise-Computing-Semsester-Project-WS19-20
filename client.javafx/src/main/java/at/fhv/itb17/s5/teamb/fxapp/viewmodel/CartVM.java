@@ -59,23 +59,24 @@ public class CartVM implements ViewModel {
     @Nullable
     @SuppressWarnings("squid:S2447")
     private Boolean processChanges(List<TicketDTO> bookedTickets) {
+        System.out.println("bookedTickets = " + bookedTickets.size());
+        System.out.println("tickets = " + tickets);
+        bookedTickets.stream().forEach(l -> System.out.println(l));
         if (bookedTickets != null) {
-            if (bookedTickets.size() == tickets.size()) {
-                this.clear();
-                return true;
-            } else {
-                HashSet<TicketDTO> usedDTOS = new HashSet<>();
-                tickets = tickets.stream().filter(ticketDTO -> {
-                    for (TicketDTO bookedTicket : bookedTickets) {
-                        if (!usedDTOS.contains(bookedTicket) && ticketDTO.valueEqual(bookedTicket)) {
-                            usedDTOS.add(bookedTicket);
-                            return true;
+            HashSet<Long> usedDTOS = new HashSet<>();
+            tickets = tickets.stream().filter(ticketDTO -> {
+                for (TicketDTO bookedTicket : bookedTickets) {
+                    if (!usedDTOS.contains(bookedTicket.getId())) {
+                        if (ticketDTO.valueEqual(bookedTicket)) {
+                            usedDTOS.add(bookedTicket.getId());
+                            return false;
                         }
                     }
-                    return false;
-                }).collect(Collectors.toList());
-                return tickets.isEmpty();
-            }
+                }
+                return true;
+            }).collect(Collectors.toList());
+            System.out.println("tickets after= " + tickets);
+            return tickets.isEmpty();
         } else {
             return null;
         }

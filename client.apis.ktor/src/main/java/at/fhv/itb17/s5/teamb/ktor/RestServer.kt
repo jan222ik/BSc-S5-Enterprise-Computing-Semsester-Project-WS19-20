@@ -4,15 +4,10 @@ import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector
 import at.fhv.itb17.s5.teamb.ktor.api.EventsApi
 import at.fhv.itb17.s5.teamb.ktor.api.EventsApiController
 import at.fhv.itb17.s5.teamb.ktor.model.TicketOrder
-import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.features.ContentNegotiation
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.jackson
 import io.ktor.request.receiveText
 import io.ktor.response.respond
 import io.ktor.response.respondFile
@@ -22,9 +17,11 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import java.io.*
 
 class RestServer {
+
 
     @Throws(IOException::class)
     fun getResourceFiles(path: String): List<String> = getResourceAsStream(path).use{
@@ -47,17 +44,16 @@ class RestServer {
                     // STATIC CONTENT SERVE
                     get(path = "/") {
                         call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\kotlinweb\\src\\main\\resources\\TestJS.html"))
-                        //call.respondText(html(), ContentType.Text.Html)
                     }
                     get(path = "/lib/kotlin.js") {
                         val resource = javaClass.getResource("/kotlin.js")
                         call.respondFile(file = File(resource.path))
-                        //call.respondText("", ContentType.Text.JavaScript)
                     }
                     get(path = "/lib/webjs.js") {
                         call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\kotlinweb\\build\\classes\\kotlin\\main\\kotlinweb.js"))
                     }
                     // REST API
+                    @Suppress("BlockingMethodInNonBlockingContext")
                     post(path = "/events/{eventID}/occurrences/{occID}/categories/{catID}/book") {
                         val eventID = call.parameters["eventID"]!!.toLong()
                         val occID = call.parameters["occID"]!!.toLong()
@@ -65,18 +61,19 @@ class RestServer {
                         val body = mapper.readValue<TicketOrder>(call.receiveText(), TicketOrder::class.java)
                         val result = api.bookTicket(eventID, occID, catID, body)
                         println(result.generic)
-                        val status = HttpStatusCode.fromValue(result.status)
+                        val status = HttpStatusCode.fromValue( value = result.status)
                         if (result.generic != null) {
                             call.respondText(text =  mapper.writeValueAsString(result.generic), status = status)
                         } else {
                             call.respond(status = status, message = status.description)
                         }
                     }
+                    @Suppress("BlockingMethodInNonBlockingContext")
                     get(path = "/events/findByQueryString") {
                         val searchString: String = this.context.request.queryParameters["queryString"] ?: ""
+                        println("searchString = $searchString")
                         val result = api.eventsFindByQueryStringGet(searchString)
-                        println(result.generic)
-                        val status = HttpStatusCode.fromValue(result.status)
+                        val status = HttpStatusCode.fromValue(value = result.status)
                         if (result.generic != null) {
                             call.respondText(text =  mapper.writeValueAsString(result.generic), status = status)
                         } else {
@@ -87,6 +84,28 @@ class RestServer {
             }
             server.start(wait = true)
         }
+
+    fun test(): Unit {
+        val createServer = createServer(8080)
+        val c1reateServer = createServer(8081)
+    }
+
+
+    private fun createServer(port: Int): NettyApplicationEngine {
+        val server = embeddedServer(Netty, port) {
+            routing {
+                // STATIC CONTENT SERVE
+                get(path = "/") { /* Index File */ }
+                get(path = "/lib/kotlin.js") { /* Kotlin Lib JS File */ }
+                get(path = "/lib/webjs.js") { /* Kotlin WebJS File */ }
+                // REST API
+                post(path = "/events/{eventID}/occurrences/{occID}/categories/{catID}/book") { /* Impl booking */ }
+                get(path = "/events/findByQueryString") { /* Impl search */ }
+            }
+        }
+        server.start(wait = true)
+        return server
+    }
 
 
         private fun html(): String = """

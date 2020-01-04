@@ -157,12 +157,14 @@ public class CoreServiceInjectorImpl implements CoreServiceInjector {
 
         List<EventOccurrence> kochshowOccurence = new ArrayList<>();
         List<LocationRow> seatingRows = new ArrayList<>();
-        seatingRows.add(new LocationRow("Row 1", Arrays.asList(new LocationSeat("Seat 1", false),
+        seatingRows.add(new LocationRow("Row 1", Arrays.asList(
+                new LocationSeat("Seat 1", false),
                 new LocationSeat("Seat 2", false),
                 new LocationSeat("Seat 3", false),
                 new LocationSeat("Seat 4", false),
                 new LocationSeat("Seat 5", false))));
-        seatingRows.add(new LocationRow("Row 2", Arrays.asList(new LocationSeat("Seat 6", false),
+        seatingRows.add(new LocationRow("Row 2", Arrays.asList(
+                new LocationSeat("Seat 6", false),
                 new LocationSeat("Seat 7", false),
                 new LocationSeat("Seat 8", false),
                 new LocationSeat("Seat 9", false),
