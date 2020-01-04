@@ -50,7 +50,8 @@ class RestServer {
                         //call.respondText(html(), ContentType.Text.Html)
                     }
                     get(path = "/lib/kotlin.js") {
-                        call.respondFile(file = File("Z:\\Users\\jan22\\CodeProjects\\advance-ticket-sale\\client.apis.ktor\\src\\main\\resources\\kotlin.js"))
+                        val resource = javaClass.getResource("/kotlin.js")
+                        call.respondFile(file = File(resource.path))
                         //call.respondText("", ContentType.Text.JavaScript)
                     }
                     get(path = "/lib/webjs.js") {
