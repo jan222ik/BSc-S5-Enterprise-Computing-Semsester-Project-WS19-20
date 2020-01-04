@@ -66,7 +66,7 @@ public class TicketRepository {
                         currentSession.refresh(eventCategory);
                         if (eventCategory.isFreeSeating()) {
                             if (eventCategory.getTotalSpace() - (eventCategory.getUsedSpace() + nbrOfTickets) >= 0) {
-                                currentSession.detach(eventCategory);
+                                currentSession.merge(eventCategory);
                                 currentSession.save(ticket);
                                 eventCategory.incUsed(nbrOfTickets);
                                 currentSession.saveOrUpdate(eventCategory);
