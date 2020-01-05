@@ -90,7 +90,7 @@ public final class NotificationsHelper {
         notification
                 .title(title)
                 .text(text)
-                .position(Pos.TOP_RIGHT)
+                .position(Pos.CENTER_RIGHT)
                 .hideAfter(durationType.getDuration())
                 .onAction(e -> notification.hideAfter(Duration.millis(0)))
                 .darkStyle()
