@@ -120,9 +120,9 @@ public class CartVM implements ViewModel {
         }
 
         List<TicketDTO> collect2 = seatTickets.stream()
-                .collect(Collectors.groupingBy(it -> it.getRow().getRowIdentifier(), Collectors.toList()))
+                .collect(Collectors.groupingBy(it -> it.getRow().getRowId(), Collectors.toList()))
                 .values().stream().flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(it -> it.getSeat().getSeatIdentifier(), Collectors.toList()))
+                .collect(Collectors.groupingBy(it -> it.getSeat().getSeatId(), Collectors.toList()))
                 .values().stream().flatMap(list -> Stream.of(list.get(0))).collect(Collectors.toList());
         for (TicketDTO ticket : collect2) {
             HashMap<EvOccurrenceDTO, HashMap<EvCategoryInterfaceDTO, List<TicketDTO>>> occMap;
