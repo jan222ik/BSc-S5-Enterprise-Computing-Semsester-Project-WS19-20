@@ -2,6 +2,7 @@ package at.fhv.itb17.s5.teamb.core.controllers.general;
 
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 
+@SuppressWarnings({"squid:S1068", "FieldCanBeLocal"})
 public class ClientSessionRMI {
     private String username;
     private String password;

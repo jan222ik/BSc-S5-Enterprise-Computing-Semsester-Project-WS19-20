@@ -74,5 +74,6 @@ public class EntryPointRMI extends EntryPoint {
 
     @Override
     public void destroy() {
+        // Not needed for this entry point
     }
 }

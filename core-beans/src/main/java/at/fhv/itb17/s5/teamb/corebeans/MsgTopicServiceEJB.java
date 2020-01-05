@@ -18,7 +18,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -64,7 +63,7 @@ public class MsgTopicServiceEJB implements MsgTopicService {
 
     @Override
     public boolean mayPublish() {
-        if(client != null) {
+        if (client != null) {
             Client role = client.getClient();
             if (role != null) {
                 ClientRole clientRole = ClientRole.calcEffectiveRole(role.getRole());

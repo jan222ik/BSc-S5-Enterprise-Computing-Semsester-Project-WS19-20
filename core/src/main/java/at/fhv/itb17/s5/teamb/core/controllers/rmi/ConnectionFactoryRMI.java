@@ -15,7 +15,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@SuppressWarnings("RedundantThrows")
+@SuppressWarnings({"squid:S2160", "squid:S1948", "RedundantThrows"})
 public class ConnectionFactoryRMI extends UnicastRemoteObject implements IConnectionFactoryRMI {
 
     private static final Logger logger = LogManager.getLogger(ConnectionFactoryRMI.class);

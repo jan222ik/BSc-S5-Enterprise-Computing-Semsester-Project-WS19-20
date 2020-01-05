@@ -1,10 +1,7 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
-import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCoreImpl;
-import at.fhv.itb17.s5.teamb.fxapp.data.MsgAsyncService;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
 import at.fhv.itb17.s5.teamb.fxapp.data.ejb.EJBController;
-import at.fhv.itb17.s5.teamb.fxapp.data.msg.MsgAsyncServiceImpl;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.SecManager;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.BeanManager;
@@ -30,11 +27,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import javax.jms.JMSException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.security.*;
+import java.security.AllPermission;
+import java.security.CodeSource;
+import java.security.PermissionCollection;
+import java.security.Permissions;
+import java.security.Policy;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -46,7 +46,6 @@ public class ApplicationMain extends Application implements SetupCallback {
     private Consumer<String> createMenu;
     private RMIController rmiController;
     private EJBController ejbController;
-    private MsgAsyncService msgAsyncService;
     private SetupManager setupManager;
 
     @Override
@@ -71,15 +70,16 @@ public class ApplicationMain extends Application implements SetupCallback {
         }
     }
 
+    @SuppressWarnings("squid:S00112")
     public void start(Stage primaryStage) throws Exception {
         setSecurityPolicy();
         Thread.currentThread().setName("Fred");
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
 
-        if (new Boolean(args.getArgValue("-ejb", "false"))) {
+        if (Boolean.parseBoolean(args.getArgValue("-ejb", "false"))) {
             setupManager = new BeanManager();
-        } else{
+        } else {
             setupManager = new RmiManager();
         }
         setupManager.setMsgNotificationPresenter(this);

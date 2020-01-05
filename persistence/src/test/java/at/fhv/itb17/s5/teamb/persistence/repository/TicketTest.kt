@@ -59,7 +59,7 @@ class TicketTest {
         val aNewTicket2 = getANewTicket(true, rows[0], seats[0])
         val bookIfFree = ticketRepository.bookIfFree(aNewTicket)
         assertThat(bookIfFree?.ticketId, Matchers.notNullValue())
-        assertThat(aNewTicket.ticketId, Matchers.notNullValue())
+        assertThat(aNewTicket.ticketId, Matchers.nullValue())
         val bookIfFree1 = ticketRepository.bookIfFree(aNewTicket2)
         assertThat(bookIfFree1, Matchers.nullValue())
         assertThat(aNewTicket2.ticketId, Matchers.nullValue())

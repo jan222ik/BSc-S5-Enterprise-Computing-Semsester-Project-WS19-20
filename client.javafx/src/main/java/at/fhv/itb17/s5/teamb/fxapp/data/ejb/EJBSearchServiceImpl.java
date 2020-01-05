@@ -5,7 +5,6 @@ import at.fhv.itb17.s5.teamb.fxapp.data.SearchService;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.ejb.client.DiscoveryEJBClientInterceptor;
 
 import javax.naming.NamingException;
 import java.rmi.RemoteException;

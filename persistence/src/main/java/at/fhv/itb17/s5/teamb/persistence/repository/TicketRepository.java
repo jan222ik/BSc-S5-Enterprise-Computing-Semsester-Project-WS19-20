@@ -11,7 +11,6 @@ import org.hibernate.Transaction;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,7 +37,8 @@ public class TicketRepository {
         }
     }
 
-    @SuppressWarnings({"squid:S1168", "squid:S3776"}) //Empty Collection for null and Cognitive Complexity
+    @SuppressWarnings({"squid:S1168", "squid:S3776", "squid:S1905"})
+    //Empty Collection for null and Cognitive Complexity
     @Nullable
     public List<Ticket> bookIfFree(List<Ticket> tickets) {
         List<Ticket> bookedTickets = new LinkedList<>();
@@ -105,51 +105,5 @@ public class TicketRepository {
             }
         }
         return bookedTickets;
-    }
-
-    @SuppressWarnings({"squid:S1168", "squid:S3776"}) //Empty Collection for null and Cognitive Complexity
-    @Nullable
-    @Deprecated
-    public synchronized List<Ticket> bookIfFreeNEW(List<Ticket> tickets) {
-        List<Ticket> ticketsToPersist = new ArrayList<>();
-        try {
-            for (Ticket ticket : tickets) {
-                LocationSeat bookedSeat = ticket.getBookedSeat();
-                if (bookedSeat != null && ticket.getBookedRow() != null) {
-                    if (!bookedSeat.isTaken()) {
-                        bookedSeat.setTaken(true);
-                        ticketsToPersist.add(ticket);
-                    } else {
-                        return null;
-                    }
-                } else {
-                    int nbrOfTickets = tickets.size();
-                    EventCategory eventCategory = ticket.getBookedCategory();
-                    if (eventCategory != null && eventCategory.getEventCategoryId() != null) {
-                        if (eventCategory.isFreeSeating()) {
-                            if (eventCategory.getTotalSpace() - (eventCategory.getUsedSpace() + nbrOfTickets) >= 0) {
-                                ticket.getBookedCategory().incUsed(1);
-                                ticketsToPersist.add(ticket);
-                            } else {
-                                return null;
-                            }
-                        } else {
-                            return null;
-                        }
-                    } else {
-                        return null;
-                    }
-                }
-            }
-            entityRepository.atomicSave(new ArrayList<>(ticketsToPersist));
-            logger.info("Booked successfully {} tickets", tickets.size());
-            for (int i = 0; i < tickets.size(); i++) {
-                logger.info("Ticket: [{}]: {}", i, tickets.get(i));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return tickets;
     }
 }

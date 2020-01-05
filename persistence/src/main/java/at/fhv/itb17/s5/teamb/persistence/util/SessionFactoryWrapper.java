@@ -16,6 +16,7 @@ public class SessionFactoryWrapper {
         return sessionFactory;
     }
 
+    @SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
     public Session getCurrentSession() throws HibernateException {
         Session session = sessionFactory.getCurrentSession();
         if(!session.isOpen()){

@@ -51,6 +51,7 @@ public class EventsApiController implements EventsApi {
         paymentProcessor = new PaymentProcessorMock();
     }
 
+    @SuppressWarnings({"squid:S00112", "squid:S3776", "squid:S2589"})
     public ResponseEntity<List<BookingResponse>> bookTicket(Long eventID, Long occID, Long catID, TicketOrder body) {
         log.info("eventID = [{}], occID = [{}], catID = [{}], body = [{}]", eventID, occID, catID, body);
         try {
@@ -107,6 +108,7 @@ public class EventsApiController implements EventsApi {
                         Set<Long> used = new HashSet<>();
                         bookingResponses = ticket2Book.stream().map(t2b -> {
                             BookingResponse response = new BookingResponse();
+                            @SuppressWarnings({"SimplifiableConditionalExpression", "squid:S3358", "squid:S1125"})
                             Optional<Ticket> first = bookedTickets.stream().filter(t -> (t.isSame(t2b)) ? used.contains(t.getTicketId()) ? false : used.add(t.getTicketId()) : false).findFirst();
                             if (first.isPresent()) {
                                 response.tranactionId(first.get().getTicketId());

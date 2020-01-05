@@ -9,8 +9,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
 public class Presenter implements ContentfulViewLifeCycle<RootVM> {
-    @FXML private Button backBtn;
-    @FXML private Button switch2CartBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button switch2CartBtn;
 
     @Override
     public void onCreate(RootVM viewModel, NavigationStackActions<RootVM> navActions) {
@@ -20,22 +22,22 @@ public class Presenter implements ContentfulViewLifeCycle<RootVM> {
         switch2CartBtn.setOnAction(ignored ->
                 navActions.changeToMenuItem(ApplicationMenuViews.CART_VIEW,
                         true,
-                        () -> NotificationsHelper.error("Error","Could not switch to cart"))
+                        () -> NotificationsHelper.error("Error", "Could not switch to cart"))
         );
     }
 
     @Override
     public void preDestroy(RootVM viewModel) {
-
+        // For show
     }
 
     @Override
     public void onReturned(RootVM viewModel) {
-
+        // For show
     }
 
     @Override
     public void beforeMenuSwitch(RootVM viewModel) {
-
+        // For show
     }
 }

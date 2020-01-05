@@ -1,7 +1,10 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.ejb;
 
-import at.fhv.itb17.s5.teamb.core.controllers.general.*;
-import at.fhv.itb17.s5.teamb.core.controllers.rmi.IConnectionFactoryRMI;
+import at.fhv.itb17.s5.teamb.core.controllers.general.BookingService;
+import at.fhv.itb17.s5.teamb.core.controllers.general.EJBConnection;
+import at.fhv.itb17.s5.teamb.core.controllers.general.IFrontEndClient;
+import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
+import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,9 +17,9 @@ import java.util.Properties;
 public class EJBController {
     private static final Logger logger = LogManager.getLogger(EJBController.class);
 
-    private IConnectionFactoryRMI stub = null;
     private InitialContext initialContext;
 
+    @SuppressWarnings("squid:S2068")
     private InitialContext initContext(String host) throws NamingException {
         Properties jndiProps = new Properties();
         jndiProps.put("java.naming.factory.initial", "org.jboss.naming.remote.client.InitialContextFactory");
@@ -39,6 +42,7 @@ public class EJBController {
         }
     }
 
+    @SuppressWarnings("squid:S1172")
     public BookingService createBookingService(IFrontEndClient frontEndClient, String username, String password) throws NamingException {
         logger.info("EJB: Creating BookingService");
         if (initialContext != null) {

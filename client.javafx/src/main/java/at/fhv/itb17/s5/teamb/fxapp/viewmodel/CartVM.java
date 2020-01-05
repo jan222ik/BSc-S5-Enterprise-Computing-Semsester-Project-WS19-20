@@ -6,7 +6,6 @@ import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,11 +37,6 @@ public class CartVM implements ViewModel {
 
     public void clear() {
         tickets.clear();
-    }
-
-    public void removeTicket(TicketDTO ticketDTO) {
-        throw new NotImplementedException("TODO: If tickets should be deletable before purchase");
-        //TODO If tickets should be deletable before purchase
     }
 
     @Nullable

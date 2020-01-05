@@ -85,28 +85,6 @@ class RestServer {
             server.start(wait = true)
         }
 
-    fun test(): Unit {
-        val createServer = createServer(8080)
-        val c1reateServer = createServer(8081)
-    }
-
-
-    private fun createServer(port: Int): NettyApplicationEngine {
-        val server = embeddedServer(Netty, port) {
-            routing {
-                // STATIC CONTENT SERVE
-                get(path = "/") { /* Index File */ }
-                get(path = "/lib/kotlin.js") { /* Kotlin Lib JS File */ }
-                get(path = "/lib/webjs.js") { /* Kotlin WebJS File */ }
-                // REST API
-                post(path = "/events/{eventID}/occurrences/{occID}/categories/{catID}/book") { /* Impl booking */ }
-                get(path = "/events/findByQueryString") { /* Impl search */ }
-            }
-        }
-        server.start(wait = true)
-        return server
-    }
-
 
         private fun html(): String = """
 <!DOCTYPE html>

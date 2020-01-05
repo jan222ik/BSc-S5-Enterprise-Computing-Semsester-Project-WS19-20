@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("RedundantThrows")
+@SuppressWarnings({"squid:S2160", "squid:S1948", "RedundantThrows", "squid:S1191"})
 public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicService {
 
     private static final Logger logger = LogManager.getLogger(MsgTopicServiceRMI.class);

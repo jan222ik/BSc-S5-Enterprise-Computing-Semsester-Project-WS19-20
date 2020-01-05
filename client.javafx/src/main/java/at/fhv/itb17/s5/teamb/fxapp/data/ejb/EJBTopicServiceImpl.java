@@ -3,13 +3,10 @@ package at.fhv.itb17.s5.teamb.fxapp.data.ejb;
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgTopicService;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIConnectionStatus;
-import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMITopicServiceImpl;
-import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;

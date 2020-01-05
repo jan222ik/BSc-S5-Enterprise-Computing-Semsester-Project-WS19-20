@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class BeanManager implements SetupManager {
-    private static final int totalSteps = 9;
+    private static final int TOTAL_STEPS = 9;
 
     public static final String TCP_LOCAL = "tcp://localhost:61616";
     public static final String TCP_JENKINS = "tcp://10.0.51.91:61616";
@@ -67,10 +67,10 @@ public class BeanManager implements SetupManager {
     @Override
     public RMIConnectionStatus connect(String host, int port) {
         if (controller != null) {
-            notifyCallbackConsumer("Connecting to Server (EJB)", 0, totalSteps);
+            notifyCallbackConsumer("Connecting to Server (EJB)", 0, TOTAL_STEPS);
             boolean connected = controller.connect(host);
             if (connected) {
-                notifyCallbackConsumer("Connected to Server (EJB)", 1, totalSteps);
+                notifyCallbackConsumer("Connected to Server (EJB)", 1, TOTAL_STEPS);
             }
             if (host.equals("10.0.51.91")) {
                 remote = true;
@@ -84,23 +84,23 @@ public class BeanManager implements SetupManager {
     @Override
     public RMIConnectionStatus authenticate(String user, String pwd) {
         RMIConnectionStatus status;
-        notifyCallbackConsumer("Checking Connection Status (EJB)", 2, totalSteps);
+        notifyCallbackConsumer("Checking Connection Status (EJB)", 2, TOTAL_STEPS);
         if (isConnected) {
-            notifyCallbackConsumer("Initializing Search Component (EJB)", 3, totalSteps);
+            notifyCallbackConsumer("Initializing Search Component (EJB)", 3, TOTAL_STEPS);
             status = searchService.init();
             if (status == RMIConnectionStatus.CONNECTED) {
-                notifyCallbackConsumer("Successfully initialized Search Component (EJB)", 4, totalSteps);
-                notifyCallbackConsumer("Initializing Messaging Component (EJB)", 5, totalSteps);
+                notifyCallbackConsumer("Successfully initialized Search Component (EJB)", 4, TOTAL_STEPS);
+                notifyCallbackConsumer("Initializing Messaging Component (EJB)", 5, TOTAL_STEPS);
                 status = msgTopicService.doLoginMsgTopic(user, pwd);
                 if (status == RMIConnectionStatus.CONNECTED) {
                     setMsgTopics();
                     initMsgAsync(user, remote);
-                    notifyCallbackConsumer("Successfully initialized Messaging Component (EJB)", 6, totalSteps);
-                    notifyCallbackConsumer("Initializing Booking Component (EJB)", 7, totalSteps);
+                    notifyCallbackConsumer("Successfully initialized Messaging Component (EJB)", 6, TOTAL_STEPS);
+                    notifyCallbackConsumer("Initializing Booking Component (EJB)", 7, TOTAL_STEPS);
                     status = bookingService.doLoginBooking(user, pwd);
                     if (status == RMIConnectionStatus.CONNECTED) {
-                        notifyCallbackConsumer("Successfully initialized Booking Component (EJB)", 8, totalSteps);
-                        notifyCallbackConsumer("Opening Application", 9, totalSteps);
+                        notifyCallbackConsumer("Successfully initialized Booking Component (EJB)", 8, TOTAL_STEPS);
+                        notifyCallbackConsumer("Opening Application", 9, TOTAL_STEPS);
                         if (callbackConsumer != null) executeOnFX(o -> callbackConsumer.setupFinished(disposables));
                     }
                 }
@@ -111,8 +111,10 @@ public class BeanManager implements SetupManager {
         return status;
     }
 
+    @SuppressWarnings("GrazieInspection")
     @Override
     public void close() {
+        // Does not need to close resources
     }
 
     @Override

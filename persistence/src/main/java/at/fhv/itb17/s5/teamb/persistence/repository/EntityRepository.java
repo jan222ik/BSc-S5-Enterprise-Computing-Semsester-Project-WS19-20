@@ -4,7 +4,6 @@ package at.fhv.itb17.s5.teamb.persistence.repository;
 import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
-import at.fhv.itb17.s5.teamb.persistence.entities.Ticket;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
 import at.fhv.itb17.s5.teamb.persistence.util.SessionFactoryWrapper;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
@@ -13,13 +12,14 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.collection.internal.PersistentBag;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.util.List;
 import java.util.function.Function;
 

@@ -14,6 +14,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings({"squid:S2160", "squid:S1948"})
 public class SearchServiceRMI extends UnicastRemoteObject implements SearchService {
 
     private static final Logger logger = LogManager.getLogger(SearchServiceRMI.class);

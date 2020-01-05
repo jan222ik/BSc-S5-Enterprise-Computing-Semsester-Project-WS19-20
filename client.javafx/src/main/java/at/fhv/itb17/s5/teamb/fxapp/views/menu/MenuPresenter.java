@@ -20,7 +20,6 @@ import at.fhv.itb17.s5.teamb.fxapp.views.content.msgprod.msgconrss.MsgProdRssVie
 import at.fhv.itb17.s5.teamb.fxapp.views.content.search.SearchView;
 import at.fhv.itb17.s5.teamb.fxapp.views.content.user.UserView;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
-import com.google.inject.Injector;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;

@@ -29,7 +29,7 @@ class SearchServiceCoreTest {
     fun `Search Tickets - Success - Find All`() {
         val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor("")
-        assertThat(search.size, `is`(5))
+        assertThat(search.size, `is`(6))
     }
 
     @Test
@@ -69,7 +69,7 @@ class SearchServiceCoreTest {
         val evt = coreServiceInjectorImpl.entityRepository.getAll(Event::class.java, listOf())[4]
         val pair = toSearchString(listOf(SearchPair(SearchCategories.GENRE, evt.genre)))
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
-        assertThat(search.size, Matchers.`is`(2))
+        assertThat(search.size, Matchers.`is`(3))
         val anyMatch = search.stream().allMatch {
             it.genre == evt.genre
         }
@@ -89,7 +89,7 @@ class SearchServiceCoreTest {
         val coreServiceInjectorImpl = CoreServiceInjectorImpl.getInstance(false)
         val evt = coreServiceInjectorImpl.entityRepository.getAll(Event::class.java, listOf())[4]
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-        val pair = toSearchString(listOf(SearchPair(SearchCategories.GENRE, evt.genre), SearchPair(SearchCategories.DATE_FROM, evt.occurrences.get(0).date.format(formatter))))
+        val pair = toSearchString(listOf(SearchPair(SearchCategories.GENRE, evt.genre), SearchPair(SearchCategories.DATE_FROM, evt.occurrences[0].date.minusDays(1).format(formatter))))
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
         assertThat(search.size, Matchers.`is`(1))
         val anyMatch = search.stream().allMatch {
@@ -105,7 +105,7 @@ class SearchServiceCoreTest {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val pair = toSearchString(listOf(SearchPair(SearchCategories.GENRE, evt.genre), SearchPair(SearchCategories.DATE_UNTIL, evt.occurrences.get(0).date.plusDays(1L).format(formatter))))
         val search = coreServiceInjectorImpl.searchServiceCore.searchFor(pair)
-        assertThat(search.size, Matchers.`is`(1))
+        assertThat(search.size, Matchers.`is`(3))
         val anyMatch = search.stream().allMatch {
             it.genre == evt.genre
         }
