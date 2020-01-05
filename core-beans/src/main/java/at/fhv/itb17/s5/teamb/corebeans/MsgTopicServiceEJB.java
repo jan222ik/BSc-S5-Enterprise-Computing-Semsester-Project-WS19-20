@@ -6,16 +6,20 @@ import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjector;
 import at.fhv.itb17.s5.teamb.core.domain.general.CoreServiceInjectorImpl;
 import at.fhv.itb17.s5.teamb.core.domain.msg.MsgServiceCore;
+import at.fhv.itb17.s5.teamb.core.domain.msg.rss.RSSReader;
 import at.fhv.itb17.s5.teamb.dtos.MsgTopicDTO;
 import at.fhv.itb17.s5.teamb.dtos.mapper.MsgTopicMapper;
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
 import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 import at.fhv.itb17.s5.teamb.persistence.entities.MsgTopic;
+import com.sun.syndication.feed.synd.SyndEntryImpl;
+import com.sun.syndication.io.FeedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -84,7 +88,22 @@ public class MsgTopicServiceEJB implements MsgTopicService {
 
     @Override
     public boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) {
-        //TODO Implement
+        try {
+            RSSReader rssReader = new RSSReader(feedURL);
+            List<?> allEntries1 = rssReader.getAllEntries();
+            if (!allEntries1.isEmpty() && allEntries1.get(0) instanceof SyndEntryImpl) {
+                List<SyndEntryImpl> allEntries = (List<SyndEntryImpl>) rssReader.getAllEntries();
+                for (SyndEntryImpl entry : allEntries) {
+                    publishMsg(msgTopicDTO, entry.getTitle(), entry.getDescription().getValue());
+                }
+
+            } else {
+                return false;
+            }
+        } catch (IOException | FeedException e) {
+            logger.catching(e);
+            return false;
+        }
         return true;
     }
 
