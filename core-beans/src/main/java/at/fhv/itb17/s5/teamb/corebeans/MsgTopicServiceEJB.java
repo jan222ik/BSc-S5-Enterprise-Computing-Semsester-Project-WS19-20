@@ -35,12 +35,18 @@ public class MsgTopicServiceEJB implements MsgTopicService {
     private final EntityDTORepo entityDTORepo;
 
     List<String> feeds = new LinkedList<>(Collections.singletonList("https://www.ots.at/rss/kultur"));
+    private static final String PRESSE = "https://www.diepresse.com/rss/Kultur";
+    private static final String BBC = "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml";
+    private static final String NY = "https://www.newyorker.com/feed/culture";
     private CoreServiceInjector injector;
 
     public MsgTopicServiceEJB(MsgServiceCore topicService, ClientSessionRMI client, EntityDTORepo entityDTORepo) {
         this.topicService = topicService;
         this.entityDTORepo = entityDTORepo;
         this.client = client;
+        feeds.add(PRESSE);
+        feeds.add(BBC);
+        feeds.add(NY);
     }
 
     public MsgTopicServiceEJB() {
