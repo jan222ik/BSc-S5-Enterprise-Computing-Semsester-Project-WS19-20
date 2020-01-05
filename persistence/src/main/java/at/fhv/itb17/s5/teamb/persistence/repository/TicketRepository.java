@@ -75,7 +75,8 @@ public class TicketRepository {
                                 currentSession.save(ticket);
                                 eventCategory.incUsed(nbrOfTickets);
                                 currentSession.saveOrUpdate(eventCategory);
-                                bookedTickets.add(ticket);
+                                Ticket merge = (Ticket) currentSession.merge(ticket);
+                                bookedTickets.add(merge);
                             } else {
                                 transaction.rollback();
                                 return null;

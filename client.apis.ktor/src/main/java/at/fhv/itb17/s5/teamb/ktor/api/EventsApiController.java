@@ -85,8 +85,8 @@ public class EventsApiController implements EventsApi {
             if (paymentTransaction != null) {
                 log.info("Size of Tickets to book: {}", ticket2Book.size());
                 List<Ticket> bookedTickets = injector.getBookingServiceCore().bookTickets(ticket2Book);
-                ticket2Book.forEach(i -> log.debug(String.valueOf(i)));
-                bookedTickets.forEach(i -> log.debug(String.valueOf(i)));
+                //ticket2Book.forEach(i -> log.debug(String.valueOf(i)));
+                //bookedTickets.forEach(i -> log.debug(String.valueOf(i)));
                 List<BookingResponse> bookingResponses;
                 if (bookedTickets.isEmpty()) {
                     paymentTransaction.abort();
