@@ -26,7 +26,7 @@
                   <Label fx:id="bodyL" text="#placeholderBody" textFill="WHITE" />
                </children>
             </HBox>
-            <HBox alignment="CENTER_RIGHT">
+            <HBox alignment="CENTER_LEFT">
                <children>
                   <Button fx:id="ackBtn" mnemonicParsing="false" text="Acknowledge" />
                </children>
