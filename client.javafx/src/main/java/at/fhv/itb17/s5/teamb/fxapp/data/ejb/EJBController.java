@@ -1,9 +1,6 @@
 package at.fhv.itb17.s5.teamb.fxapp.data.ejb;
 
-import at.fhv.itb17.s5.teamb.core.controllers.general.BookingService;
-import at.fhv.itb17.s5.teamb.core.controllers.general.IFrontEndClient;
-import at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService;
-import at.fhv.itb17.s5.teamb.core.controllers.general.SearchService;
+import at.fhv.itb17.s5.teamb.core.controllers.general.*;
 import at.fhv.itb17.s5.teamb.core.controllers.rmi.IConnectionFactoryRMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,9 +67,8 @@ public class EJBController {
     public boolean connect(String host) {
         try {
             initialContext = initContext(host);
-            MsgTopicService topicService = (MsgTopicService) initialContext.lookup("ejb:/core-beans-1.0-jar-with-dependencies/MsgTopicServiceEJB!at.fhv.itb17.s5.teamb.core.controllers.general.MsgTopicService");
-            topicService.getAllTopics();
-            return true;
+            EJBConnection connection = (EJBConnection) initialContext.lookup("ejb:/core-beans-1.0-jar-with-dependencies/EJBConnectionImpl!at.fhv.itb17.s5.teamb.core.controllers.general.EJBConnection");
+            return connection.hasConnection();
         } catch (Exception e) {
             e.printStackTrace();
         }

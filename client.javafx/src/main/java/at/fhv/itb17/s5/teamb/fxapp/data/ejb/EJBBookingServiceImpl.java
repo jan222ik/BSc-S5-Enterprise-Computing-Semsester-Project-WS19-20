@@ -47,7 +47,6 @@ public class EJBBookingServiceImpl implements BookingService {
 
     @Override
     public void logout() {
-        //TODO mat: muas i des oh macha?
         remoteBookingService = null;
         try {
             UnicastRemoteObject.unexportObject(client, true);
