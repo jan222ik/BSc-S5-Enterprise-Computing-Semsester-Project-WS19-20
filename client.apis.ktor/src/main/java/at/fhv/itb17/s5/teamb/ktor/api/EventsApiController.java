@@ -112,6 +112,7 @@ public class EventsApiController implements EventsApi {
                                 response.tranactionId(first.get().getTicketId());
                             } else {
                                 paymentTransaction.abort();
+                                System.out.println("Abort Payment");
                                 response.errMsg("Could not be booked INFO:" + t2b);
                             }
                             return response;

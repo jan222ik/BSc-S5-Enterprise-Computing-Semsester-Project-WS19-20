@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,7 @@ public class TicketRepository {
     @SuppressWarnings({"squid:S1168", "squid:S3776"}) //Empty Collection for null and Cognitive Complexity
     @Nullable
     public List<Ticket> bookIfFree(List<Ticket> tickets) {
+        List<Ticket> bookedTickets = new LinkedList<>();
         SessionFactory sessionFactory = entityRepository.getSessionFactory();
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
@@ -53,8 +55,11 @@ public class TicketRepository {
                     currentSession.refresh(bookedSeat);
                     if (!bookedSeat.isTaken()) {
                         bookedSeat.setTaken(true);
-                        currentSession.saveOrUpdate(bookedSeat);
-                        currentSession.save(ticket);
+                        currentSession.merge(bookedSeat);
+                        System.out.println("ticket = " + ticket);
+                        Ticket merge = (Ticket) currentSession.merge(ticket);
+                        System.out.println("merge = " + merge);
+                        bookedTickets.add(merge);
                     } else {
                         transaction.rollback();
                         return null;
@@ -70,6 +75,7 @@ public class TicketRepository {
                                 currentSession.save(ticket);
                                 eventCategory.incUsed(nbrOfTickets);
                                 currentSession.saveOrUpdate(eventCategory);
+                                bookedTickets.add(ticket);
                             } else {
                                 transaction.rollback();
                                 return null;
@@ -90,17 +96,20 @@ public class TicketRepository {
             transaction.rollback();
             return null;
         }
-        if (transaction.getStatus().isOneOf(TransactionStatus.COMMITTED)) {
-            logger.info("Booked successfully {} tickets", tickets.size());
-            for (int i = 0; i < tickets.size(); i++) {
-                logger.info("Ticket: [{}]: {}", i, tickets.get(i));
+        TransactionStatus status = transaction.getStatus();
+        System.out.println("status = " + status);
+        if (status.isOneOf(TransactionStatus.COMMITTED)) {
+            logger.info("Booked successfully {} tickets", bookedTickets.size());
+            for (int i = 0; i < bookedTickets.size(); i++) {
+                logger.info("Ticket: [{}]: {}", i, bookedTickets.get(i));
             }
         }
-        return tickets;
+        return bookedTickets;
     }
 
     @SuppressWarnings({"squid:S1168", "squid:S3776"}) //Empty Collection for null and Cognitive Complexity
     @Nullable
+    @Deprecated
     public synchronized List<Ticket> bookIfFreeNEW(List<Ticket> tickets) {
         List<Ticket> ticketsToPersist = new ArrayList<>();
         try {

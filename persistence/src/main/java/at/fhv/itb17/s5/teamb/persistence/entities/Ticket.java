@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 public class Ticket {
@@ -127,11 +128,11 @@ public class Ticket {
                 ", bookedCategory=" + bookedCategory +
                 ", bookedRow=" + bookedRow +
                 ", bookedSeat=" + bookedSeat +
-                '}';
+                "}@" + Integer.toHexString(hashCode());
     }
 
     public boolean isSame(Ticket that) {
-        boolean b = (client == that.client) && (bookedEvent.getEventId().equals(that.bookedEvent.getEventId()))
+        boolean b = (Objects.equals(client.getUsername(), that.client.getUsername())) && (bookedEvent.getEventId().equals(that.bookedEvent.getEventId()))
                 && (bookedOccurrence.getOccurrenceId().equals(that.getBookedOccurrence().getOccurrenceId()))
                 && (bookedCategory.getEventCategoryId().equals(that.getBookedCategory().getEventCategoryId()));
         if (bookedRow != null && that.bookedRow != null && bookedSeat != null && that.bookedSeat != null) {
