@@ -39,7 +39,7 @@ class RestServer {
             val api: EventsApi = EventsApiController(injector)
             val mapper = jacksonObjectMapper()
             mapper.registerModule(KotlinModule())
-            val server = embeddedServer(Netty, 8080) {
+            val server = embeddedServer(Netty, 8082) {
                 routing {
                     // STATIC CONTENT SERVE
                     get(path = "/") {
