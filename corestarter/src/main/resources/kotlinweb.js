@@ -1,7 +1,7 @@
 if (typeof kotlin === 'undefined') {
-  throw new Error("Error loading module 'webjs'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'webjs'.");
+  throw new Error("Error loading module 'kotlinweb'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'kotlinweb'.");
 }
-var webjs = function (_, Kotlin) {
+var kotlinweb = function (_, Kotlin) {
   'use strict';
   var Kind_CLASS = Kotlin.Kind.CLASS;
   var Pair = Kotlin.kotlin.Pair;
@@ -10,25 +10,38 @@ var webjs = function (_, Kotlin) {
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var first = Kotlin.kotlin.collections.first_2p1efm$;
+  var ensureNotNull = Kotlin.ensureNotNull;
   var json = Kotlin.kotlin.js.json_pyyo18$;
   var throwCCE = Kotlin.throwCCE;
   var clear = Kotlin.kotlin.dom.clear_asww5s$;
   var appendElement = Kotlin.kotlin.dom.appendElement_ldvnw0$;
   var createElement = Kotlin.kotlin.dom.createElement_7cgwi1$;
   var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
-  var ensureNotNull = Kotlin.ensureNotNull;
   var HashMap = Kotlin.kotlin.collections.HashMap;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
+  var replace = Kotlin.kotlin.text.replace_680rmw$;
+  var NumberFormatException = Kotlin.kotlin.NumberFormatException;
+  var joinToString = Kotlin.kotlin.collections.joinToString_cgipc5$;
+  var equals = Kotlin.equals;
+  var Any = Object;
+  var toString = Kotlin.toString;
+  var joinToString_0 = Kotlin.kotlin.collections.joinToString_fmv235$;
+  var toCollection = Kotlin.kotlin.collections.toCollection_5cfyqp$;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
-  var equals = Kotlin.equals;
   var removeClass = Kotlin.kotlin.dom.removeClass_hhb33f$;
+  var split = Kotlin.kotlin.text.split_o64adg$;
+  var reversed = Kotlin.kotlin.collections.reversed_7wnvza$;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
   var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var copyToArray = Kotlin.kotlin.collections.copyToArray;
+  var NoSuchElementException_init = Kotlin.kotlin.NoSuchElementException;
+  var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var Map = Kotlin.kotlin.collections.Map;
   SearchCategories.prototype = Object.create(Enum.prototype);
   SearchCategories.prototype.constructor = SearchCategories;
@@ -337,13 +350,14 @@ var webjs = function (_, Kotlin) {
   Time.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.hour, other.hour) && Kotlin.equals(this.minute, other.minute) && Kotlin.equals(this.second, other.second) && Kotlin.equals(this.nano, other.nano)))));
   };
-  function PriceCategory(type, eventCategoryId, categoryName, priceInCents, totalTickets, usedTickets) {
+  function PriceCategory(type, eventCategoryId, categoryName, priceInCents, totalTickets, usedTickets, rows) {
     this.type = type;
     this.eventCategoryId = eventCategoryId;
     this.categoryName = categoryName;
     this.priceInCents = priceInCents;
     this.totalTickets = totalTickets;
     this.usedTickets = usedTickets;
+    this.rows = rows;
   }
   PriceCategory.$metadata$ = {
     kind: Kind_CLASS,
@@ -368,11 +382,14 @@ var webjs = function (_, Kotlin) {
   PriceCategory.prototype.component6 = function () {
     return this.usedTickets;
   };
-  PriceCategory.prototype.copy_n8pm5o$ = function (type, eventCategoryId, categoryName, priceInCents, totalTickets, usedTickets) {
-    return new PriceCategory(type === void 0 ? this.type : type, eventCategoryId === void 0 ? this.eventCategoryId : eventCategoryId, categoryName === void 0 ? this.categoryName : categoryName, priceInCents === void 0 ? this.priceInCents : priceInCents, totalTickets === void 0 ? this.totalTickets : totalTickets, usedTickets === void 0 ? this.usedTickets : usedTickets);
+  PriceCategory.prototype.component7 = function () {
+    return this.rows;
+  };
+  PriceCategory.prototype.copy_vpunrg$ = function (type, eventCategoryId, categoryName, priceInCents, totalTickets, usedTickets, rows) {
+    return new PriceCategory(type === void 0 ? this.type : type, eventCategoryId === void 0 ? this.eventCategoryId : eventCategoryId, categoryName === void 0 ? this.categoryName : categoryName, priceInCents === void 0 ? this.priceInCents : priceInCents, totalTickets === void 0 ? this.totalTickets : totalTickets, usedTickets === void 0 ? this.usedTickets : usedTickets, rows === void 0 ? this.rows : rows);
   };
   PriceCategory.prototype.toString = function () {
-    return 'PriceCategory(type=' + Kotlin.toString(this.type) + (', eventCategoryId=' + Kotlin.toString(this.eventCategoryId)) + (', categoryName=' + Kotlin.toString(this.categoryName)) + (', priceInCents=' + Kotlin.toString(this.priceInCents)) + (', totalTickets=' + Kotlin.toString(this.totalTickets)) + (', usedTickets=' + Kotlin.toString(this.usedTickets)) + ')';
+    return 'PriceCategory(type=' + Kotlin.toString(this.type) + (', eventCategoryId=' + Kotlin.toString(this.eventCategoryId)) + (', categoryName=' + Kotlin.toString(this.categoryName)) + (', priceInCents=' + Kotlin.toString(this.priceInCents)) + (', totalTickets=' + Kotlin.toString(this.totalTickets)) + (', usedTickets=' + Kotlin.toString(this.usedTickets)) + (', rows=' + Kotlin.toString(this.rows)) + ')';
   };
   PriceCategory.prototype.hashCode = function () {
     var result = 0;
@@ -382,10 +399,86 @@ var webjs = function (_, Kotlin) {
     result = result * 31 + Kotlin.hashCode(this.priceInCents) | 0;
     result = result * 31 + Kotlin.hashCode(this.totalTickets) | 0;
     result = result * 31 + Kotlin.hashCode(this.usedTickets) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rows) | 0;
     return result;
   };
   PriceCategory.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.type, other.type) && Kotlin.equals(this.eventCategoryId, other.eventCategoryId) && Kotlin.equals(this.categoryName, other.categoryName) && Kotlin.equals(this.priceInCents, other.priceInCents) && Kotlin.equals(this.totalTickets, other.totalTickets) && Kotlin.equals(this.usedTickets, other.usedTickets)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.type, other.type) && Kotlin.equals(this.eventCategoryId, other.eventCategoryId) && Kotlin.equals(this.categoryName, other.categoryName) && Kotlin.equals(this.priceInCents, other.priceInCents) && Kotlin.equals(this.totalTickets, other.totalTickets) && Kotlin.equals(this.usedTickets, other.usedTickets) && Kotlin.equals(this.rows, other.rows)))));
+  };
+  function Row(rowId, rowIdf, seats) {
+    this.rowId = rowId;
+    this.rowIdf = rowIdf;
+    this.seats = seats;
+  }
+  Row.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Row',
+    interfaces: []
+  };
+  Row.prototype.component1 = function () {
+    return this.rowId;
+  };
+  Row.prototype.component2 = function () {
+    return this.rowIdf;
+  };
+  Row.prototype.component3 = function () {
+    return this.seats;
+  };
+  Row.prototype.copy_ed885b$ = function (rowId, rowIdf, seats) {
+    return new Row(rowId === void 0 ? this.rowId : rowId, rowIdf === void 0 ? this.rowIdf : rowIdf, seats === void 0 ? this.seats : seats);
+  };
+  Row.prototype.toString = function () {
+    return 'Row(rowId=' + Kotlin.toString(this.rowId) + (', rowIdf=' + Kotlin.toString(this.rowIdf)) + (', seats=' + Kotlin.toString(this.seats)) + ')';
+  };
+  Row.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.rowId) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rowIdf) | 0;
+    result = result * 31 + Kotlin.hashCode(this.seats) | 0;
+    return result;
+  };
+  Row.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.rowId, other.rowId) && Kotlin.equals(this.rowIdf, other.rowIdf) && Kotlin.equals(this.seats, other.seats)))));
+  };
+  function Seat(free, seatId, isFree, seatIdf) {
+    this.free = free;
+    this.seatId = seatId;
+    this.isFree = isFree;
+    this.seatIdf = seatIdf;
+  }
+  Seat.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Seat',
+    interfaces: []
+  };
+  Seat.prototype.component1 = function () {
+    return this.free;
+  };
+  Seat.prototype.component2 = function () {
+    return this.seatId;
+  };
+  Seat.prototype.component3 = function () {
+    return this.isFree;
+  };
+  Seat.prototype.component4 = function () {
+    return this.seatIdf;
+  };
+  Seat.prototype.copy_5msc62$ = function (free, seatId, isFree, seatIdf) {
+    return new Seat(free === void 0 ? this.free : free, seatId === void 0 ? this.seatId : seatId, isFree === void 0 ? this.isFree : isFree, seatIdf === void 0 ? this.seatIdf : seatIdf);
+  };
+  Seat.prototype.toString = function () {
+    return 'Seat(free=' + Kotlin.toString(this.free) + (', seatId=' + Kotlin.toString(this.seatId)) + (', isFree=' + Kotlin.toString(this.isFree)) + (', seatIdf=' + Kotlin.toString(this.seatIdf)) + ')';
+  };
+  Seat.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.free) | 0;
+    result = result * 31 + Kotlin.hashCode(this.seatId) | 0;
+    result = result * 31 + Kotlin.hashCode(this.isFree) | 0;
+    result = result * 31 + Kotlin.hashCode(this.seatIdf) | 0;
+    return result;
+  };
+  Seat.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.free, other.free) && Kotlin.equals(this.seatId, other.seatId) && Kotlin.equals(this.isFree, other.isFree) && Kotlin.equals(this.seatIdf, other.seatIdf)))));
   };
   function CategoryCalcDataDTO(priceRangeString, minPrice, maxPrice, ticketTypes) {
     this.priceRangeString = priceRangeString;
@@ -430,9 +523,11 @@ var webjs = function (_, Kotlin) {
   function Handler() {
     Handler_instance = this;
     this.testURL_0 = 'http://localhost:8080';
-    this.searchURL_0 = 'http://localhost:8080/events/findByQueryString?queryString=';
+    this.searchURL_0 = '/events/findByQueryString?queryString=';
     this.spinners_0 = HashMap_init();
     this.latestSearchQuery = '';
+    this.latestBookingInfo_0 = null;
+    this.currentDetailedSeats = LinkedHashMap_init();
   }
   function Handler$getSearchResults$lambda$lambda$lambda(closure$resolve, closure$res) {
     return function (it) {
@@ -472,16 +567,60 @@ var webjs = function (_, Kotlin) {
   Handler.prototype.getSearchResults_0 = function (searchQuery) {
     return window.fetch(this.searchURL_0 + searchQuery).then(Handler$getSearchResults$lambda).then(Handler$getSearchResults$lambda_0).catch(Handler$getSearchResults$lambda_1);
   };
+  function Handler$bookTickets$lambda$lambda$lambda(closure$resolve, closure$res) {
+    return function (it) {
+      closure$resolve(new Pair(it, closure$res.status));
+      return Unit;
+    };
+  }
+  function Handler$bookTickets$lambda$lambda(closure$text, closure$res) {
+    return function (resolve, reject) {
+      closure$text.then(Handler$bookTickets$lambda$lambda$lambda(resolve, closure$res)).catch(reject);
+      return Unit;
+    };
+  }
+  function Handler$bookTickets$lambda(res) {
+    var text = res.text();
+    return new Promise(Handler$bookTickets$lambda$lambda(text, res));
+  }
+  function Handler$bookTickets$lambda_0(it) {
+    var tmp$;
+    switch (it.second) {
+      case 200:
+      case 409:
+        tmp$ = toList(JSON.parse(it.first));
+        break;
+      case 500:
+        throw Exception_init('Server exception occurred: ' + it.second);
+      default:throw Exception_init('Server exception occurred: ' + it.second);
+    }
+    return tmp$;
+  }
+  function Handler$bookTickets$lambda_1(trow) {
+    console.log('Caught: ' + trow);
+    throw trow;
+  }
+  function Handler$bookTickets$lambda_2(resolve, f) {
+    resolve(emptyList());
+    return Unit;
+  }
   Handler.prototype.bookTickets_0 = function (tickets) {
     if (!tickets.isEmpty()) {
       var first_0 = first(tickets);
-      var tmp$ = window;
-      var tmp$_0 = this.testURL_0 + '/events/' + first_0.event.eventId + '/occurrences/' + first_0.occurrence.occurrenceId + '/categories/' + first_0.category.eventCategoryId + '/book';
+      var rowSeats = ArrayList_init();
+      if (first_0.row != null) {
+        var tmp$;
+        tmp$ = tickets.iterator();
+        while (tmp$.hasNext()) {
+          var element = tmp$.next();
+          rowSeats.add_11rb$(new RowSeat(ensureNotNull(element.row).rowId, ensureNotNull(element.seat).seatId));
+        }
+      }
+      var tmp$_0 = window;
+      var tmp$_1 = '/events/' + first_0.event.eventId + '/occurrences/' + first_0.occurrence.occurrenceId + '/categories/' + first_0.category.eventCategoryId + '/book';
       var $receiver = json([]);
       $receiver['Content-Type'] = 'application/json';
-      var $receiver_0 = json([]);
-      $receiver_0['clientData'] = "I'm posted by client";
-      var body = JSON.stringify($receiver_0);
+      var body = JSON.stringify(new TicketPayload(tickets.size, ensureNotNull(this.latestBookingInfo_0), copyToArray(rowSeats)));
       var referrer;
       var referrerPolicy;
       var mode;
@@ -513,7 +652,10 @@ var webjs = function (_, Kotlin) {
       o['integrity'] = integrity;
       o['keepalive'] = keepalive;
       o['window'] = window_0;
-      tmp$.fetch(tmp$_0, o);
+      return tmp$_0.fetch(tmp$_1, o).then(Handler$bookTickets$lambda).then(Handler$bookTickets$lambda_0).catch(Handler$bookTickets$lambda_1);
+    }
+     else {
+      return new Promise(Handler$bookTickets$lambda_2);
     }
   };
   function Handler$populateContainer$lambda($receiver) {
@@ -695,57 +837,212 @@ var webjs = function (_, Kotlin) {
     return createElement(document, 'div', Handler$detailViewActions$lambda(event, occurrence, this));
   };
   Handler.prototype.addCurrentToCart_0 = function (event, occurrence) {
-    var tmp$;
-    var count = 0;
+    var tmp$, tmp$_0;
+    var count = {v: 0};
     tmp$ = this.spinners_0.entries.iterator();
     while (tmp$.hasNext()) {
       var spinner = tmp$.next();
       var amount = toInt(spinner.key.value);
-      for (var i = 0; i < amount; i++) {
-        Cart_getInstance().add_jpnhl5$(new LocalTicket(event, occurrence, spinner.value));
-        count = count + 1 | 0;
+      if (spinner.value.rows == null) {
+        if (amount <= (spinner.value.totalTickets - spinner.value.usedTickets | 0)) {
+          for (var i = 0; i < amount; i++) {
+            Cart_getInstance().add_jpnhl5$(new LocalTicket(event, occurrence, spinner.value));
+            count.v = count.v + 1 | 0;
+          }
+        }
+         else {
+          spinner.key.value = spinner.key.max;
+        }
+      }
+       else {
+        console.log('Adding seats to cart');
+        if ((tmp$_0 = this.currentDetailedSeats.get_11rb$(spinner.value.eventCategoryId)) != null) {
+          var tmp$_1;
+          tmp$_1 = tmp$_0.iterator();
+          loop_label: while (tmp$_1.hasNext()) {
+            var element = tmp$_1.next();
+            var $receiver = spinner.value.rows;
+            var first$result;
+            first$break: do {
+              var tmp$_2;
+              loop_label_0: for (tmp$_2 = 0; tmp$_2 !== $receiver.length; ++tmp$_2) {
+                var element_0 = $receiver[tmp$_2];
+                var $receiver_0 = element_0.seats;
+                var any$result;
+                any$break: do {
+                  var tmp$_3;
+                  for (tmp$_3 = 0; tmp$_3 !== $receiver_0.length; ++tmp$_3) {
+                    var element_1 = $receiver_0[tmp$_3];
+                    if (element_1.seatId === element.seatId) {
+                      any$result = true;
+                      break any$break;
+                    }
+                  }
+                  any$result = false;
+                }
+                 while (false);
+                if (any$result) {
+                  first$result = element_0;
+                  break first$break;
+                }
+              }
+              throw new NoSuchElementException_init('Array contains no element matching the predicate.');
+            }
+             while (false);
+            var first = first$result;
+            Cart_getInstance().add_jpnhl5$(new LocalTicket(event, occurrence, spinner.value, first, element));
+            count.v = count.v + 1 | 0;
+          }
+        }
       }
     }
-    return count;
+    return count.v;
   };
-  function Handler$detailViewCategories$lambda$lambda$lambda$lambda(this$Handler) {
-    return function (f) {
-      this$Handler.updateTotal_0();
-      return Unit;
-    };
-  }
-  function Handler$detailViewCategories$lambda$lambda$lambda(closure$it, this$Handler, closure$map) {
-    return function ($receiver) {
-      var tmp$;
-      var spinner = Kotlin.isType(tmp$ = document.createElement('input'), HTMLInputElement) ? tmp$ : throwCCE();
-      spinner.type = 'number';
-      spinner.min = '0';
-      spinner.max = (closure$it.totalTickets - closure$it.usedTickets | 0).toString();
-      spinner.step = '1';
-      spinner.value = '0';
-      spinner.onkeypress = Handler$detailViewCategories$lambda$lambda$lambda$lambda(this$Handler);
-      var $receiver_0 = closure$map;
-      var value = closure$it;
-      $receiver_0.put_xwzc9p$(spinner, value);
-      $receiver.append(this$Handler.span_0(closure$it.categoryName, 'cat-name'), this$Handler.span_0(this$Handler.toDisplayPrice_0(closure$it), 'cat-price'), this$Handler.span_0(this$Handler.ticketRange_0(closure$it), 'cat-ticket-range'), spinner);
-      return Unit;
-    };
-  }
-  function Handler$detailViewCategories$lambda(closure$occurrence, this$Handler, closure$map) {
+  function Handler$detailViewCategories$lambda(closure$occurrence, closure$map, this$Handler) {
     return function ($receiver) {
       var $receiver_0 = closure$occurrence.priceCategories;
       var tmp$;
       for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
         var element = $receiver_0[tmp$];
-        appendElement($receiver, 'div', Handler$detailViewCategories$lambda$lambda$lambda(element, this$Handler, closure$map));
+        var closure$map_0 = closure$map;
+        var this$Handler_0 = this$Handler;
+        var tmp$_0;
+        console.dir(element);
+        if (element.rows != null) {
+          tmp$_0 = this$Handler_0.seatSeats_0(element, closure$map_0);
+        }
+         else {
+          tmp$_0 = this$Handler_0.freeSeats_0(element, closure$map_0);
+        }
+        $receiver.append(tmp$_0);
       }
       return Unit;
     };
   }
   Handler.prototype.detailViewCategories_0 = function (occurrence) {
     var map = LinkedHashMap_init();
-    var createElement_0 = createElement(document, 'div', Handler$detailViewCategories$lambda(occurrence, this, map));
+    this.currentDetailedSeats = LinkedHashMap_init();
+    var createElement_0 = createElement(document, 'div', Handler$detailViewCategories$lambda(occurrence, map, this));
     return new Pair(createElement_0, map);
+  };
+  function Handler$seatSeats$lambda$lambda($receiver) {
+    var tmp$;
+    Kotlin.isType(tmp$ = $receiver, HTMLInputElement) ? tmp$ : throwCCE();
+    $receiver.type = 'hidden';
+    $receiver.value = '0';
+    return Unit;
+  }
+  function Handler$seatSeats$lambda$lambda$lambda$lambda$lambda$lambda$lambda(closure$marked, this$, closure$hiddenSpinner, this$Handler, closure$cat, closure$it) {
+    return function (f) {
+      var tmp$, tmp$_0;
+      if (closure$marked.v) {
+        closure$marked.v = false;
+        this$.classList.remove('marked');
+        closure$hiddenSpinner.value = (toInt(closure$hiddenSpinner.value) - 1 | 0).toString();
+        (tmp$ = this$Handler.currentDetailedSeats.get_11rb$(closure$cat.eventCategoryId)) != null ? tmp$.remove_11rb$(closure$it) : null;
+      }
+       else {
+        this$.classList.add('marked');
+        closure$marked.v = true;
+        closure$hiddenSpinner.value = (toInt(closure$hiddenSpinner.value) + 1 | 0).toString();
+        (tmp$_0 = this$Handler.currentDetailedSeats.get_11rb$(closure$cat.eventCategoryId)) != null ? tmp$_0.add_11rb$(closure$it) : null;
+      }
+      this$Handler.updateTotal_0();
+      return Unit;
+    };
+  }
+  function Handler$seatSeats$lambda$lambda$lambda$lambda$lambda$lambda(closure$it, this$Handler, closure$cat, closure$hiddenSpinner) {
+    return function ($receiver) {
+      $receiver.textContent = closure$it.seatIdf;
+      var marked = {v: !closure$it.isFree};
+      var tmp$ = this$Handler.currentDetailedSeats;
+      var tmp$_0 = closure$cat.eventCategoryId;
+      var value = ArrayList_init();
+      tmp$.put_xwzc9p$(tmp$_0, value);
+      if (!marked.v) {
+        $receiver.addEventListener('click', Handler$seatSeats$lambda$lambda$lambda$lambda$lambda$lambda$lambda(marked, $receiver, closure$hiddenSpinner, this$Handler, closure$cat, closure$it));
+      }
+       else {
+        $receiver.classList.add('blocked');
+      }
+      return Unit;
+    };
+  }
+  function Handler$seatSeats$lambda$lambda$lambda$lambda(closure$it, this$Handler, closure$cat, closure$hiddenSpinner) {
+    return function ($receiver) {
+      $receiver.append(this$Handler.label_0(closure$it.rowIdf));
+      var $receiver_0 = closure$it.seats;
+      var tmp$;
+      for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
+        var element = $receiver_0[tmp$];
+        appendElement($receiver, 'button', Handler$seatSeats$lambda$lambda$lambda$lambda$lambda$lambda(element, this$Handler, closure$cat, closure$hiddenSpinner));
+      }
+      return Unit;
+    };
+  }
+  function Handler$seatSeats$lambda$lambda_0(closure$cat, this$Handler, closure$hiddenSpinner) {
+    return function ($receiver) {
+      var $receiver_0 = closure$cat.rows;
+      var tmp$;
+      for (tmp$ = 0; tmp$ !== $receiver_0.length; ++tmp$) {
+        var element = $receiver_0[tmp$];
+        appendElement($receiver, 'div', Handler$seatSeats$lambda$lambda$lambda$lambda(element, this$Handler, closure$cat, closure$hiddenSpinner));
+      }
+      return Unit;
+    };
+  }
+  function Handler$seatSeats$lambda(closure$cat, closure$map, this$Handler) {
+    return function ($receiver) {
+      var tmp$;
+      var hiddenSpinner = Kotlin.isType(tmp$ = createElement(document, 'input', Handler$seatSeats$lambda$lambda), HTMLInputElement) ? tmp$ : throwCCE();
+      $receiver.append(hiddenSpinner);
+      var $receiver_0 = closure$map;
+      var value = closure$cat;
+      $receiver_0.put_xwzc9p$(hiddenSpinner, value);
+      appendElement($receiver, 'div', Handler$seatSeats$lambda$lambda_0(closure$cat, this$Handler, hiddenSpinner));
+      return Unit;
+    };
+  }
+  Handler.prototype.seatSeats_0 = function (cat, map) {
+    return createElement(document, 'div', Handler$seatSeats$lambda(cat, map, this));
+  };
+  function Handler$freeSeats$lambda$lambda(closure$spinner, closure$cat, this$Handler) {
+    return function (f) {
+      try {
+        var toInt_0 = toInt(closure$spinner.value);
+        if (toInt_0 > (closure$cat.totalTickets - closure$cat.usedTickets | 0)) {
+          closure$spinner.value = closure$spinner.max;
+        }
+        return this$Handler.updateTotal_0(), Unit;
+      }
+       catch (e) {
+        if (Kotlin.isType(e, NumberFormatException)) {
+          return replace(closure$spinner.value, '\\D', '');
+        }
+         else
+          throw e;
+      }
+    };
+  }
+  function Handler$freeSeats$lambda(closure$cat, this$Handler, closure$map) {
+    return function ($receiver) {
+      var tmp$;
+      var spinner = Kotlin.isType(tmp$ = document.createElement('input'), HTMLInputElement) ? tmp$ : throwCCE();
+      spinner.type = 'number';
+      spinner.min = '0';
+      spinner.max = (closure$cat.totalTickets - closure$cat.usedTickets | 0).toString();
+      spinner.step = '1';
+      spinner.value = '0';
+      spinner.oninput = Handler$freeSeats$lambda$lambda(spinner, closure$cat, this$Handler);
+      var $receiver_0 = closure$map;
+      var value = closure$cat;
+      $receiver_0.put_xwzc9p$(spinner, value);
+      $receiver.append(this$Handler.span_0(closure$cat.categoryName, 'cat-name'), this$Handler.span_0(this$Handler.toDisplayPrice_0(closure$cat), 'cat-price'), this$Handler.span_0(this$Handler.ticketRange_0(closure$cat), 'cat-ticket-range'), spinner);
+      return Unit;
+    };
+  }
+  Handler.prototype.freeSeats_0 = function (cat, map) {
+    return createElement(document, 'div', Handler$freeSeats$lambda(cat, this, map));
   };
   Handler.prototype.updateTotal_0 = function () {
     var tmp$;
@@ -762,11 +1059,39 @@ var webjs = function (_, Kotlin) {
     clear(totalView);
     totalView.append(this.label_0('Total', 'cat-total-price-label'), this.span_0((totalPrice / 100.0).toString() + '\u20AC', 'cat-total-price'), this.label_0('Amount', 'cat-total-amount-label'), this.span_0(ticketAmount.toString(), 'cat-total-amount'));
   };
-  function Handler$detailViewInfo$lambda($receiver) {
+  function Handler$detailViewInfo$lambda$lambda($receiver) {
+    $receiver.textContent = 'More Information';
     return Unit;
   }
+  function Handler$detailViewInfo$lambda$lambda_0(this$Handler, closure$event, closure$occurrence) {
+    return function ($receiver) {
+      $receiver.append(this$Handler.li_0([this$Handler.label_0('Title'), this$Handler.span_0(closure$event.title)]), this$Handler.li_0([this$Handler.label_0('Date'), this$Handler.span_0(this$Handler.toDateString_0(closure$occurrence.date)), this$Handler.span_0(this$Handler.toTimeString_0(closure$occurrence.time))]), this$Handler.li_0([this$Handler.label_0('Location'), this$Handler.span_0(this$Handler.toLocationString_0(closure$occurrence))]), this$Handler.li_0([this$Handler.label_0('Description'), this$Handler.span_0(closure$event.description)]), this$Handler.li_0([this$Handler.label_0('Genre'), this$Handler.span_0(closure$event.genere)]), this$Handler.li_0([this$Handler.label_0('Artists'), this$Handler.span_0(joinToString(closure$event.artistNames, ', '))]));
+      return Unit;
+    };
+  }
+  function Handler$detailViewInfo$lambda(this$Handler, closure$event, closure$occurrence) {
+    return function ($receiver) {
+      appendElement($receiver, 'h3', Handler$detailViewInfo$lambda$lambda);
+      appendElement($receiver, 'ul', Handler$detailViewInfo$lambda$lambda_0(this$Handler, closure$event, closure$occurrence));
+      return Unit;
+    };
+  }
   Handler.prototype.detailViewInfo_0 = function (event, occurrence) {
-    return createElement(document, 'div', Handler$detailViewInfo$lambda);
+    return createElement(document, 'div', Handler$detailViewInfo$lambda(this, event, occurrence));
+  };
+  function Handler$li$lambda(closure$child) {
+    return function ($receiver) {
+      var tmp$, tmp$_0;
+      tmp$ = closure$child;
+      for (tmp$_0 = 0; tmp$_0 !== tmp$.length; ++tmp$_0) {
+        var c = tmp$[tmp$_0];
+        $receiver.append(c);
+      }
+      return Unit;
+    };
+  }
+  Handler.prototype.li_0 = function (child) {
+    return createElement(document, 'li', Handler$li$lambda(child));
   };
   function Handler$td$lambda(closure$child) {
     return function ($receiver) {
@@ -785,6 +1110,8 @@ var webjs = function (_, Kotlin) {
     };
   }
   Handler.prototype.span_0 = function (text, cssExt) {
+    if (cssExt === void 0)
+      cssExt = '';
     return createElement(document, 'span', Handler$span$lambda(cssExt, text));
   };
   function Handler$label$lambda(closure$cssExt, closure$text) {
@@ -795,6 +1122,8 @@ var webjs = function (_, Kotlin) {
     };
   }
   Handler.prototype.label_0 = function (text, cssExt) {
+    if (cssExt === void 0)
+      cssExt = '';
     return createElement(document, 'span', Handler$label$lambda(cssExt, text));
   };
   Handler.prototype.br_0 = function () {
@@ -807,7 +1136,13 @@ var webjs = function (_, Kotlin) {
     return ($receiver.priceInCents / 100.0).toString() + '\u20AC';
   };
   Handler.prototype.ticketRange_0 = function ($receiver) {
-    return $receiver.usedTickets.toString() + ' / ' + $receiver.totalTickets;
+    var tmp$, tmp$_0;
+    tmp$ = $receiver.usedTickets;
+    if (tmp$ == null || equals(tmp$, undefined))
+      tmp$_0 = '';
+    else
+      tmp$_0 = $receiver.usedTickets.toString() + ' / ' + $receiver.totalTickets;
+    return tmp$_0;
   };
   Handler.prototype.toDateString_0 = function ($receiver) {
     return $receiver.year.toString() + '-' + $receiver.month + '-' + $receiver.dayOfMonth;
@@ -824,18 +1159,14 @@ var webjs = function (_, Kotlin) {
   }
   function Handler$updateCart$lambda$lambda(this$Handler) {
     return function (it) {
-      var $receiver = Cart_getInstance().asList();
-      var tmp$;
-      tmp$ = $receiver.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        this$Handler.bookTickets_0(element);
-      }
+      this$Handler.showPaymentInfo_0();
       return Unit;
     };
   }
   function Handler$updateCart$lambda_0(this$Handler) {
     return function ($receiver) {
+      $receiver.textContent = 'Buy';
+      $receiver.className = 'cart-buy';
       $receiver.addEventListener('click', Handler$updateCart$lambda$lambda(this$Handler));
       return Unit;
     };
@@ -863,6 +1194,272 @@ var webjs = function (_, Kotlin) {
      else {
       appendElement(cartContainer, 'h3', Handler$updateCart$lambda_1);
     }
+  };
+  function Handler$showPaymentInfo$lambda$lambda$lambda$lambda$lambda(closure$it, closure$bookedTickets, closure$errors, closure$resolvesNeeded, closure$asList, closure$resolve, closure$index) {
+    return function (list) {
+      var tmp$;
+      if (list.size === closure$it.size) {
+        console.info('Same length ' + list.size + ' == ' + closure$it.size + '"');
+        var bool = true;
+        var tmp$_0;
+        tmp$_0 = list.iterator();
+        while (tmp$_0.hasNext()) {
+          var element = tmp$_0.next();
+          console.info(element.errMsg);
+        }
+        if (bool) {
+          var $receiver = closure$bookedTickets;
+          var key = closure$it;
+          $receiver.put_xwzc9p$(key, list);
+        }
+         else {
+          var $receiver_0 = closure$errors;
+          var key_0 = closure$it;
+          var value = first(list);
+          $receiver_0.put_xwzc9p$(key_0, value);
+        }
+      }
+       else {
+        console.info('Dif len: ' + list.size + ' != ' + closure$it.size);
+        var $receiver_1 = closure$errors;
+        var key_1 = closure$it;
+        var value_0 = first(list);
+        $receiver_1.put_xwzc9p$(key_1, value_0);
+      }
+      tmp$ = closure$resolvesNeeded.v;
+      closure$resolvesNeeded.v = tmp$ + 1 | 0;
+      if (closure$resolvesNeeded.v === closure$asList.size) {
+        closure$resolve(new Any());
+      }
+      console.info('Resolved ' + closure$index);
+      return Unit;
+    };
+  }
+  function Handler$showPaymentInfo$lambda$lambda$lambda$lambda$lambda_0(throwable) {
+    OnPageAlert_getInstance().showErr_61zpoe$('Exception occurred: ' + toString(throwable.message));
+    return Unit;
+  }
+  function Handler$showPaymentInfo$lambda$lambda$lambda(closure$asList, this$Handler, closure$bookedTickets, closure$errors) {
+    return function (resolve, f) {
+      var resolvesNeeded = {v: 0};
+      var $receiver = closure$asList;
+      var tmp$, tmp$_0;
+      var index = 0;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        var this$Handler_0 = this$Handler;
+        var closure$bookedTickets_0 = closure$bookedTickets;
+        var closure$errors_0 = closure$errors;
+        var closure$asList_0 = closure$asList;
+        var index_0 = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
+        this$Handler_0.bookTickets_0(item).then(Handler$showPaymentInfo$lambda$lambda$lambda$lambda$lambda(item, closure$bookedTickets_0, closure$errors_0, resolvesNeeded, closure$asList_0, resolve, index_0)).catch(Handler$showPaymentInfo$lambda$lambda$lambda$lambda$lambda_0);
+      }
+      return Unit;
+    };
+  }
+  function Handler$showPaymentInfo$lambda$lambda$lambda_0(closure$bookedTickets, closure$errors, this$Handler) {
+    return function (it) {
+      console.log('Now');
+      var tmp$;
+      tmp$ = closure$bookedTickets.keys.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        var tmp$_0;
+        tmp$_0 = element.iterator();
+        while (tmp$_0.hasNext()) {
+          var element_0 = tmp$_0.next();
+          Cart_getInstance().remove_jpnhl5$(element_0);
+        }
+      }
+      this$Handler.showResult_0(closure$bookedTickets, closure$errors);
+      return Unit;
+    };
+  }
+  function Handler$showPaymentInfo$lambda$lambda(this$Handler) {
+    return function (it) {
+      this$Handler.updateLatestPaymentInfo_0();
+      var bookedTickets = LinkedHashMap_init();
+      var errors = LinkedHashMap_init();
+      var asList = Cart_getInstance().asList();
+      var promise = new Promise(Handler$showPaymentInfo$lambda$lambda$lambda(asList, this$Handler, bookedTickets, errors));
+      promise.then(Handler$showPaymentInfo$lambda$lambda$lambda_0(bookedTickets, errors, this$Handler));
+      return Unit;
+    };
+  }
+  Handler.prototype.showPaymentInfo_0 = function () {
+    var tmp$;
+    openTab('paymentInfo');
+    this.fillLatestPaymentInfo_0();
+    (Kotlin.isType(tmp$ = document.getElementById('confirmBtn'), HTMLButtonElement) ? tmp$ : throwCCE()).addEventListener('click', Handler$showPaymentInfo$lambda$lambda(this));
+  };
+  function Handler$showResult$lambda$lambda$lambda$lambda(closure$mutableEntry, closure$count, this$Handler) {
+    return function ($receiver) {
+      var $receiver_0 = closure$mutableEntry.value;
+      var tmp$, tmp$_0;
+      var index = 0;
+      tmp$ = $receiver_0.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        var closure$count_0 = closure$count;
+        var this$Handler_0 = this$Handler;
+        var index_0 = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
+        closure$count_0.v = closure$count_0.v + 1 | 0;
+        $receiver.append(this$Handler_0.span_0((index_0 + 1 | 0).toString() + ':' + '\t' + '\t', ''), this$Handler_0.span_0('ID: ' + toString(item.tranactionId), ''), this$Handler_0.br_0());
+      }
+      return Unit;
+    };
+  }
+  function Handler$showResult$lambda$lambda$lambda(closure$index, this$Handler, closure$mutableEntry, closure$count) {
+    return function ($receiver) {
+      $receiver.append(this$Handler.span_0('#' + closure$index, ''), this$Handler.span_0(first(closure$mutableEntry.key).event.title, ''), this$Handler.span_0(this$Handler.toDateString_0(first(closure$mutableEntry.key).occurrence.date) + ' - ' + this$Handler.toTimeString_0(first(closure$mutableEntry.key).occurrence.time), ''), this$Handler.span_0(first(closure$mutableEntry.key).category.categoryName, ''), this$Handler.br_0(), this$Handler.label_0('Transaction Ids', ''), this$Handler.br_0());
+      appendElement($receiver, 'div', Handler$showResult$lambda$lambda$lambda$lambda(closure$mutableEntry, closure$count, this$Handler));
+      return Unit;
+    };
+  }
+  function Handler$showResult$lambda$lambda$lambda$lambda_0(closure$mutableEntry, this$Handler) {
+    return function ($receiver) {
+      var $receiver_0 = closure$mutableEntry.value;
+      $receiver.append(this$Handler.span_0('Failed due to: ' + toString($receiver_0.errMsg), ''));
+      return Unit;
+    };
+  }
+  function Handler$showResult$lambda$lambda$lambda_0(closure$index, this$Handler, closure$mutableEntry) {
+    return function ($receiver) {
+      $receiver.append(this$Handler.span_0('#' + closure$index, ''), this$Handler.span_0(first(closure$mutableEntry.key).event.title, ''), this$Handler.span_0(this$Handler.toDateString_0(first(closure$mutableEntry.key).occurrence.date) + ' - ' + this$Handler.toTimeString_0(first(closure$mutableEntry.key).occurrence.time), ''), this$Handler.span_0(first(closure$mutableEntry.key).category.categoryName, ''), this$Handler.br_0());
+      appendElement($receiver, 'div', Handler$showResult$lambda$lambda$lambda$lambda_0(closure$mutableEntry, this$Handler));
+      return Unit;
+    };
+  }
+  Handler.prototype.showResult_0 = function (bookedTickets, errors) {
+    var tmp$, tmp$_0;
+    openTab('res');
+    var $receiver = Kotlin.isType(tmp$ = document.getElementById('suc'), HTMLDivElement) ? tmp$ : throwCCE();
+    var count = {v: 0};
+    clear($receiver);
+    var tmp$_1, tmp$_0_0;
+    var index = 0;
+    tmp$_1 = bookedTickets.entries.iterator();
+    while (tmp$_1.hasNext()) {
+      var item = tmp$_1.next();
+      appendElement($receiver, 'div', Handler$showResult$lambda$lambda$lambda(checkIndexOverflow((tmp$_0_0 = index, index = tmp$_0_0 + 1 | 0, tmp$_0_0)), this, item, count));
+    }
+    if (count.v > 0) {
+      OnPageAlert_getInstance().showSuc_61zpoe$('Booked ' + count.v + ' tickets.');
+    }
+    var $receiver_0 = Kotlin.isType(tmp$_0 = document.getElementById('err'), HTMLDivElement) ? tmp$_0 : throwCCE();
+    clear($receiver_0);
+    var tmp$_2, tmp$_0_1;
+    var index_0 = 0;
+    tmp$_2 = errors.entries.iterator();
+    while (tmp$_2.hasNext()) {
+      var item_0 = tmp$_2.next();
+      appendElement($receiver_0, 'div', Handler$showResult$lambda$lambda$lambda_0(checkIndexOverflow((tmp$_0_1 = index_0, index_0 = tmp$_0_1 + 1 | 0, tmp$_0_1)), this, item_0));
+    }
+  };
+  Handler.prototype.fillLatestPaymentInfo_0 = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11, tmp$_12, tmp$_13, tmp$_14;
+    var cardInput = Kotlin.isType(tmp$ = document.getElementById('cardNumber'), HTMLInputElement) ? tmp$ : throwCCE();
+    if (this.latestBookingInfo_0 != null) {
+      cardInput.value = toString((tmp$_0 = this.latestBookingInfo_0) != null ? tmp$_0.cardNr : null);
+    }
+    var cityInput = Kotlin.isType(tmp$_1 = document.getElementById('city'), HTMLInputElement) ? tmp$_1 : throwCCE();
+    if (this.latestBookingInfo_0 != null) {
+      cityInput.value = toString((tmp$_2 = this.latestBookingInfo_0) != null ? tmp$_2.city : null);
+    }
+    var countryInput = Kotlin.isType(tmp$_3 = document.getElementById('country'), HTMLInputElement) ? tmp$_3 : throwCCE();
+    if (this.latestBookingInfo_0 != null) {
+      countryInput.value = toString((tmp$_4 = this.latestBookingInfo_0) != null ? tmp$_4.country : null);
+    }
+    var houseInput = Kotlin.isType(tmp$_5 = document.getElementById('house'), HTMLInputElement) ? tmp$_5 : throwCCE();
+    if (this.latestBookingInfo_0 != null) {
+      houseInput.value = toString((tmp$_6 = this.latestBookingInfo_0) != null ? tmp$_6.house : null);
+    }
+    var nameFInput = Kotlin.isType(tmp$_7 = document.getElementById('nameF'), HTMLInputElement) ? tmp$_7 : throwCCE();
+    if (this.latestBookingInfo_0 != null) {
+      nameFInput.value = toString((tmp$_8 = this.latestBookingInfo_0) != null ? tmp$_8.nameF : null);
+    }
+    var nameLInput = Kotlin.isType(tmp$_9 = document.getElementById('nameL'), HTMLInputElement) ? tmp$_9 : throwCCE();
+    if (this.latestBookingInfo_0 != null) {
+      nameLInput.value = toString((tmp$_10 = this.latestBookingInfo_0) != null ? tmp$_10.nameL : null);
+    }
+    var streetInput = Kotlin.isType(tmp$_11 = document.getElementById('street'), HTMLInputElement) ? tmp$_11 : throwCCE();
+    if (this.latestBookingInfo_0 != null) {
+      streetInput.value = toString((tmp$_12 = this.latestBookingInfo_0) != null ? tmp$_12.street : null);
+    }
+    var zipInput = Kotlin.isType(tmp$_13 = document.getElementById('zip'), HTMLInputElement) ? tmp$_13 : throwCCE();
+    if (this.latestBookingInfo_0 != null) {
+      zipInput.value = toString((tmp$_14 = this.latestBookingInfo_0) != null ? tmp$_14.zip : null);
+    }
+  };
+  Handler.prototype.updateLatestPaymentInfo_0 = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6;
+    var cardInput = Kotlin.isType(tmp$ = document.getElementById('cardNumber'), HTMLInputElement) ? tmp$ : throwCCE();
+    var cardNumber = cardInput.value;
+    var cityInput = Kotlin.isType(tmp$_0 = document.getElementById('city'), HTMLInputElement) ? tmp$_0 : throwCCE();
+    var city = cityInput.value;
+    var countryInput = Kotlin.isType(tmp$_1 = document.getElementById('country'), HTMLInputElement) ? tmp$_1 : throwCCE();
+    var country = countryInput.value;
+    var houseInput = Kotlin.isType(tmp$_2 = document.getElementById('house'), HTMLInputElement) ? tmp$_2 : throwCCE();
+    var house = houseInput.value;
+    var nameFInput = Kotlin.isType(tmp$_3 = document.getElementById('nameF'), HTMLInputElement) ? tmp$_3 : throwCCE();
+    var nameF = nameFInput.value;
+    var nameLInput = Kotlin.isType(tmp$_4 = document.getElementById('nameL'), HTMLInputElement) ? tmp$_4 : throwCCE();
+    var nameL = nameLInput.value;
+    var streetInput = Kotlin.isType(tmp$_5 = document.getElementById('street'), HTMLInputElement) ? tmp$_5 : throwCCE();
+    var street = streetInput.value;
+    var zipInput = Kotlin.isType(tmp$_6 = document.getElementById('zip'), HTMLInputElement) ? tmp$_6 : throwCCE();
+    var zip = zipInput.value;
+    var emptyFields = '';
+    var empty = this.isEmpty_0([new Pair(cardNumber, 'Card Number'), new Pair(city, 'City Name'), new Pair(nameF, 'First Name'), new Pair(nameL, 'Last Name'), new Pair(street, 'Street Name'), new Pair(zip, 'Zip code')]);
+    try {
+      emptyFields = joinToString_0(empty, ', ', 'The field(s) for ', ' may not be empty');
+      if (cardNumber.length > 0) {
+        var bookingInfo = new BookingInfo(toInt(cardNumber), city, country, house, nameF, nameL, street, zip);
+        if (!empty.isEmpty()) {
+          OnPageAlert_getInstance().showErr_61zpoe$(emptyFields);
+        }
+         else {
+          this.latestBookingInfo_0 = bookingInfo;
+          OnPageAlert_getInstance().clear();
+        }
+      }
+       else {
+        if (!empty.isEmpty()) {
+          OnPageAlert_getInstance().showErr_61zpoe$(emptyFields);
+        }
+      }
+    }
+     catch (e) {
+      if (Kotlin.isType(e, NumberFormatException)) {
+        if (!empty.isEmpty()) {
+          OnPageAlert_getInstance().showErr_61zpoe$('Card Number is not a number and ' + emptyFields);
+        }
+         else {
+          OnPageAlert_getInstance().showErr_61zpoe$('Card Number is not a number');
+        }
+      }
+       else
+        throw e;
+    }
+    console.dir('latestBookingInfo = ' + toString(this.latestBookingInfo_0));
+  };
+  Handler.prototype.isEmpty_0 = function (arr) {
+    var destination = ArrayList_init_0(arr.length);
+    var tmp$;
+    for (tmp$ = 0; tmp$ !== arr.length; ++tmp$) {
+      var item = arr[tmp$];
+      destination.add_11rb$(item.first.length > 0 ? '' : item.second);
+    }
+    var destination_0 = ArrayList_init();
+    var tmp$_0;
+    tmp$_0 = destination.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      if (element.length > 0)
+        destination_0.add_11rb$(element);
+    }
+    return toCollection(destination_0, ArrayList_init());
   };
   function Handler$updateBrowser$lambda(this$Handler) {
     return function (it) {
@@ -978,11 +1575,19 @@ var webjs = function (_, Kotlin) {
     var artistIn = Kotlin.isType(tmp$_5 = document.getElementById('artist'), HTMLInputElement) ? tmp$_5 : throwCCE();
     var locationIn = Kotlin.isType(tmp$_6 = document.getElementById('location'), HTMLInputElement) ? tmp$_6 : throwCCE();
     var sb = '';
-    if (withFromCB.checked) {
-      sb = append(append(append(append(append(sb, '-'), SearchCategories$DATE_FROM_getInstance().getIdf()), '="'), fromDatePick.value), '"');
+    var tmp$_7 = withFromCB.checked;
+    if (tmp$_7) {
+      tmp$_7 = fromDatePick.value.length > 0;
     }
-    if (withTillCB.checked) {
-      sb = append(append(append(append(append(sb, '-'), SearchCategories$DATE_UNTIL_getInstance().getIdf()), '="'), tillDatePicker.value), '"');
+    if (tmp$_7) {
+      sb = append(append(append(append(append(sb, '-'), SearchCategories$DATE_FROM_getInstance().getIdf()), '="'), toSearchDate(fromDatePick.value)), '"');
+    }
+    var tmp$_8 = withTillCB.checked;
+    if (tmp$_8) {
+      tmp$_8 = tillDatePicker.value.length > 0;
+    }
+    if (tmp$_8) {
+      sb = append(append(append(append(append(sb, '-'), SearchCategories$DATE_UNTIL_getInstance().getIdf()), '="'), toSearchDate(tillDatePicker.value)), '"');
     }
     if (searchEvtTitle.value.length > 0) {
       sb = append(append(append(append(append(sb, '-'), SearchCategories$EVENT_NAME_getInstance().getIdf()), '="'), searchEvtTitle.value), '"');
@@ -997,6 +1602,9 @@ var webjs = function (_, Kotlin) {
       sb = append(append(append(append(append(sb, '-'), SearchCategories$LOCATION_getInstance().getIdf()), '="'), locationIn.value), '"');
     }
     Handler_getInstance().latestSearchQuery = sb;
+  }
+  function toSearchDate($receiver) {
+    return joinToString_0(reversed(split($receiver, Kotlin.charArrayOf(45))), '.');
   }
   function SearchCategories(name, ordinal, catIdf) {
     Enum.call(this);
@@ -1103,6 +1711,9 @@ var webjs = function (_, Kotlin) {
       $receiver_0.put_xwzc9p$(key_0, value);
     }
   };
+  Cart.prototype.remove_jpnhl5$ = function (item) {
+    this.items_0.remove_11rb$(item.category.eventCategoryId);
+  };
   Cart.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'Cart',
@@ -1115,10 +1726,16 @@ var webjs = function (_, Kotlin) {
     }
     return Cart_instance;
   }
-  function LocalTicket(event, occurrence, category) {
+  function LocalTicket(event, occurrence, category, row, seat) {
+    if (row === void 0)
+      row = null;
+    if (seat === void 0)
+      seat = null;
     this.event = event;
     this.occurrence = occurrence;
     this.category = category;
+    this.row = row;
+    this.seat = seat;
   }
   LocalTicket.$metadata$ = {
     kind: Kind_CLASS,
@@ -1134,21 +1751,29 @@ var webjs = function (_, Kotlin) {
   LocalTicket.prototype.component3 = function () {
     return this.category;
   };
-  LocalTicket.prototype.copy_j48prh$ = function (event, occurrence, category) {
-    return new LocalTicket(event === void 0 ? this.event : event, occurrence === void 0 ? this.occurrence : occurrence, category === void 0 ? this.category : category);
+  LocalTicket.prototype.component4 = function () {
+    return this.row;
+  };
+  LocalTicket.prototype.component5 = function () {
+    return this.seat;
+  };
+  LocalTicket.prototype.copy_vgp1ho$ = function (event, occurrence, category, row, seat) {
+    return new LocalTicket(event === void 0 ? this.event : event, occurrence === void 0 ? this.occurrence : occurrence, category === void 0 ? this.category : category, row === void 0 ? this.row : row, seat === void 0 ? this.seat : seat);
   };
   LocalTicket.prototype.toString = function () {
-    return 'LocalTicket(event=' + Kotlin.toString(this.event) + (', occurrence=' + Kotlin.toString(this.occurrence)) + (', category=' + Kotlin.toString(this.category)) + ')';
+    return 'LocalTicket(event=' + Kotlin.toString(this.event) + (', occurrence=' + Kotlin.toString(this.occurrence)) + (', category=' + Kotlin.toString(this.category)) + (', row=' + Kotlin.toString(this.row)) + (', seat=' + Kotlin.toString(this.seat)) + ')';
   };
   LocalTicket.prototype.hashCode = function () {
     var result = 0;
     result = result * 31 + Kotlin.hashCode(this.event) | 0;
     result = result * 31 + Kotlin.hashCode(this.occurrence) | 0;
     result = result * 31 + Kotlin.hashCode(this.category) | 0;
+    result = result * 31 + Kotlin.hashCode(this.row) | 0;
+    result = result * 31 + Kotlin.hashCode(this.seat) | 0;
     return result;
   };
   LocalTicket.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.event, other.event) && Kotlin.equals(this.occurrence, other.occurrence) && Kotlin.equals(this.category, other.category)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.event, other.event) && Kotlin.equals(this.occurrence, other.occurrence) && Kotlin.equals(this.category, other.category) && Kotlin.equals(this.row, other.row) && Kotlin.equals(this.seat, other.seat)))));
   };
   function TicketPayload(amount, bookingInfo, rowseats) {
     this.amount = amount;
@@ -1169,7 +1794,7 @@ var webjs = function (_, Kotlin) {
   TicketPayload.prototype.component3 = function () {
     return this.rowseats;
   };
-  TicketPayload.prototype.copy_ugxpvp$ = function (amount, bookingInfo, rowseats) {
+  TicketPayload.prototype.copy_gc983k$ = function (amount, bookingInfo, rowseats) {
     return new TicketPayload(amount === void 0 ? this.amount : amount, bookingInfo === void 0 ? this.bookingInfo : bookingInfo, rowseats === void 0 ? this.rowseats : rowseats);
   };
   TicketPayload.prototype.toString = function () {
@@ -1184,6 +1809,66 @@ var webjs = function (_, Kotlin) {
   };
   TicketPayload.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.amount, other.amount) && Kotlin.equals(this.bookingInfo, other.bookingInfo) && Kotlin.equals(this.rowseats, other.rowseats)))));
+  };
+  function RowSeat(rowID, seatID) {
+    this.rowID = rowID;
+    this.seatID = seatID;
+  }
+  RowSeat.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RowSeat',
+    interfaces: []
+  };
+  RowSeat.prototype.component1 = function () {
+    return this.rowID;
+  };
+  RowSeat.prototype.component2 = function () {
+    return this.seatID;
+  };
+  RowSeat.prototype.copy_vux9f0$ = function (rowID, seatID) {
+    return new RowSeat(rowID === void 0 ? this.rowID : rowID, seatID === void 0 ? this.seatID : seatID);
+  };
+  RowSeat.prototype.toString = function () {
+    return 'RowSeat(rowID=' + Kotlin.toString(this.rowID) + (', seatID=' + Kotlin.toString(this.seatID)) + ')';
+  };
+  RowSeat.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.rowID) | 0;
+    result = result * 31 + Kotlin.hashCode(this.seatID) | 0;
+    return result;
+  };
+  RowSeat.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.rowID, other.rowID) && Kotlin.equals(this.seatID, other.seatID)))));
+  };
+  function BookingResponse(tranactionId, errMsg) {
+    this.tranactionId = tranactionId;
+    this.errMsg = errMsg;
+  }
+  BookingResponse.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'BookingResponse',
+    interfaces: []
+  };
+  BookingResponse.prototype.component1 = function () {
+    return this.tranactionId;
+  };
+  BookingResponse.prototype.component2 = function () {
+    return this.errMsg;
+  };
+  BookingResponse.prototype.copy_rkkr90$ = function (tranactionId, errMsg) {
+    return new BookingResponse(tranactionId === void 0 ? this.tranactionId : tranactionId, errMsg === void 0 ? this.errMsg : errMsg);
+  };
+  BookingResponse.prototype.toString = function () {
+    return 'BookingResponse(tranactionId=' + Kotlin.toString(this.tranactionId) + (', errMsg=' + Kotlin.toString(this.errMsg)) + ')';
+  };
+  BookingResponse.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.tranactionId) | 0;
+    result = result * 31 + Kotlin.hashCode(this.errMsg) | 0;
+    return result;
+  };
+  BookingResponse.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.tranactionId, other.tranactionId) && Kotlin.equals(this.errMsg, other.errMsg)))));
   };
   function BookingInfo(cardNr, city, country, house, nameF, nameL, street, zip) {
     this.cardNr = cardNr;
@@ -1298,6 +1983,11 @@ var webjs = function (_, Kotlin) {
   OnPageAlert.prototype.addCloseBtn_0 = function (element) {
     appendElement(element, 'span', OnPageAlert$addCloseBtn$lambda(element));
   };
+  OnPageAlert.prototype.clear = function () {
+    var element = ensureNotNull(document.getElementById('alertBox'));
+    element.textContent = '';
+    addClass(element, ['none']);
+  };
   OnPageAlert.$metadata$ = {
     kind: Kind_OBJECT,
     simpleName: 'OnPageAlert',
@@ -1316,6 +2006,8 @@ var webjs = function (_, Kotlin) {
   _.Chronology = Chronology;
   _.Time = Time;
   _.PriceCategory = PriceCategory;
+  _.Row = Row;
+  _.Seat = Seat;
   _.CategoryCalcDataDTO = CategoryCalcDataDTO;
   Object.defineProperty(_, 'Handler', {
     get: Handler_getInstance
@@ -1326,6 +2018,7 @@ var webjs = function (_, Kotlin) {
   _.main = main;
   _.append_rjktp$ = append;
   _.generateSearchQuery = generateSearchQuery;
+  _.toSearchDate_pdl1vz$ = toSearchDate;
   Object.defineProperty(SearchCategories, 'DATE_FROM', {
     get: SearchCategories$DATE_FROM_getInstance
   });
@@ -1350,11 +2043,13 @@ var webjs = function (_, Kotlin) {
   });
   _.LocalTicket = LocalTicket;
   _.TicketPayload = TicketPayload;
+  _.RowSeat = RowSeat;
+  _.BookingResponse = BookingResponse;
   _.BookingInfo = BookingInfo;
   Object.defineProperty(_, 'OnPageAlert', {
     get: OnPageAlert_getInstance
   });
   main();
-  Kotlin.defineModule('webjs', _);
+  Kotlin.defineModule('kotlinweb', _);
   return _;
-}(typeof webjs === 'undefined' ? {} : webjs, kotlin);
+}(typeof kotlinweb === 'undefined' ? {} : kotlinweb, kotlin);

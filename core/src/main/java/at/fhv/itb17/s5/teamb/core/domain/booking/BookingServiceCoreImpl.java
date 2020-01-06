@@ -26,7 +26,7 @@ public class BookingServiceCoreImpl implements BookingServiceCore {
 
     @Nullable
     @Override
-    public List<Ticket> bookTickets(List<Ticket> tickets) {
+    public synchronized List<Ticket> bookTickets(List<Ticket> tickets) {
         tickets.forEach(e -> e.setState(TicketStates.PAID));
         List<List<Ticket>> listList = getTicketsSortedAfterEventAndOccAndCat(tickets);
         return listList.stream().flatMap(list -> {
