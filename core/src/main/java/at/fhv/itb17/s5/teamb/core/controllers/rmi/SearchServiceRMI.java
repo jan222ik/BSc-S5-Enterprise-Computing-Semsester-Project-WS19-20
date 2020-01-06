@@ -14,6 +14,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings({"squid:S2160", "squid:S1948"})
 public class SearchServiceRMI extends UnicastRemoteObject implements SearchService {
 
     private static final Logger logger = LogManager.getLogger(SearchServiceRMI.class);
@@ -31,10 +32,5 @@ public class SearchServiceRMI extends UnicastRemoteObject implements SearchServi
         logger.debug(LogMarkers.RMI_CONTROLLER, "Invoked SearchString: {}", queryString);
         List<Event> events = coreSearch.searchFor(queryString);
         return new LinkedList<>(entityDTORepo.toEventDTOs(events));
-    }
-
-    @Override
-    public Object updateTicketAvailability(Object ticket) throws RemoteException {
-        return null;
     }
 }

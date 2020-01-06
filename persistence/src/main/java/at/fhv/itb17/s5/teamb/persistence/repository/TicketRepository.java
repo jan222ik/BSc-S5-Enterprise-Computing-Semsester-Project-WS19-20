@@ -12,6 +12,7 @@ import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class TicketRepository {
     }
 
     @Nullable
-    public Ticket bookIfFree(Ticket ticket) {
+    public synchronized Ticket bookIfFree(Ticket ticket) {
         List<Ticket> tickets = bookIfFree(Collections.singletonList(ticket));
         if (tickets != null) {
             Optional<Ticket> first = tickets.stream().findFirst();
@@ -36,9 +37,11 @@ public class TicketRepository {
         }
     }
 
-    @SuppressWarnings({"squid:S1168", "squid:S3776"}) //Empty Collection for null and Cognitive Complexity
+    @SuppressWarnings({"squid:S1168", "squid:S3776", "squid:S1905"})
+    //Empty Collection for null and Cognitive Complexity
     @Nullable
-    public List<Ticket> bookIfFree(List<Ticket> tickets) {
+    public synchronized List<Ticket> bookIfFree(List<Ticket> tickets) {
+        List<Ticket> bookedTickets = new LinkedList<>();
         SessionFactory sessionFactory = entityRepository.getSessionFactory();
         Session currentSession = sessionFactory.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
@@ -52,8 +55,11 @@ public class TicketRepository {
                     currentSession.refresh(bookedSeat);
                     if (!bookedSeat.isTaken()) {
                         bookedSeat.setTaken(true);
-                        currentSession.saveOrUpdate(bookedSeat);
-                        currentSession.save(ticket);
+                        currentSession.merge(bookedSeat);
+                        System.out.println("ticket = " + ticket);
+                        Ticket merge = (Ticket) currentSession.merge(ticket);
+                        System.out.println("merge = " + merge);
+                        bookedTickets.add(merge);
                     } else {
                         transaction.rollback();
                         return null;
@@ -65,10 +71,12 @@ public class TicketRepository {
                         currentSession.refresh(eventCategory);
                         if (eventCategory.isFreeSeating()) {
                             if (eventCategory.getTotalSpace() - (eventCategory.getUsedSpace() + nbrOfTickets) >= 0) {
-                                currentSession.detach(eventCategory);
+                                currentSession.merge(eventCategory);
                                 currentSession.save(ticket);
                                 eventCategory.incUsed(nbrOfTickets);
                                 currentSession.saveOrUpdate(eventCategory);
+                                Ticket merge = (Ticket) currentSession.merge(ticket);
+                                bookedTickets.add(merge);
                             } else {
                                 transaction.rollback();
                                 return null;
@@ -89,12 +97,14 @@ public class TicketRepository {
             transaction.rollback();
             return null;
         }
-        if (transaction.getStatus().isOneOf(TransactionStatus.COMMITTED)) {
-            logger.info("Booked successfully {} tickets", tickets.size());
-            for (int i = 0; i < tickets.size(); i++) {
-                logger.info("Ticket: [{}]: {}", i, tickets.get(i));
+        TransactionStatus status = transaction.getStatus();
+        System.out.println("status = " + status);
+        if (status.isOneOf(TransactionStatus.COMMITTED)) {
+            logger.info("Booked successfully {} tickets", bookedTickets.size());
+            for (int i = 0; i < bookedTickets.size(); i++) {
+                logger.info("Ticket: [{}]: {}", i, bookedTickets.get(i));
             }
         }
-        return tickets;
+        return bookedTickets;
     }
 }

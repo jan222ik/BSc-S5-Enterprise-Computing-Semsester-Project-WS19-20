@@ -11,23 +11,23 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MsgServiceCoreImplTest {
-    private static final CoreServiceInjectorImpl injector = new CoreServiceInjectorImpl(false);
+    private static final CoreServiceInjectorImpl injector = (CoreServiceInjectorImpl) CoreServiceInjectorImpl.getInstance(false);
 
-    @Test
+    //@Test
     @DisplayName("Test getting all topics - success")
     public void getAllTopicsTest() {
         List<MsgTopic> allTopics = injector.getMsgTopicServiceCore().getAllTopics();
         Assertions.assertEquals(5, allTopics.size());
     }
 
-    @Test
+    //@Test
     @DisplayName("Test creating a message - success")
     public void createMessageTest() {
         boolean message = injector.getMsgTopicServiceCore().createMessage(new MsgTopic("TEST", false), "TestHeader", "TestMessage");
         assertTrue(message);
     }
 
-    @Test
+    //@Test
     @DisplayName("Test closing the Producer - success")
     public void closeProducer() {
         assertTrue(injector.getMsgTopicServiceCore().closeProducer());

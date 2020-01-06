@@ -6,8 +6,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 
+@javax.ejb.Remote
 public interface SearchService extends Remote {
     LinkedList<EventDTO> searchFor(String queryString) throws RemoteException;
-
-    Object updateTicketAvailability(Object ticket) throws RemoteException;
 }

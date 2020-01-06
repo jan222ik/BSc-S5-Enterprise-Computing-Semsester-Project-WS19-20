@@ -6,7 +6,6 @@ import at.fhv.itb17.s5.teamb.dtos.EvOccurrenceDTO;
 import at.fhv.itb17.s5.teamb.dtos.EventDTO;
 import at.fhv.itb17.s5.teamb.dtos.TicketDTO;
 import at.fhv.itb17.s5.teamb.fxapp.data.BookingService;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,11 +39,6 @@ public class CartVM implements ViewModel {
         tickets.clear();
     }
 
-    public void removeTicket(TicketDTO ticketDTO) {
-        throw new NotImplementedException("TODO: If tickets should be deletable before purchase");
-        //TODO If tickets should be deletable before purchase
-    }
-
     @Nullable
     public Boolean book() {
         return processChanges(bookingService.book(getTicketsSortedAfterEventAndOcc().stream().flatMap(Collection::stream).collect(Collectors.toList())));
@@ -59,23 +53,24 @@ public class CartVM implements ViewModel {
     @Nullable
     @SuppressWarnings("squid:S2447")
     private Boolean processChanges(List<TicketDTO> bookedTickets) {
+        System.out.println("bookedTickets = " + bookedTickets.size());
+        System.out.println("tickets = " + tickets);
+        bookedTickets.stream().forEach(l -> System.out.println(l));
         if (bookedTickets != null) {
-            if (bookedTickets.size() == tickets.size()) {
-                this.clear();
-                return true;
-            } else {
-                HashSet<TicketDTO> usedDTOS = new HashSet<>();
-                tickets = tickets.stream().filter(ticketDTO -> {
-                    for (TicketDTO bookedTicket : bookedTickets) {
-                        if (!usedDTOS.contains(bookedTicket) && ticketDTO.valueEqual(bookedTicket)) {
-                            usedDTOS.add(bookedTicket);
-                            return true;
+            HashSet<Long> usedDTOS = new HashSet<>();
+            tickets = tickets.stream().filter(ticketDTO -> {
+                for (TicketDTO bookedTicket : bookedTickets) {
+                    if (!usedDTOS.contains(bookedTicket.getId())) {
+                        if (ticketDTO.valueEqual(bookedTicket)) {
+                            usedDTOS.add(bookedTicket.getId());
+                            return false;
                         }
                     }
-                    return false;
-                }).collect(Collectors.toList());
-                return tickets.isEmpty();
-            }
+                }
+                return true;
+            }).collect(Collectors.toList());
+            System.out.println("tickets after= " + tickets);
+            return tickets.isEmpty();
         } else {
             return null;
         }
@@ -119,9 +114,9 @@ public class CartVM implements ViewModel {
         }
 
         List<TicketDTO> collect2 = seatTickets.stream()
-                .collect(Collectors.groupingBy(it -> it.getRow().getRowIdentifier(), Collectors.toList()))
+                .collect(Collectors.groupingBy(it -> it.getRow().getRowId(), Collectors.toList()))
                 .values().stream().flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(it -> it.getSeat().getSeatIdentifier(), Collectors.toList()))
+                .collect(Collectors.groupingBy(it -> it.getSeat().getSeatId(), Collectors.toList()))
                 .values().stream().flatMap(list -> Stream.of(list.get(0))).collect(Collectors.toList());
         for (TicketDTO ticket : collect2) {
             HashMap<EvOccurrenceDTO, HashMap<EvCategoryInterfaceDTO, List<TicketDTO>>> occMap;

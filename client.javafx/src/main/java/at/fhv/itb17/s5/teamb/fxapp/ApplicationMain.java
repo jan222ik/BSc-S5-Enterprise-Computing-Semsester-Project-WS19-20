@@ -1,8 +1,10 @@
 package at.fhv.itb17.s5.teamb.fxapp;
 
 import at.fhv.itb17.s5.teamb.fxapp.data.MsgWrapper;
+import at.fhv.itb17.s5.teamb.fxapp.data.ejb.EJBController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.RMIController;
 import at.fhv.itb17.s5.teamb.fxapp.data.rmi.SecManager;
+import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.BeanManager;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.RmiManager;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.SetupCallback;
 import at.fhv.itb17.s5.teamb.fxapp.data.setupmanagers.SetupManager;
@@ -28,6 +30,11 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.security.AllPermission;
+import java.security.CodeSource;
+import java.security.PermissionCollection;
+import java.security.Permissions;
+import java.security.Policy;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -38,6 +45,7 @@ public class ApplicationMain extends Application implements SetupCallback {
 
     private Consumer<String> createMenu;
     private RMIController rmiController;
+    private EJBController ejbController;
     private SetupManager setupManager;
 
     @Override
@@ -47,13 +55,33 @@ public class ApplicationMain extends Application implements SetupCallback {
         args.parseArgs(getParameters().getRaw(), '=');
     }
 
+    private void setSecurityPolicy() {
+        Policy.setPolicy(
+                new Policy() {
+                    @Override
+                    public PermissionCollection getPermissions(CodeSource codesource) {
+                        Permissions p = new Permissions();
+                        p.add(new AllPermission());
+                        return p;
+                    }
+                });
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
+        }
+    }
+
+    @SuppressWarnings("squid:S00112")
     public void start(Stage primaryStage) throws Exception {
+        setSecurityPolicy();
         Thread.currentThread().setName("Fred");
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
 
-
-        setupManager = new RmiManager();
+        if (args.containsKeyword("-ejb")) {
+            setupManager = new BeanManager();
+        } else {
+            setupManager = new RmiManager();
+        }
         setupManager.setMsgNotificationPresenter(this);
         boolean b = setupManager.create();
         if (!b) {
@@ -61,9 +89,9 @@ public class ApplicationMain extends Application implements SetupCallback {
         }
         setupManager.setCallbackConsumer(this);
 
-
         Injector.setModelOrService(SetupManager.class, setupManager);
         Injector.setModelOrService(RMIController.class, rmiController);
+        Injector.setModelOrService(EJBController.class, ejbController);
 
         Runnable createLogin = () -> generateLogin(primaryStage);
         createMenu = (String name) -> generateMenu(primaryStage, name);
@@ -109,7 +137,7 @@ public class ApplicationMain extends Application implements SetupCallback {
         primary.initStyle(
                 args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
         );
-        primary.getIcons().add(new Image("icon.png"));
+        primary.getIcons().add(new Image("/icon.png"));
         primary.show();
         primary.toFront();
     }

@@ -9,7 +9,6 @@ import at.fhv.itb17.s5.teamb.persistence.repository.TicketRepository;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,17 +20,20 @@ public class BookingServiceCoreImpl implements BookingServiceCore {
 
     private TicketRepository ticketRepository;
 
-    @Inject
     public BookingServiceCoreImpl(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
 
     @Nullable
     @Override
-    public List<Ticket> bookTickets(List<Ticket> tickets) {
+    public synchronized List<Ticket> bookTickets(List<Ticket> tickets) {
         tickets.forEach(e -> e.setState(TicketStates.PAID));
         List<List<Ticket>> listList = getTicketsSortedAfterEventAndOccAndCat(tickets);
-        return listList.stream().flatMap(list -> Optional.ofNullable(ticketRepository.bookIfFree(list)).orElse(new LinkedList<>()).stream()).collect(Collectors.toList());
+        return listList.stream().flatMap(list -> {
+            List<Ticket> value = ticketRepository.bookIfFree(list);
+            System.out.println("value = " + value);
+            return Optional.ofNullable(value).orElse(new LinkedList<>()).stream();
+        }).collect(Collectors.toList());
     }
 
     @Nullable

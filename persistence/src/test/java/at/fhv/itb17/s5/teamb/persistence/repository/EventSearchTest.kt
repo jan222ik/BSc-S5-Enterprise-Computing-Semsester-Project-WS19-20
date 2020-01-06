@@ -23,7 +23,14 @@ class EventSearchTest {
     private var allEvents: List<Event> = LinkedList(listOf(e1, e2, e3, e4, e5))
 
     fun upsert(evts: List<Event>) {
-        evts.forEach { e -> entityRepository.saveOrUpdate(e) }
+        if(eventRepository.search(listOf()).size == 0) {
+            var i : Long = 1
+            evts.forEach { e -> entityRepository.saveOrUpdate(e) }
+//            allEvents = eventRepository.search(listOf())
+        }
+        else{
+            allEvents = eventRepository.search(listOf())
+        }
     }
 
     @Test
@@ -41,7 +48,7 @@ class EventSearchTest {
         val search = eventRepository.search(listOf(SearchPair(SearchCategories.EVENT_NAME, e1.title)))
         assertThat(search.size, Matchers.`is`(1))
         search.forEach {
-            assertTrue(e1.eventId == it.eventId)
+            assertTrue(allEvents[0].eventId == it.eventId)
         }
     }
 

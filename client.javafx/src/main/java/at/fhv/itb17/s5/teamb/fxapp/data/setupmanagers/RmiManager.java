@@ -25,7 +25,7 @@ public class RmiManager implements SetupManager {
 
     private static final Logger logger = LogManager.getLogger(RmiManager.class);
 
-    private static final int totalSteps = 9;
+    private static final int TOTAL_STEPS = 9;
     public static final String TCP_LOCAL = "tcp://localhost:61616";
     public static final String TCP_JENKINS = "tcp://10.0.51.91:61616";
 
@@ -67,13 +67,13 @@ public class RmiManager implements SetupManager {
     public RMIConnectionStatus connect(String host, int port) {
         if (controller != null) {
             try {
-                notifyCallbackConsumer("Connecting to Server (RMI)", 0, totalSteps);
+                notifyCallbackConsumer("Connecting to Server (RMI)", 0, TOTAL_STEPS);
                 isConnected = controller.connect(host, port);
                 if (host.equals("10.0.51.91")) {
                     remote = true;
                 }
                 if (isConnected) {
-                    notifyCallbackConsumer("Connected to Server (RMI)", 1, totalSteps);
+                    notifyCallbackConsumer("Connected to Server (RMI)", 1, TOTAL_STEPS);
                     return RMIConnectionStatus.CONNECTED;
                 }
                 return RMIConnectionStatus.NO_CONNECTION;
@@ -89,23 +89,23 @@ public class RmiManager implements SetupManager {
     @Override
     public RMIConnectionStatus authenticate(String user, String pwd) {
         RMIConnectionStatus status;
-        notifyCallbackConsumer("Checking Connection Status (RMI)", 2, totalSteps);
+        notifyCallbackConsumer("Checking Connection Status (RMI)", 2, TOTAL_STEPS);
         if (isConnected) {
-            notifyCallbackConsumer("Initializing Search Component (RMI)", 3, totalSteps);
+            notifyCallbackConsumer("Initializing Search Component (RMI)", 3, TOTAL_STEPS);
             status = searchService.init();
             if (status == RMIConnectionStatus.CONNECTED) {
-                notifyCallbackConsumer("Successfully initialized Search Component (RMI)", 4, totalSteps);
-                notifyCallbackConsumer("Initializing Messaging Component (RMI)", 5, totalSteps);
+                notifyCallbackConsumer("Successfully initialized Search Component (RMI)", 4, TOTAL_STEPS);
+                notifyCallbackConsumer("Initializing Messaging Component (RMI)", 5, TOTAL_STEPS);
                 status = msgTopicService.doLoginMsgTopic(user, pwd);
                 if (status == RMIConnectionStatus.CONNECTED) {
                     setMsgTopics();
                     initMsgAsync(user, remote);
-                    notifyCallbackConsumer("Successfully initialized Messaging Component (RMI)", 6, totalSteps);
-                    notifyCallbackConsumer("Initializing Booking Component (RMI)", 7, totalSteps);
+                    notifyCallbackConsumer("Successfully initialized Messaging Component (RMI)", 6, TOTAL_STEPS);
+                    notifyCallbackConsumer("Initializing Booking Component (RMI)", 7, TOTAL_STEPS);
                     status = bookingService.doLoginBooking(user, pwd);
                     if (status == RMIConnectionStatus.CONNECTED) {
-                        notifyCallbackConsumer("Successfully initialized Booking Component (RMI)", 8, totalSteps);
-                        notifyCallbackConsumer("Opening Application", 9, totalSteps);
+                        notifyCallbackConsumer("Successfully initialized Booking Component (RMI)", 8, TOTAL_STEPS);
+                        notifyCallbackConsumer("Opening Application", 9, TOTAL_STEPS);
                         if (callbackConsumer != null) executeOnFX(o -> callbackConsumer.setupFinished(disposables));
                     }
                 }

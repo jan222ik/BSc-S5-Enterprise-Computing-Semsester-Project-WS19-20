@@ -1,6 +1,7 @@
 package at.fhv.itb17.s5.teamb.persistence.repository;
 
 import at.fhv.itb17.s5.teamb.persistence.entities.Client;
+import at.fhv.itb17.s5.teamb.persistence.entities.ClientRole;
 
 public class ClientRepository {
 
@@ -12,5 +13,14 @@ public class ClientRepository {
 
     public Client getByUsername(String username) {
         return ep.get(Client.class, username);
+    }
+
+    public ClientRole getWebRole() {
+        ClientRole web = ep.get(ClientRole.class, "WEB");
+        return  web.cloneObj();
+    }
+
+    public void addClient(Client client) {
+        ep.saveOrUpdate(client);
     }
 }

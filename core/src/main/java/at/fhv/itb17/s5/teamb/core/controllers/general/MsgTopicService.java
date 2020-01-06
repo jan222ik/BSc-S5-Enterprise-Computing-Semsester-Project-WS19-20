@@ -6,6 +6,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+@javax.ejb.Remote
 public interface MsgTopicService extends Remote {
     List<MsgTopicDTO> getAllTopics() throws RemoteException;
 
@@ -18,4 +19,6 @@ public interface MsgTopicService extends Remote {
     boolean publishFromFeed(MsgTopicDTO msgTopicDTO, String feedURL) throws RemoteException;
 
     List<String> getRSSFeedURLs() throws RemoteException;
+
+    void setUserForEJB(String username, String password) throws RemoteException;
 }

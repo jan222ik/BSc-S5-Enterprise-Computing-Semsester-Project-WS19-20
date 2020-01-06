@@ -38,7 +38,6 @@ public class MsgProducer {
 
         // Create the destination (Topic or Queue)
         for (MsgTopic msgTopic : topics) {
-            logger.info("Topic is {}", msgTopic.getName());
             destinations.put(msgTopic.getName(), session.createTopic("VirtualTopic." + msgTopic.getName()));
         }
 

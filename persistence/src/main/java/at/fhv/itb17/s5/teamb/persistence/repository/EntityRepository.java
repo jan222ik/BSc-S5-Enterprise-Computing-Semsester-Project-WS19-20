@@ -5,16 +5,21 @@ import at.fhv.itb17.s5.teamb.persistence.entities.Artist;
 import at.fhv.itb17.s5.teamb.persistence.entities.Event;
 import at.fhv.itb17.s5.teamb.persistence.entities.EventOccurrence;
 import at.fhv.itb17.s5.teamb.persistence.search.SearchPair;
+import at.fhv.itb17.s5.teamb.persistence.util.SessionFactoryWrapper;
 import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.util.List;
 import java.util.function.Function;
 
@@ -22,11 +27,13 @@ public class EntityRepository {
 
     private static final Logger logger = LogManager.getLogger(EntityRepository.class);
 
-    private SessionFactory sessionFactory;
+    private static SessionFactoryWrapper sessionFactoryWrapper;
 
     public EntityRepository() {
-        logger.info(LogMarkers.DB, "Start Session Factory");
-        sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        if (sessionFactoryWrapper == null) {
+            logger.info(LogMarkers.DB, "Start Session Factory");
+            sessionFactoryWrapper = new SessionFactoryWrapper();
+        }
     }
 
     public <T> List<T> loadAll(Class<T> type) {
@@ -44,7 +51,7 @@ public class EntityRepository {
 
     public void delete(final Object o) {
         logger.trace(LogMarkers.DB, "Delete Object {}", o);
-        sessionFactory.getCurrentSession().delete(o);
+        sessionFactoryWrapper.getCurrentSession().delete(o);
     }
 
     public <T> T get(final Class<T> type, final Long id) {
@@ -52,13 +59,11 @@ public class EntityRepository {
     }
 
     public <T> T get(final Class<T> type, final String id) {
-        if (id.equals("backdoor") || id.equals("tf-test2")) {
+        if (id.equals("backdoor") || id.equals("tf-test2") || id.equals("WEB")) {
             return this.doInTransaction(session -> session.get(type, id));
         } else {
             return this.doInTransaction(session -> session.get(type, "FHVUser"));
         }
-
-
     }
 
     public void saveOrUpdate(final Object o) {
@@ -70,30 +75,33 @@ public class EntityRepository {
     }
 
     public boolean atomicSave(final List<Object> objects) {
-        Session currentSession = sessionFactory.getCurrentSession();
+        Session currentSession = sessionFactoryWrapper.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
         if (!(transaction.isActive())) {
             transaction.begin();
         }
         try {
             for (Object object : objects) {
-                currentSession.save(object);
+                currentSession.detach(object);
+                currentSession.saveOrUpdate(object);
             }
             transaction.commit();
             return true;
         } catch (Exception e) {
             transaction.rollback();
+            e.printStackTrace();
             return false;
         }
     }
 
     public <T> List<T> getAll(@NotNull final Class<T> type, List<SearchPair> searchPairs) {
         logger.trace(LogMarkers.DB, "Get all instances of class: {}", type.getCanonicalName());
-        Transaction transaction = sessionFactory.getCurrentSession().getTransaction();
+        Session session = sessionFactoryWrapper.getCurrentSession();
+        Transaction transaction = session.getTransaction();
         if (!transaction.isActive()) {
             transaction.begin();
         }
-        CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();
+        CriteriaBuilder cb = sessionFactoryWrapper.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = cb.createQuery(type);
         Root<T> root = criteriaQuery.from(type);
         criteriaQuery.select(root);
@@ -128,15 +136,14 @@ public class EntityRepository {
                     logger.error(LogMarkers.DB, "Should not be reachable");
             }
         }
-
-        return sessionFactory.getCurrentSession().createQuery(criteriaQuery).getResultList();
+        return session.createQuery(criteriaQuery).getResultList();
     }
 
     @SuppressWarnings("squid:S1181") //To be able to catch Throwable
     private <T> T doInTransaction(Function<Session, T> supplier) {
-        Session currentSession = sessionFactory.getCurrentSession();
+        Session currentSession = sessionFactoryWrapper.getCurrentSession();
         Transaction transaction = currentSession.getTransaction();
-        if (!(transaction.isActive())) {
+        if (transaction.getStatus() != TransactionStatus.ACTIVE) {
             transaction.begin();
         }
         try {
@@ -150,8 +157,8 @@ public class EntityRepository {
         return null;
     }
 
-    SessionFactory getSessionFactory() {
-        return sessionFactory;
+    public SessionFactory getSessionFactory() {
+        return sessionFactoryWrapper.getSessionFactory();
     }
 
     private static <T> List<T> loadAllData(Class<T> type, Session session) {

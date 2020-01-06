@@ -60,19 +60,23 @@ public class TicketDTO implements Serializable {
     }
 
     public boolean valueEqual(TicketDTO dto) {
-        if (this.eventDTO != dto.eventDTO) {
+        if (!this.eventDTO.getEventId().equals(dto.eventDTO.getEventId())) {
             return false;
         } else {
-            if (this.occ != dto.occ) {
+            if (!this.occ.getOccurrenceId().equals(dto.occ.getOccurrenceId())) {
                 return false;
             } else {
-                if (this.cat != dto.cat) {
+                if (!this.cat.getEventCategoryId().equals(dto.cat.getEventCategoryId())) {
                     return false;
                 } else {
-                    if (this.row != dto.row) {
-                        return false;
+                    if (this.row != null) {
+                        if (!this.row.getRowId().equals(dto.row.getRowId())) {
+                            return false;
+                        } else {
+                            return this.seat.getSeatId().equals(dto.seat.getSeatId());
+                        }
                     } else {
-                        return this.seat == dto.seat;
+                        return true;
                     }
                 }
             }

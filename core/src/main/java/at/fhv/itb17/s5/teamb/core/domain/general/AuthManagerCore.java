@@ -63,6 +63,13 @@ public class AuthManagerCore {
         return ret;
     }
 
+    public Client checkAndQuery(String username, String password){
+        if(check(username, password)){
+            return queryClient(username);
+        }
+        return null;
+    }
+
     private static class Pair {
         String pwd;
         Client client;

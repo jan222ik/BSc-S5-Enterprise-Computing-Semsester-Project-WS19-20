@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
+@SuppressWarnings({"squid:S2160", "squid:S1948"})
 public class BookingServiceRMI extends UnicastRemoteObject implements BookingService {
 
     private static final Logger logger = LogManager.getLogger(BookingServiceRMI.class);
@@ -35,6 +36,7 @@ public class BookingServiceRMI extends UnicastRemoteObject implements BookingSer
         return entityDTORepo.toTicketDTOs(bookingServiceCore.bookTickets(tickets));
     }
 
+    @SuppressWarnings("RedundantThrows")
     @Override
     public List<TicketDTO> reserveTickets(List<TicketDTO> ticketDTOs) throws RemoteException {
         logger.info(LogMarkers.RMI_CONTROLLER, "Invoked Reserve: Size:{} for the client {}", ticketDTOs.size(), clientSessionRMI);

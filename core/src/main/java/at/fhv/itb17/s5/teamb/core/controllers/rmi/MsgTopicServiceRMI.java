@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("RedundantThrows")
+@SuppressWarnings({"squid:S2160", "squid:S1948", "RedundantThrows", "squid:S1191"})
 public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicService {
 
     private static final Logger logger = LogManager.getLogger(MsgTopicServiceRMI.class);
@@ -33,11 +33,19 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
     private final EntityDTORepo entityDTORepo;
 
     List<String> feeds = new LinkedList<>(Collections.singletonList("https://www.ots.at/rss/kultur"));
+    private static final String PRESSE = "https://www.diepresse.com/rss/Kultur";
+    private static final String BBC = "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml";
+    private static final String NY = "https://www.newyorker.com/feed/culture";
+
+
 
     public MsgTopicServiceRMI(MsgServiceCore topicService, ClientSessionRMI client, EntityDTORepo entityDTORepo) throws RemoteException {
         this.topicService = topicService;
         this.entityDTORepo = entityDTORepo;
         this.client = client;
+        feeds.add(BBC);
+        feeds.add(PRESSE);
+        feeds.add(NY);
     }
 
     @Override
@@ -87,7 +95,7 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
                 return false;
             }
         } catch (IOException | FeedException e) {
-            e.printStackTrace();
+            logger.catching(e);
             return false;
         }
         return true;
@@ -95,6 +103,11 @@ public class MsgTopicServiceRMI extends UnicastRemoteObject implements MsgTopicS
 
     @Override
     public List<String> getRSSFeedURLs() throws RemoteException {
-        return feeds.stream().map(s -> new String(s)).collect(Collectors.toList());
+        return feeds.stream().map(String::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public void setUserForEJB(String username, String password) {
+        //only used for ejb
     }
 }
