@@ -147,6 +147,18 @@
                     <include>**/*.js</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/kotlin</directory>
+                <includes>
+                    <include>**/*.fxml</include>
+                    <include>**/*.css</include>
+                    <include>**/*.png</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.MF</include>
+                    <include>**/*.html</include>
+                    <include>**/*.js</include>
+                </includes>
+            </resource>
         </resources>
     </build>
 
