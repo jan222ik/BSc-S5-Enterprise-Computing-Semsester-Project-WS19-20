@@ -9,6 +9,7 @@ import at.fhv.itb17.s5.teamb.fxapp.views.menu.ApplicationMenuViews;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,21 +24,31 @@ public class MsgProdRssPresenter implements ContentfulViewLifeCycle<MsgTopicVM> 
     private Button addBtn;
     @FXML
     private ComboBox<String> topicCB;
+    @FXML
+    private TextField rssInput;
     private Map<String, MsgTopicDTO> topics;
 
 
     @Override
     public void onCreate(MsgTopicVM viewModel, NavigationStackActions<MsgTopicVM> navActions) {
         topics = new HashMap<>();
+        rssInput.setMaxWidth(150);
         addBtn.setOnAction(e -> {
             String feed = feedsCB.getValue();
-            if (topicCB.getValue() != null && feed != null) {
+            String customInput = rssInput.getText();
+            if (topicCB.getValue() != null) {
                 MsgTopicDTO msgTopicDTO = topics.get(topicCB.getValue());
-                boolean b = viewModel.publishFromFeed(msgTopicDTO, feed);
-                if (b) {
+                boolean couldReadFeed = false;
+                if (feed != null) {
+                    couldReadFeed = viewModel.publishFromFeed(msgTopicDTO, feed);
+                }
+                else if (customInput != null) {
+                    couldReadFeed = viewModel.publishFromFeed(msgTopicDTO, customInput);
+                }
+                if (couldReadFeed) {
                     navActions.changeToMenuItem(ApplicationMenuViews.MSG_CONSUMER_VIEW, true);
                 } else {
-                    NotificationsHelper.error("Error" ,"The feed could not be read");
+                    NotificationsHelper.error("Error", "The feed could not be read");
                 }
             } else {
                 NotificationsHelper.error("Input invalid", "Please select a topic");
