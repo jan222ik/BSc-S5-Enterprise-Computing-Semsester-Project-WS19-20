@@ -77,7 +77,7 @@ public class ApplicationMain extends Application implements SetupCallback {
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
 
-        if (Boolean.parseBoolean(args.getArgValue("-ejb", "false"))) {
+        if (args.containsKeyword("-ejb")) {
             setupManager = new BeanManager();
         } else {
             setupManager = new RmiManager();
