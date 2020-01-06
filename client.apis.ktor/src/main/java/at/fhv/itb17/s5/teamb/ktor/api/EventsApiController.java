@@ -52,7 +52,7 @@ public class EventsApiController implements EventsApi {
     }
 
     @SuppressWarnings({"squid:S00112", "squid:S3776", "squid:S2589"})
-    public ResponseEntity<List<BookingResponse>> bookTicket(Long eventID, Long occID, Long catID, TicketOrder body) {
+    public synchronized ResponseEntity<List<BookingResponse>> bookTicket(Long eventID, Long occID, Long catID, TicketOrder body) {
         log.info("eventID = [{}], occID = [{}], catID = [{}], body = [{}]", eventID, occID, catID, body);
         try {
             EntityDTORepo entityRepo = injector.getEntityRepo();

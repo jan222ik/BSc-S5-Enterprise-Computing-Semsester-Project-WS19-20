@@ -455,6 +455,7 @@ object Handler {
                 val errors = mutableMapOf<List<LocalTicket>, BookingResponse>()
                 val asList = Cart.asList()
                 val promise: Promise<Any> = Promise() { resolve, _ ->
+                    var resolvesNeeded = 0
                     asList.forEachIndexed { index, it ->
                         bookTickets(it).then { list ->
                             if (list.size == it.size) {
@@ -473,7 +474,8 @@ object Handler {
                                 console.info("Dif len: ${list.size} != ${it.size}")
                                 errors[it] = list.first()
                             }
-                            if (index == asList.lastIndex) {
+                            resolvesNeeded++
+                            if (resolvesNeeded == asList.size) {
                                 resolve(Any())
                             }
                             console.info("Resolved $index")

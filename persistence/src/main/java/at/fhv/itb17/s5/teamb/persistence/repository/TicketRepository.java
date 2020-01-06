@@ -40,7 +40,7 @@ public class TicketRepository {
     @SuppressWarnings({"squid:S1168", "squid:S3776", "squid:S1905"})
     //Empty Collection for null and Cognitive Complexity
     @Nullable
-    public List<Ticket> bookIfFree(List<Ticket> tickets) {
+    public synchronized List<Ticket> bookIfFree(List<Ticket> tickets) {
         List<Ticket> bookedTickets = new LinkedList<>();
         SessionFactory sessionFactory = entityRepository.getSessionFactory();
         Session currentSession = sessionFactory.getCurrentSession();
