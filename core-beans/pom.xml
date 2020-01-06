@@ -18,6 +18,11 @@
             <artifactId>core</artifactId>
         </dependency>
         <dependency>
+            <groupId>advanceticketsale.parent</groupId>
+            <version>1.0</version>
+            <artifactId>CoreStarter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>8.0</version>
@@ -67,7 +72,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>at.fhv.itb17.s5.teamb.core.domain.general.CoreMain</mainClass>
+                            <mainClass>at.fhv.itb17.s5.teamb.corestarter.CoreMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

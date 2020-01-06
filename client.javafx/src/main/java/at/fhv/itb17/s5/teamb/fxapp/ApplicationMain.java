@@ -77,7 +77,7 @@ public class ApplicationMain extends Application implements SetupCallback {
         System.setSecurityManager(new SecManager());
         Injector.setModelOrService(Style.class, new Style());
 
-        if (Boolean.parseBoolean(args.getArgValue("-ejb", "false"))) {
+        if (args.containsKeyword("-ejb")) {
             setupManager = new BeanManager();
         } else {
             setupManager = new RmiManager();
@@ -133,12 +133,11 @@ public class ApplicationMain extends Application implements SetupCallback {
         primary.setTitle(title);
     }
 
-    private void showStage(@NotNull Stage primary) throws FileNotFoundException {
+    private void showStage(@NotNull Stage primary) {
         primary.initStyle(
                 args.containsKeyword("-decorated") ? StageStyle.DECORATED : StageStyle.UNDECORATED
         );
-        File file = new File("client.javafx/src/main/resources/icon.png");
-        primary.getIcons().add(new Image(new FileInputStream(file)));
+        primary.getIcons().add(new Image("/icon.png"));
         primary.show();
         primary.toFront();
     }

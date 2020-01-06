@@ -7,6 +7,7 @@ import at.fhv.itb17.s5.teamb.ktor.model.TicketOrder
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.application.call
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
 import io.ktor.response.respond
@@ -17,8 +18,8 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.server.netty.NettyApplicationEngine
 import java.io.*
+
 
 class RestServer {
 
@@ -43,20 +44,20 @@ class RestServer {
                 routing {
                     // STATIC CONTENT SERVE
                     get(path = "/") {
-                        val resource = javaClass.getResource("/index.html")
-                        call.respondFile(file = File(resource.path))
+                        val reader = BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/index.html")))
+                        call.respondText(contentType = ContentType.Text.Html, text = reader.readText())
                     }
                     get(path = "/lib/kotlin.js") {
-                        val resource = javaClass.getResource("/kotlin.js")
-                        call.respondFile(file = File(resource.path))
+                        val reader = BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/kotlin.js")))
+                        call.respondText(contentType = ContentType.Text.JavaScript, text = reader.readText())
                     }
                     get(path = "/lib/webjs.js") {
-                        val resource = javaClass.getResource("/kotlinweb.js")
-                        call.respondFile(file = File(resource.path))
+                        val reader = BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/kotlinweb.js")))
+                        call.respondText(contentType = ContentType.Text.JavaScript, text = reader.readText())
                     }
                     get(path = "/favicon.ico") {
-                        val resource = javaClass.getResource("/icon.png")
-                        call.respondFile(file = File(resource.path))
+                        val reader = BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/icon.png")))
+                        call.respondText(contentType = ContentType.Image.PNG, text = reader.readText())
                     }
                     // REST API
                     @Suppress("BlockingMethodInNonBlockingContext")
