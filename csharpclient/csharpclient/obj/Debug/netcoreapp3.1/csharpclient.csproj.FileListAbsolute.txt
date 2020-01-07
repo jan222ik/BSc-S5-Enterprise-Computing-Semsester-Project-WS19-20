@@ -1,0 +1,13 @@
+C:\Users\Matt\VSCodeProjects\csharpclient\bin\Debug\netcoreapp3.1\csharpclient.exe
+C:\Users\Matt\VSCodeProjects\csharpclient\bin\Debug\netcoreapp3.1\csharpclient.deps.json
+C:\Users\Matt\VSCodeProjects\csharpclient\bin\Debug\netcoreapp3.1\csharpclient.runtimeconfig.json
+C:\Users\Matt\VSCodeProjects\csharpclient\bin\Debug\netcoreapp3.1\csharpclient.runtimeconfig.dev.json
+C:\Users\Matt\VSCodeProjects\csharpclient\bin\Debug\netcoreapp3.1\csharpclient.dll
+C:\Users\Matt\VSCodeProjects\csharpclient\bin\Debug\netcoreapp3.1\csharpclient.pdb
+C:\Users\Matt\VSCodeProjects\csharpclient\obj\Debug\netcoreapp3.1\csharpclient.csprojAssemblyReference.cache
+C:\Users\Matt\VSCodeProjects\csharpclient\obj\Debug\netcoreapp3.1\csharpclient.AssemblyInfoInputs.cache
+C:\Users\Matt\VSCodeProjects\csharpclient\obj\Debug\netcoreapp3.1\csharpclient.AssemblyInfo.cs
+C:\Users\Matt\VSCodeProjects\csharpclient\obj\Debug\netcoreapp3.1\csharpclient.dll
+C:\Users\Matt\VSCodeProjects\csharpclient\obj\Debug\netcoreapp3.1\csharpclient.pdb
+C:\Users\Matt\VSCodeProjects\csharpclient\bin\Debug\netcoreapp3.1\RestSharp.dll
+C:\Users\Matt\VSCodeProjects\csharpclient\obj\Debug\netcoreapp3.1\csharpclient.csproj.CopyComplete
