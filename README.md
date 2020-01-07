@@ -6,7 +6,7 @@ Project for Enterprise Computing course.
 1. Run Maven Lifecycle package with: `mvn package`
 2. (If run locally) Start Core:
    1. Change Dir to advance-ticket-sale/core/target
-   2. Run with `java -jar core-1.0-jar-with-dependencies.jar`
+   2. Run with `java -jar core-beans-1.0-jar-with-dependencies.jar`
 3. Start a client:
    1. Change Dir to advance-ticket-sale/client.javafx/target
    2. Run with `java -jar client.javafx-1.0-jar-with-dependencies.jar`
