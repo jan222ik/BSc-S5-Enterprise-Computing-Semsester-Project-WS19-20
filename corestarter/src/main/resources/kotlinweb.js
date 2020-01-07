@@ -23,10 +23,10 @@ var kotlinweb = function (_, Kotlin) {
   var NumberFormatException = Kotlin.kotlin.NumberFormatException;
   var joinToString = Kotlin.kotlin.collections.joinToString_cgipc5$;
   var equals = Kotlin.equals;
-  var Any = Object;
   var toString = Kotlin.toString;
   var joinToString_0 = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toCollection = Kotlin.kotlin.collections.toCollection_5cfyqp$;
+  var Any = Object;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   var removeClass = Kotlin.kotlin.dom.removeClass_hhb33f$;
@@ -579,9 +579,12 @@ var kotlinweb = function (_, Kotlin) {
       return Unit;
     };
   }
-  function Handler$bookTickets$lambda(res) {
-    var text = res.text();
-    return new Promise(Handler$bookTickets$lambda$lambda(text, res));
+  function Handler$bookTickets$lambda(closure$first) {
+    return function (res) {
+      var text = res.text();
+      console.info('Response for events/' + closure$first.event.eventId + '/occurrences/' + closure$first.occurrence.occurrenceId + '/categories/' + closure$first.category.eventCategoryId);
+      return new Promise(Handler$bookTickets$lambda$lambda(text, res));
+    };
   }
   function Handler$bookTickets$lambda_0(it) {
     var tmp$;
@@ -616,6 +619,7 @@ var kotlinweb = function (_, Kotlin) {
           rowSeats.add_11rb$(new RowSeat(ensureNotNull(element.row).rowId, ensureNotNull(element.seat).seatId));
         }
       }
+      console.info('Request for events/' + first_0.event.eventId + '/occurrences/' + first_0.occurrence.occurrenceId + '/categories/' + first_0.category.eventCategoryId);
       var tmp$_0 = window;
       var tmp$_1 = '/events/' + first_0.event.eventId + '/occurrences/' + first_0.occurrence.occurrenceId + '/categories/' + first_0.category.eventCategoryId + '/book';
       var $receiver = json([]);
@@ -652,9 +656,9 @@ var kotlinweb = function (_, Kotlin) {
       o['integrity'] = integrity;
       o['keepalive'] = keepalive;
       o['window'] = window_0;
-      return tmp$_0.fetch(tmp$_1, o).then(Handler$bookTickets$lambda).then(Handler$bookTickets$lambda_0).catch(Handler$bookTickets$lambda_1);
+      return tmp$_0.fetch(tmp$_1, o).then(Handler$bookTickets$lambda(first_0)).then(Handler$bookTickets$lambda_0).catch(Handler$bookTickets$lambda_1);
     }
-     else {
+    else {
       return new Promise(Handler$bookTickets$lambda_2);
     }
   };
@@ -674,7 +678,7 @@ var kotlinweb = function (_, Kotlin) {
       }
       OnPageAlert_getInstance().showInfo_61zpoe$('Found ' + eventDTOs.size + ' events');
     }
-     else {
+    else {
       appendElement(container, 'h3', Handler$populateContainer$lambda);
       OnPageAlert_getInstance().showInfo_61zpoe$('No events found');
     }
@@ -748,7 +752,7 @@ var kotlinweb = function (_, Kotlin) {
     };
   }
   Handler.prototype.occHeader_0 = function () {
-    var names = listOf(['Date', 'Time', 'Location', 'Tickets', 'Type', 'Price', 'Action']);
+    var names = listOf(['Date', 'Time', 'Location', 'Type', 'Price', 'Action']);
     return createElement(document, 'th', Handler$occHeader$lambda(names));
   };
   function Handler$occRow$lambda$lambda$lambda(closure$event, closure$occurrence, this$Handler) {
@@ -763,17 +767,16 @@ var kotlinweb = function (_, Kotlin) {
       var tmp$ = this$Handler.td_0(this$Handler.span_0(this$Handler.toDateString_0(closure$occurrence.date), 'occ-row-col-date'));
       var tmp$_0 = this$Handler.td_0(this$Handler.span_0(this$Handler.toTimeString_0(closure$occurrence.time), 'occ-row-col-time'));
       var tmp$_1 = this$Handler.td_0(this$Handler.span_0(this$Handler.toLocationString_0(closure$occurrence), 'occ-row-col-location'));
-      var tmp$_2 = this$Handler.td_0(this$Handler.span_0('TODO', 'occ-row-col-tickets'));
-      var tmp$_3 = this$Handler.td_0(this$Handler.span_0(closure$occurrence.categoryCalcDataDTO.ticketTypes, 'occ-row-col-type'));
-      var tmp$_4 = this$Handler.td_0(this$Handler.span_0(closure$occurrence.categoryCalcDataDTO.priceRangeString, 'occ-row-col-price'));
-      var tmp$_5 = this$Handler;
+      var tmp$_2 = this$Handler.td_0(this$Handler.span_0(closure$occurrence.categoryCalcDataDTO.ticketTypes, 'occ-row-col-type'));
+      var tmp$_3 = this$Handler.td_0(this$Handler.span_0(closure$occurrence.categoryCalcDataDTO.priceRangeString, 'occ-row-col-price'));
+      var tmp$_4 = this$Handler;
       var $receiver_0 = document.createElement('button');
       var closure$event_0 = closure$event;
       var closure$occurrence_0 = closure$occurrence;
       var this$Handler_0 = this$Handler;
       $receiver_0.textContent = 'Show Details';
       $receiver_0.addEventListener('click', Handler$occRow$lambda$lambda$lambda(closure$event_0, closure$occurrence_0, this$Handler_0));
-      $receiver.append(tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5.td_0($receiver_0));
+      $receiver.append(tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4.td_0($receiver_0));
       return Unit;
     };
   }
@@ -822,7 +825,7 @@ var kotlinweb = function (_, Kotlin) {
     return function ($receiver) {
       var tmp$;
       var btn = Kotlin.isType(tmp$ = $receiver, HTMLButtonElement) ? tmp$ : throwCCE();
-      btn.textContent = 'Buy';
+      btn.textContent = 'Add to cart';
       btn.addEventListener('click', Handler$detailViewActions$lambda$lambda$lambda(closure$event, closure$occurrence, this$Handler));
       return Unit;
     };
@@ -850,11 +853,11 @@ var kotlinweb = function (_, Kotlin) {
             count.v = count.v + 1 | 0;
           }
         }
-         else {
+        else {
           spinner.key.value = spinner.key.max;
         }
       }
-       else {
+      else {
         console.log('Adding seats to cart');
         if ((tmp$_0 = this.currentDetailedSeats.get_11rb$(spinner.value.eventCategoryId)) != null) {
           var tmp$_1;
@@ -880,7 +883,7 @@ var kotlinweb = function (_, Kotlin) {
                   }
                   any$result = false;
                 }
-                 while (false);
+                while (false);
                 if (any$result) {
                   first$result = element_0;
                   break first$break;
@@ -888,7 +891,7 @@ var kotlinweb = function (_, Kotlin) {
               }
               throw new NoSuchElementException_init('Array contains no element matching the predicate.');
             }
-             while (false);
+            while (false);
             var first = first$result;
             Cart_getInstance().add_jpnhl5$(new LocalTicket(event, occurrence, spinner.value, first, element));
             count.v = count.v + 1 | 0;
@@ -911,7 +914,7 @@ var kotlinweb = function (_, Kotlin) {
         if (element.rows != null) {
           tmp$_0 = this$Handler_0.seatSeats_0(element, closure$map_0);
         }
-         else {
+        else {
           tmp$_0 = this$Handler_0.freeSeats_0(element, closure$map_0);
         }
         $receiver.append(tmp$_0);
@@ -941,7 +944,7 @@ var kotlinweb = function (_, Kotlin) {
         closure$hiddenSpinner.value = (toInt(closure$hiddenSpinner.value) - 1 | 0).toString();
         (tmp$ = this$Handler.currentDetailedSeats.get_11rb$(closure$cat.eventCategoryId)) != null ? tmp$.remove_11rb$(closure$it) : null;
       }
-       else {
+      else {
         this$.classList.add('marked');
         closure$marked.v = true;
         closure$hiddenSpinner.value = (toInt(closure$hiddenSpinner.value) + 1 | 0).toString();
@@ -962,7 +965,7 @@ var kotlinweb = function (_, Kotlin) {
       if (!marked.v) {
         $receiver.addEventListener('click', Handler$seatSeats$lambda$lambda$lambda$lambda$lambda$lambda$lambda(marked, $receiver, closure$hiddenSpinner, this$Handler, closure$cat, closure$it));
       }
-       else {
+      else {
         $receiver.classList.add('blocked');
       }
       return Unit;
@@ -1015,11 +1018,11 @@ var kotlinweb = function (_, Kotlin) {
         }
         return this$Handler.updateTotal_0(), Unit;
       }
-       catch (e) {
+      catch (e) {
         if (Kotlin.isType(e, NumberFormatException)) {
           return replace(closure$spinner.value, '\\D', '');
         }
-         else
+        else
           throw e;
       }
     };
@@ -1191,107 +1194,13 @@ var kotlinweb = function (_, Kotlin) {
       }
       appendElement(cartContainer, 'button', Handler$updateCart$lambda_0(this));
     }
-     else {
+    else {
       appendElement(cartContainer, 'h3', Handler$updateCart$lambda_1);
     }
   };
-  function Handler$showPaymentInfo$lambda$lambda$lambda$lambda$lambda(closure$it, closure$bookedTickets, closure$errors, closure$resolvesNeeded, closure$asList, closure$resolve, closure$index) {
-    return function (list) {
-      var tmp$;
-      if (list.size === closure$it.size) {
-        console.info('Same length ' + list.size + ' == ' + closure$it.size + '"');
-        var bool = true;
-        var tmp$_0;
-        tmp$_0 = list.iterator();
-        while (tmp$_0.hasNext()) {
-          var element = tmp$_0.next();
-          console.info(element.errMsg);
-        }
-        if (bool) {
-          var $receiver = closure$bookedTickets;
-          var key = closure$it;
-          $receiver.put_xwzc9p$(key, list);
-        }
-         else {
-          var $receiver_0 = closure$errors;
-          var key_0 = closure$it;
-          var value = first(list);
-          $receiver_0.put_xwzc9p$(key_0, value);
-        }
-      }
-       else {
-        console.info('Dif len: ' + list.size + ' != ' + closure$it.size);
-        var $receiver_1 = closure$errors;
-        var key_1 = closure$it;
-        var value_0 = first(list);
-        $receiver_1.put_xwzc9p$(key_1, value_0);
-      }
-      tmp$ = closure$resolvesNeeded.v;
-      closure$resolvesNeeded.v = tmp$ + 1 | 0;
-      if (closure$resolvesNeeded.v === closure$asList.size) {
-        closure$resolve(new Any());
-      }
-      console.info('Resolved ' + closure$index);
-      return Unit;
-    };
-  }
-  function Handler$showPaymentInfo$lambda$lambda$lambda$lambda$lambda_0(throwable) {
-    OnPageAlert_getInstance().showErr_61zpoe$('Exception occurred: ' + toString(throwable.message));
-    return Unit;
-  }
-  function Handler$showPaymentInfo$lambda$lambda$lambda(closure$asList, this$Handler, closure$bookedTickets, closure$errors) {
-    return function (resolve, f) {
-      var resolvesNeeded = {v: 0};
-      var $receiver = closure$asList;
-      var tmp$, tmp$_0;
-      var index = 0;
-      tmp$ = $receiver.iterator();
-      while (tmp$.hasNext()) {
-        var item = tmp$.next();
-        var this$Handler_0 = this$Handler;
-        var closure$bookedTickets_0 = closure$bookedTickets;
-        var closure$errors_0 = closure$errors;
-        var closure$asList_0 = closure$asList;
-        var index_0 = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
-        this$Handler_0.bookTickets_0(item).then(Handler$showPaymentInfo$lambda$lambda$lambda$lambda$lambda(item, closure$bookedTickets_0, closure$errors_0, resolvesNeeded, closure$asList_0, resolve, index_0)).catch(Handler$showPaymentInfo$lambda$lambda$lambda$lambda$lambda_0);
-      }
-      return Unit;
-    };
-  }
-  function Handler$showPaymentInfo$lambda$lambda$lambda_0(closure$bookedTickets, closure$errors, this$Handler) {
-    return function (it) {
-      console.log('Now');
-      var tmp$;
-      tmp$ = closure$bookedTickets.keys.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        var tmp$_0;
-        tmp$_0 = element.iterator();
-        while (tmp$_0.hasNext()) {
-          var element_0 = tmp$_0.next();
-          Cart_getInstance().remove_jpnhl5$(element_0);
-        }
-      }
-      this$Handler.showResult_0(closure$bookedTickets, closure$errors);
-      return Unit;
-    };
-  }
-  function Handler$showPaymentInfo$lambda$lambda(this$Handler) {
-    return function (it) {
-      this$Handler.updateLatestPaymentInfo_0();
-      var bookedTickets = LinkedHashMap_init();
-      var errors = LinkedHashMap_init();
-      var asList = Cart_getInstance().asList();
-      var promise = new Promise(Handler$showPaymentInfo$lambda$lambda$lambda(asList, this$Handler, bookedTickets, errors));
-      promise.then(Handler$showPaymentInfo$lambda$lambda$lambda_0(bookedTickets, errors, this$Handler));
-      return Unit;
-    };
-  }
   Handler.prototype.showPaymentInfo_0 = function () {
-    var tmp$;
     openTab('paymentInfo');
     this.fillLatestPaymentInfo_0();
-    (Kotlin.isType(tmp$ = document.getElementById('confirmBtn'), HTMLButtonElement) ? tmp$ : throwCCE()).addEventListener('click', Handler$showPaymentInfo$lambda$lambda(this));
   };
   function Handler$showResult$lambda$lambda$lambda$lambda(closure$mutableEntry, closure$count, this$Handler) {
     return function ($receiver) {
@@ -1419,27 +1328,27 @@ var kotlinweb = function (_, Kotlin) {
         if (!empty.isEmpty()) {
           OnPageAlert_getInstance().showErr_61zpoe$(emptyFields);
         }
-         else {
+        else {
           this.latestBookingInfo_0 = bookingInfo;
           OnPageAlert_getInstance().clear();
         }
       }
-       else {
+      else {
         if (!empty.isEmpty()) {
           OnPageAlert_getInstance().showErr_61zpoe$(emptyFields);
         }
       }
     }
-     catch (e) {
+    catch (e) {
       if (Kotlin.isType(e, NumberFormatException)) {
         if (!empty.isEmpty()) {
           OnPageAlert_getInstance().showErr_61zpoe$('Card Number is not a number and ' + emptyFields);
         }
-         else {
+        else {
           OnPageAlert_getInstance().showErr_61zpoe$('Card Number is not a number');
         }
       }
-       else
+      else
         throw e;
     }
     console.dir('latestBookingInfo = ' + toString(this.latestBookingInfo_0));
@@ -1472,6 +1381,116 @@ var kotlinweb = function (_, Kotlin) {
   }
   Handler.prototype.updateBrowser = function () {
     return this.getSearchResults_0(this.latestSearchQuery).then(Handler$updateBrowser$lambda(this)).catch(Handler$updateBrowser$lambda_0);
+  };
+  function Handler$confBtnSetup$lambda(it) {
+    console.info('Removed listener');
+    return Unit;
+  }
+  function Handler$confBtnSetup$lambda$lambda$lambda$lambda(closure$it, closure$bookedTickets, closure$errors, closure$resolvesNeeded, closure$asList, closure$resolve, closure$index) {
+    return function (list) {
+      var tmp$;
+      if (list.size === closure$it.size) {
+        console.info('Same length ' + list.size + ' == ' + closure$it.size + '"');
+        var bool = true;
+        var tmp$_0;
+        tmp$_0 = list.iterator();
+        while (tmp$_0.hasNext()) {
+          var element = tmp$_0.next();
+          console.info(element.errMsg);
+        }
+        if (bool) {
+          var $receiver = closure$bookedTickets;
+          var key = closure$it;
+          $receiver.put_xwzc9p$(key, list);
+        }
+        else {
+          var $receiver_0 = closure$errors;
+          var key_0 = closure$it;
+          var value = first(list);
+          $receiver_0.put_xwzc9p$(key_0, value);
+        }
+      }
+      else {
+        console.info('Dif len: ' + list.size + ' != ' + closure$it.size);
+        var $receiver_1 = closure$errors;
+        var key_1 = closure$it;
+        var value_0 = first(list);
+        $receiver_1.put_xwzc9p$(key_1, value_0);
+      }
+      tmp$ = closure$resolvesNeeded.v;
+      closure$resolvesNeeded.v = tmp$ + 1 | 0;
+      if (closure$resolvesNeeded.v === closure$asList.size) {
+        closure$resolve(new Any());
+      }
+      console.info('Resolved ' + closure$index);
+      return Unit;
+    };
+  }
+  function Handler$confBtnSetup$lambda$lambda$lambda$lambda_0(throwable) {
+    OnPageAlert_getInstance().showErr_61zpoe$('Exception occurred: ' + toString(throwable.message));
+    return Unit;
+  }
+  function Handler$confBtnSetup$lambda$lambda(closure$asList, this$Handler, closure$bookedTickets, closure$errors) {
+    return function (resolve, f) {
+      var resolvesNeeded = {v: 0};
+      var $receiver = closure$asList;
+      var tmp$, tmp$_0;
+      var index = 0;
+      tmp$ = $receiver.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        var this$Handler_0 = this$Handler;
+        var closure$bookedTickets_0 = closure$bookedTickets;
+        var closure$errors_0 = closure$errors;
+        var closure$asList_0 = closure$asList;
+        var index_0 = checkIndexOverflow((tmp$_0 = index, index = tmp$_0 + 1 | 0, tmp$_0));
+        console.info(index_0);
+        console.dir(item);
+        this$Handler_0.bookTickets_0(item).then(Handler$confBtnSetup$lambda$lambda$lambda$lambda(item, closure$bookedTickets_0, closure$errors_0, resolvesNeeded, closure$asList_0, resolve, index_0)).catch(Handler$confBtnSetup$lambda$lambda$lambda$lambda_0);
+      }
+      return Unit;
+    };
+  }
+  function Handler$confBtnSetup$lambda$lambda_0(closure$bookedTickets, this$Handler, closure$errors) {
+    return function (it) {
+      console.log('Now');
+      var tmp$;
+      tmp$ = closure$bookedTickets.keys.iterator();
+      while (tmp$.hasNext()) {
+        var element = tmp$.next();
+        var tmp$_0;
+        tmp$_0 = element.iterator();
+        while (tmp$_0.hasNext()) {
+          var element_0 = tmp$_0.next();
+          Cart_getInstance().remove_jpnhl5$(element_0);
+        }
+      }
+      if (Cart_getInstance().isEmpty()) {
+        this$Handler.showResult_0(closure$bookedTickets, LinkedHashMap_init());
+      }
+      else {
+        this$Handler.showResult_0(closure$bookedTickets, closure$errors);
+      }
+      return Unit;
+    };
+  }
+  function Handler$confBtnSetup$lambda_0(this$Handler) {
+    return function (it) {
+      console.info('ConfirmBtn pressed');
+      this$Handler.updateLatestPaymentInfo_0();
+      var bookedTickets = LinkedHashMap_init();
+      var errors = LinkedHashMap_init();
+      var asList = Cart_getInstance().asList();
+      var promise = new Promise(Handler$confBtnSetup$lambda$lambda(asList, this$Handler, bookedTickets, errors));
+      promise.then(Handler$confBtnSetup$lambda$lambda_0(bookedTickets, this$Handler, errors));
+      return Unit;
+    };
+  }
+  Handler.prototype.confBtnSetup = function () {
+    var tmp$;
+    var htmlButtonElement = Kotlin.isType(tmp$ = document.getElementById('confirmBtn'), HTMLButtonElement) ? tmp$ : throwCCE();
+    htmlButtonElement.removeEventListener('click', Handler$confBtnSetup$lambda);
+    htmlButtonElement.addEventListener('click', Handler$confBtnSetup$lambda_0(this));
   };
   Handler.$metadata$ = {
     kind: Kind_OBJECT,
@@ -1560,6 +1579,7 @@ var kotlinweb = function (_, Kotlin) {
     (Kotlin.isType(tmp$_2 = document.getElementById('searchBtn'), HTMLButtonElement) ? tmp$_2 : throwCCE()).addEventListener('click', main$lambda_2);
     var resetSearchButton = Kotlin.isType(tmp$_3 = document.getElementById('resetBtn'), HTMLButtonElement) ? tmp$_3 : throwCCE();
     resetSearchButton.addEventListener('click', main$lambda_3);
+    Handler_getInstance().confBtnSetup();
   }
   function append($receiver, s) {
     return $receiver + s;
@@ -1704,7 +1724,7 @@ var kotlinweb = function (_, Kotlin) {
     if ((Kotlin.isType(tmp$_0 = $receiver, Map) ? tmp$_0 : throwCCE()).containsKey_11rb$(key)) {
       (tmp$ = this.items_0.get_11rb$(localTicket.category.eventCategoryId)) != null ? tmp$.add_11rb$(localTicket) : null;
     }
-     else {
+    else {
       var $receiver_0 = this.items_0;
       var key_0 = localTicket.category.eventCategoryId;
       var value = mutableListOf([localTicket]);
@@ -1713,6 +1733,9 @@ var kotlinweb = function (_, Kotlin) {
   };
   Cart.prototype.remove_jpnhl5$ = function (item) {
     this.items_0.remove_11rb$(item.category.eventCategoryId);
+  };
+  Cart.prototype.isEmpty = function () {
+    return this.items_0.isEmpty();
   };
   Cart.$metadata$ = {
     kind: Kind_OBJECT,

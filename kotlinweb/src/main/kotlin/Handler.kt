@@ -46,12 +46,14 @@ object Handler {
                     rowSeats.add(RowSeat(it.row!!.rowId, it.seat!!.seatId))
                 }
             }
+            console.info("Request for events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}")
             return window.fetch(input = "/events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}/book", init = RequestInit(
                     method = "POST",
                     headers = json().apply { this["Content-Type"] = "application/json" },
                     body = JSON.stringify(TicketPayload(tickets.size, latestBookingInfo!!, rowSeats.toTypedArray()))
             )).then outerThen@{ res ->
                 val text = res.text()
+                console.info("Response for events/${first.event.eventId}/occurrences/${first.occurrence.occurrenceId}/categories/${first.category.eventCategoryId}")
                 return@outerThen Promise<Pair<String, Short>> { resolve, reject ->
                     text.then { resolve(Pair(it, res.status)) }.catch(reject)
                 }
@@ -118,7 +120,7 @@ object Handler {
     }
 
     private fun occHeader(): Element {
-        val names = listOf("Date", "Time", "Location", "Tickets", "Type", "Price", "Action")
+        val names = listOf("Date", "Time", "Location", "Type", "Price", "Action")
         return document.createElement("th") {
             this.className = "occ-table-header"
             this.append(document.createElement("tr") {
@@ -141,7 +143,6 @@ object Handler {
                     td(span(occurrence.date.toDateString(), "occ-row-col-date")),
                     td(span(occurrence.time.toTimeString(), "occ-row-col-time")),
                     td(span(occurrence.toLocationString(), "occ-row-col-location")),
-                    td(span("TODO", "occ-row-col-tickets")), //TODO
                     td(span(occurrence.categoryCalcDataDTO.ticketTypes, "occ-row-col-type")),
                     td(span(occurrence.categoryCalcDataDTO.priceRangeString, "occ-row-col-price")),
                     td(document.createElement("button").also {
@@ -178,7 +179,7 @@ object Handler {
         return document.createElement("div") {
             appendElement("button") {
                 val btn = this as HTMLButtonElement
-                btn.textContent = "Buy"
+                btn.textContent = "Add to cart"
                 btn.addEventListener(type = "click", callback = {
                     val count = addCurrentToCart(event, occurrence)
                     if (count > 0) {
@@ -448,49 +449,6 @@ object Handler {
     private fun showPaymentInfo() {
         openTab("paymentInfo")
         fillLatestPaymentInfo()
-        (document.getElementById("confirmBtn") as HTMLButtonElement).apply {
-            addEventListener(type = "click", callback = {
-                updateLatestPaymentInfo()
-                val bookedTickets: MutableMap<List<LocalTicket>, List<BookingResponse>> = mutableMapOf()
-                val errors = mutableMapOf<List<LocalTicket>, BookingResponse>()
-                val asList = Cart.asList()
-                val promise: Promise<Any> = Promise() { resolve, _ ->
-                    var resolvesNeeded = 0
-                    asList.forEachIndexed { index, it ->
-                        bookTickets(it).then { list ->
-                            if (list.size == it.size) {
-                                console.info("Same length ${list.size} == ${it.size}\"")
-                                var bool = true
-                                list.forEach { res ->
-                                    console.info(res.errMsg)
-                                    //bool = res.errMsg != null && res.tranactionId != null && res.tranactionId.isNotEmpty()
-                                }
-                                if (bool) {
-                                    bookedTickets[it] = list
-                                } else {
-                                    errors[it] = list.first()
-                                }
-                            } else {
-                                console.info("Dif len: ${list.size} != ${it.size}")
-                                errors[it] = list.first()
-                            }
-                            resolvesNeeded++
-                            if (resolvesNeeded == asList.size) {
-                                resolve(Any())
-                            }
-                            console.info("Resolved $index")
-                        }.catch { throwable ->
-                            OnPageAlert.showErr("Exception occurred: ${throwable.message}")
-                        }
-                    }
-                }
-                promise.then {
-                    console.log("Now")
-                    bookedTickets.keys.forEach { list -> list.forEach { item -> Cart.remove(item) } }
-                    showResult(bookedTickets, errors)
-                }
-            })
-        }
     }
 
     private fun showResult(bookedTickets: MutableMap<List<LocalTicket>, List<BookingResponse>>, errors: MutableMap<List<LocalTicket>, BookingResponse>) {
@@ -654,6 +612,61 @@ object Handler {
             throw it
         }
     }
+
+    fun confBtnSetup(){
+        val htmlButtonElement = document.getElementById("confirmBtn") as HTMLButtonElement
+        htmlButtonElement.removeEventListener(type = "click", callback = {
+            console.info("Removed listener")
+        })
+        htmlButtonElement.addEventListener(type = "click", callback = {
+            console.info("ConfirmBtn pressed")
+            updateLatestPaymentInfo()
+            val bookedTickets: MutableMap<List<LocalTicket>, List<BookingResponse>> = mutableMapOf()
+            val errors = mutableMapOf<List<LocalTicket>, BookingResponse>()
+            val asList = Cart.asList()
+            val promise: Promise<Any> = Promise() { resolve, _ ->
+                var resolvesNeeded = 0
+                asList.forEachIndexed { index, it ->
+                    console.info(index)
+                    console.dir(it)
+                    bookTickets(it).then { list ->
+                        if (list.size == it.size) {
+                            console.info("Same length ${list.size} == ${it.size}\"")
+                            var bool = true
+                            list.forEach { res ->
+                                console.info(res.errMsg)
+                                //bool = res.errMsg != null && res.tranactionId != null && res.tranactionId.isNotEmpty()
+                            }
+                            if (bool) {
+                                bookedTickets[it] = list
+                            } else {
+                                errors[it] = list.first()
+                            }
+                        } else {
+                            console.info("Dif len: ${list.size} != ${it.size}")
+                            errors[it] = list.first()
+                        }
+                        resolvesNeeded++
+                        if (resolvesNeeded == asList.size) {
+                            resolve(Any())
+                        }
+                        console.info("Resolved $index")
+                    }.catch { throwable ->
+                        OnPageAlert.showErr("Exception occurred: ${throwable.message}")
+                    }
+                }
+            }
+            promise.then {
+                console.log("Now")
+                bookedTickets.keys.forEach { list -> list.forEach { item -> Cart.remove(item) } }
+                if (Cart.isEmpty()) {
+                    showResult(bookedTickets, mutableMapOf())
+                } else {
+                    showResult(bookedTickets, errors)
+                }
+            }
+        })
+    }
 }
 
 
@@ -741,6 +754,7 @@ fun main() {
         artistIn.value = ""
         locationIn.value = ""
     })
+    Handler.confBtnSetup()
 }
 
 fun String.append(s: String): String {
@@ -779,7 +793,7 @@ fun generateSearchQuery() {
     Handler.latestSearchQuery = sb
 }
 
-fun String.toSearchDate() : String {
+fun String.toSearchDate(): String {
     return this@toSearchDate.split('-').reversed().joinToString(separator = ".")
 }
 
@@ -814,6 +828,10 @@ object Cart {
 
     fun remove(item: LocalTicket) {
         items.remove(item.category.eventCategoryId)
+    }
+
+    fun isEmpty(): Boolean {
+        return items.isEmpty()
     }
 }
 
