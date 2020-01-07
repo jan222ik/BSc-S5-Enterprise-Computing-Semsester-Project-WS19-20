@@ -13,7 +13,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.ejb.Stateless;
+import java.rmi.RemoteException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Stateless
 public class BookingServiceEJB implements BookingService {
@@ -41,7 +43,20 @@ public class BookingServiceEJB implements BookingService {
     public List<TicketDTO> bookTickets(List<TicketDTO> ticketDTOs) {
         logger.info(LogMarkers.EJB_CONTROLLER, "Insvoked Booking: Size:{} for the client {}", ticketDTOs.size(), clientSessionRMI);
         List<Ticket> tickets = entityDTORepo.toTickets(ticketDTOs, clientSessionRMI.getClient());
-        return entityDTORepo.toTicketDTOs(bookingServiceCore.bookTickets(tickets));
+        AtomicReference<List<TicketDTO>> booked = new AtomicReference<>(entityDTORepo.toTicketDTOs(bookingServiceCore.bookTickets(tickets)));
+        List<TicketDTO> bookedTickets = booked.get();
+        if (bookedTickets == null || bookedTickets.isEmpty()) {
+            Thread thread = new Thread(() -> {
+                booked.set(entityDTORepo.toTicketDTOs(bookingServiceCore.bookTickets(tickets)));
+            });
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return booked.get();
     }
 
     @Override
@@ -49,6 +64,12 @@ public class BookingServiceEJB implements BookingService {
         logger.info(LogMarkers.EJB_CONTROLLER, "Invoked Reserve: Size:{} for the client {}", ticketDTOs.size(), clientSessionRMI);
         List<Ticket> tickets = entityDTORepo.toTickets(ticketDTOs, clientSessionRMI.getClient());
         return entityDTORepo.toTicketDTOs(bookingServiceCore.reserveTickets(tickets));
+    }
+
+    @Override
+    public void setUserForEJB(String username, String password) throws RemoteException {
+        CoreServiceInjector injector = CoreServiceInjectorImpl.getInstance(true);
+        this.clientSessionRMI = new ClientSessionRMI(username, "", null, injector.getAuthManagerCore().checkAndQuery(username, password));
     }
 
     @SuppressWarnings("squid:UnusedPrivateMethod") //Used to debug stuff

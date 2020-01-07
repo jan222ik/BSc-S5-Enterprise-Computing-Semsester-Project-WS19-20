@@ -48,6 +48,11 @@ public class EJBController {
         if (initialContext != null) {
             BookingService bookingService = (BookingService) initialContext.lookup("ejb:/core-beans-1.0-jar-with-dependencies/BookingServiceEJB!at.fhv.itb17.s5.teamb.core.controllers.general.BookingService");
             logger.debug("Created bookingService = {}", bookingService);
+            try {
+                bookingService.setUserForEJB(username, password);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             return bookingService;
         }
         return null;

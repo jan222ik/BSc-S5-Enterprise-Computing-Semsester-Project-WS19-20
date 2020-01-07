@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="connection.url">jdbc:h2:mem:advanceticketsale;DB_CLOSE_DELAY=-1;MVCC=true</property>
+        <property name="connection.url">jdbc:h2:~/advanceticketsale;DB_CLOSE_DELAY=-1;MVCC=true;FILE_LOCK=NO</property>
         <property name="connection.driver_class">org.h2.Driver</property>
         <property name="dialect">org.hibernate.dialect.H2Dialect</property>
         <!--property name="connection.username">postgres</property>
