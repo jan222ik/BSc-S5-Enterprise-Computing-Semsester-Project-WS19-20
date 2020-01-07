@@ -21,3 +21,5 @@ grant {
   permission javax.management.MBeanTrustPermission "register";
 };
 ```
+
+Repo for Client in CSharp: https://github.com/MaRu999/CsharpClient
