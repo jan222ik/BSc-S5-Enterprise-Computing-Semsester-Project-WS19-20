@@ -11,4 +11,6 @@ public interface BookingService extends Remote {
     List<TicketDTO> bookTickets(List<TicketDTO> ticketDTOs) throws RemoteException;
 
     List<TicketDTO> reserveTickets(List<TicketDTO> ticketDTOs) throws RemoteException;
+
+    void setUserForEJB(String username, String password) throws RemoteException;
 }

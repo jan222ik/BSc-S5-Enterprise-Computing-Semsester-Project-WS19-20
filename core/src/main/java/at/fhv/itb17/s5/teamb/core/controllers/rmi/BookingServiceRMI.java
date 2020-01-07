@@ -44,6 +44,11 @@ public class BookingServiceRMI extends UnicastRemoteObject implements BookingSer
         return entityDTORepo.toTicketDTOs(bookingServiceCore.reserveTickets(tickets));
     }
 
+    @Override
+    public void setUserForEJB(String username, String password) throws RemoteException {
+        //only used for ejb
+    }
+
     @SuppressWarnings("squid:UnusedPrivateMethod") //Used to debug stuff
     private void logTicketsDiffs(List<TicketDTO> ticketDTOs, List<Ticket> tickets) {
         for (int i = 0; i < tickets.size(); i++) {
