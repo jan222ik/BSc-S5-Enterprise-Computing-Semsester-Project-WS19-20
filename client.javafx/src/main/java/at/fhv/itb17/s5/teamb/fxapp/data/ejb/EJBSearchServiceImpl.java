@@ -36,10 +36,15 @@ public class EJBSearchServiceImpl implements SearchService {
     public LinkedList<EventDTO> searchFor(String searchQuery) {
         logger.debug("Call Remote SearchService");
         try {
-            return remoteSearchService.searchFor(searchQuery);
+            LinkedList<EventDTO> eventDTOS = remoteSearchService.searchFor(searchQuery);
+            return eventDTOS;
         } catch (RemoteException e) {
             e.printStackTrace();
-            return new LinkedList<>();
+            try {
+                return remoteSearchService.searchFor(searchQuery);
+            }catch (RemoteException ee){
+                return new LinkedList<>();
+            }
         }
     }
 }

@@ -62,7 +62,14 @@ public class EJBBookingServiceImpl implements BookingService {
         logger.info("Booking {} tickets", ticketDTOs.size());
         if (remoteBookingService != null) {
             try {
-                return remoteBookingService.bookTickets(ticketDTOs);
+                List<TicketDTO> bookedTickets = remoteBookingService.bookTickets(ticketDTOs);
+                if(bookedTickets == null || bookedTickets.isEmpty()){
+                    if(bookedTickets != null) {
+                        bookedTickets.forEach(ticketDTOs::remove);
+                    }
+                    bookedTickets = remoteBookingService.bookTickets(ticketDTOs);
+                }
+                return bookedTickets;
             } catch (RemoteException e) {
                 e.printStackTrace();
                 logger.error(EJB_EXCEPTION);
