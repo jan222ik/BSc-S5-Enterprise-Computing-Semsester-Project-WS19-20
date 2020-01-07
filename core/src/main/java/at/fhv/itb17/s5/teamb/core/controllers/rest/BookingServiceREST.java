@@ -10,6 +10,7 @@ import at.fhv.itb17.s5.teamb.util.LogMarkers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class BookingServiceREST implements BookingService {
@@ -38,5 +39,10 @@ public class BookingServiceREST implements BookingService {
         logger.info(LogMarkers.REST_SERVICE, "Invoked Reserve: Size:{} for the client {}", ticketDTOs.size(), clientSessionRMI);
         List<Ticket> tickets = entityDTORepo.toTickets(ticketDTOs, clientSessionRMI.getClient());
         return entityDTORepo.toTicketDTOs(bookingServiceCore.reserveTickets(tickets));
+    }
+
+    @Override
+    public void setUserForEJB(String username, String password) throws RemoteException {
+        //only used for ejb
     }
 }
