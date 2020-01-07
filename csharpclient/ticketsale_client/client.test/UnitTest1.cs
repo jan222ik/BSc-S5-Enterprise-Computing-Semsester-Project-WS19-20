@@ -6,7 +6,7 @@ namespace client.test
     [TestFixture]
     public class UnitTest1
     {  
-    private static string baseurl = "http://localhost:8080";
+    private static string baseurl = "http://localhost:8082";
     private static string urlBooking = baseurl + "/events/{eventID}/occurrences/{occID}/categories/{catID}/book";
     public static string urlSearch = baseurl + "/events/findByQueryString";
 

@@ -11,7 +11,6 @@
         <module>persistence</module>
         <module>core</module>
         <module>util</module>
-        <module>client.web</module>
         <module>client.javafx</module>
         <module>dtos</module>
         <module>core-beans</module>
